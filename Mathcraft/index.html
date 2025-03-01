@@ -1,0 +1,59 @@
+<!Doctype html>
+<html lang="en">
+
+  <head>
+    <title>
+      Mathcraft
+    </title>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="Style.css">
+    <script src="Main.js" type="module" defer></script>
+  </head>
+
+  <body>
+
+    <div id="canvases">
+        <canvas id="canvas"></canvas>
+    </div>
+    
+    <select name="ModeSelectorSelect" id="ModeSelector" class="controls">
+      <option value="function">Function</option>
+      <option value="Circle">Circle</option>
+      <option value="Ellipse">Ellipse</option>
+    </select>
+
+    <select name="PlottingModeSelect" id="PlottingModeSelector" class="controls">
+      <option value="Remove">Remove</option>
+      <option value="Select">Select</option>
+    </select>
+
+    <div id="GraphController" class="controls">
+      <button id="ToggleGridButton" class="SquareButtons">G</button>
+      <button id="ToggleTheme" class="SquareButtons"></button>
+    </div>
+    
+    <div id="EquationContainer", class="controls">
+      <button id="NewEquation">Add New Equation</button> <br>
+    </div>
+
+    <dialog class="modal" id="EquationDialog">
+
+      <label for="EquationDialog_equation" id="Label1">Equation: </label>
+      <input id="EquationDialog_equation" placeholder="Math.sin(x)"></input> <br>
+
+      <label for="EquationDialog_domain" id="Label2">Domain:   </label>
+      <input id="EquationDialog_domain" placeholder="Reals"></input> <br>
+    
+      <button id="EquationDialog_save", class="SquareButtons">Save</button>
+      <button id="EquationDialog_colorPicker" class="SquareButtons"></button>
+
+    </dialog>
+    
+    <p id="debug" class="debug"></p>
+    
+    <p id="pointDisplay" class="controls"></p>
+
+ 
+  </body>
+
+</html>

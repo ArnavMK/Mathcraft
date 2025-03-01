@@ -1,0 +1,19 @@
+body {
+    background-color: black;
+}
+
+body.light-theme {
+    background-color: white;
+}
+
+body.light-theme button{
+    background-color: white;
+    color:  black;
+    border: solid thin black;
+}
+
+button {
+    background-color: black;
+    color:  white;
+    border: solid thin white;
+}

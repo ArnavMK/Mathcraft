@@ -1,0 +1,238 @@
+/* General Styles */
+body {
+    overflow: hidden;
+    background-color: black;
+    margin: 0;
+    height: 100%;
+    font-family: monospace;
+}
+
+body.light-theme {
+    background-color: white;
+}
+body.light-theme div {
+    background-color:  rgba(255, 255, 255, 0.329);;
+}
+body.light-theme button{
+    background-color: white;
+    color: black;
+    border-color: black;
+}
+body.light-theme #ModeSelector, body.light-theme #PlottingModeSelector{
+    background-color: white;
+    color: black;
+    border-color: black; 
+}
+
+body.light-theme .modal {
+    color: black;
+}
+
+body.light-theme input {
+    color: black;
+}
+
+body.light-theme #pointDisplay {
+    color: black;
+}
+
+body.light-theme .SquareButtons_Image, body.light-theme .SquareButtons_Remove{
+    background-color: white;
+    border-color: black;
+}
+
+/* Input and Button Styles */
+textarea, input {
+    margin: 5px 0 2px 5px;
+    background-color: black;
+    color: white;
+    border: thin solid white;
+    font-family: monospace;
+}
+input {
+    border: 0;
+    background-color:rgba(0, 0, 0, 0.0);
+}
+input:focus {
+    outline: none;
+    box-shadow: none;
+}
+button {
+    margin: 5px 0 2px 5px;
+    background-color: black;
+    border: thin solid white;
+    color: white;
+    padding: 5px;
+    font-family: monospace;
+    width: 110px;
+    cursor: pointer;
+    border-radius: 2px;
+    z-index: 1000;
+}
+
+/* Containers and Positioning */
+#NewEquation {
+    width: 95%;
+    position: relative;
+}
+
+#EquationDialog_save {
+    width: auto;
+    position: relative;
+}
+
+/* Debugging Info */
+.debug {
+    color: white;
+    margin-left: 2px;
+    padding-left: 7px;
+    position: absolute;
+    top: 100px;
+}
+
+/* Square Button Styles */
+.SquareButtons {
+    width: 28px;
+    height: 27px;
+    margin: 15px 0 0 10px;
+    position: relative;
+}
+.SquareButtons_Image, .SquareButtons_Remove {
+    width: 28px;
+    height: 27px;
+    margin-left: 3px;
+    position: relative;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 28px 27px;
+}
+.SquareButtons_Image {
+    background-image: url("images/edit.png");
+}
+.SquareButtons_Remove {
+    background-image: url("images/remove.png");
+}
+
+/* Canvas Layers */
+#canvas, #pointCanvas, #equationCanvas, #miscCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#canvas {
+    z-index: 1;
+}
+#equationCanvas {
+    z-index: 2;
+}
+#miscCanvas {
+    z-index: 4;
+}
+#pointCanvas {
+    z-index: 5;
+}
+
+/* Controllers */
+#PointController {
+    width: 120px;
+    height: auto;
+}
+#EquationContainer {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    width: 186px;
+    height: auto;
+}
+#ModeSelector, #PlottingModeSelector {
+    position: absolute;
+    top: 23px;
+    z-index: 1000;
+    background-color: black;
+    color: white;
+    min-height: 26px;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+#ModeSelector {
+    left: 210px;
+}
+#PlottingModeSelector {
+    left: 310px;
+}
+#GraphController {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    display: flex; /* Use Flexbox for row layout */
+    gap: 2px; /* Add spacing between child elements */
+    width: auto;
+    align-items: center; /* Align items vertically in the center */
+}
+
+#ToggleTheme {
+    background-color: white;
+}
+
+/* Modals */
+.modal {
+    max-height: 200px;
+    max-width: 300px;
+    background-color: rgba(0, 0, 0, 0.247);
+    border: 2px solid white;
+    color: white;
+}
+.modal::backdrop {
+    backdrop-filter: blur(10px);
+}
+
+/* Custom Menu */
+#custom-menu {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    z-index: 1000;
+}
+#custom-menu div {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+#custom-menu div:hover {
+    background-color: #555;
+}
+
+/* Point Display */
+#pointDisplay {
+    position: absolute;
+    width: 108px;
+    height: 17px;
+    color: white;
+    border-radius: 50%;
+    pointer-events: none;
+    transition: transform 0.05s ease-out;
+}
+
+/* Equation UI */
+.EquationUI {
+    display: flex;
+    gap: 2px;
+}
+.EquationName {
+    width: 100px;
+    height: 30px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+/* General Div Styles */
+div {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.329);
+    padding: 5px;
+    z-index: 999;
+}

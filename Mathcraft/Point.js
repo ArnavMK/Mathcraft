@@ -1,0 +1,98 @@
+
+export class Point {
+    x; y; color;
+    static Radius = 2.7;
+    static defaultColor = "cyan";
+
+    constructor (x, y, color = "cyan") {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.originalColor = this.color;
+    }
+
+    static IsValid(point) {        
+        return (point != undefined && isFinite(point.x) && isFinite(point.y));
+    }
+
+    static AreRoughlySamePoints(mousePoint, point) {
+        let minimumRemoveDistance = 0.06;
+        return Point.Distance(mousePoint, point) <= minimumRemoveDistance; 
+    }
+
+    static GetCanvasPoint(point, canvas, scale) {
+
+        let originX = canvas.width / 2 , originY = canvas.height / 2;
+
+        let canvasX = originX + (point.x * scale);
+        let canvasY = originY - (point.y * scale);
+
+        return new Point(canvasX,  canvasY);
+    }
+
+    static GetMathPoint(point, canvas, scale) {
+     
+        let originX = canvas.width / 2 , originY = canvas.height / 2;
+
+        let pointX = parseFloat(((point.x - originX)/scale).toFixed(2));
+        let pointY = parseFloat((-(point.y - originY)/scale).toFixed(2));
+
+        return new Point(pointX, pointY);
+    }
+    
+    static Distance(a, b) {
+        return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+    }
+
+    GetColor() {
+        return this.color;
+    }
+
+    GetOriginalColor() {
+        return this.originalColor;
+    }
+
+    SetColor(colorString) {
+        this.color = colorString;
+    }
+
+    static Compare(a, b) {
+        let gx, sx, gy, sy;
+
+        if (a.x > b.x) {
+            gx = a;
+            sx = b;
+        }
+        else {
+            gx = b;
+            sx = a;
+        }
+
+        
+        if (a.y > b.y) {
+            gy = a;
+            sy = b;
+        }
+        else {
+            gy = b;
+            sy = a;
+        }
+
+
+        return {greaterX : gx, smallerX : sx, smallerY : sy, greaterY : gy};
+    }
+
+    static CompareY(a, b) {
+        let g, s;
+
+        return {greater : g, smaller : s};
+    }
+
+    IsUnderThisSelectionRect(rect) {
+        return (this.x < rect.greaterXDiagonalPoint.x && this.x > rect.smallerXDiagonalPoint.x) && (this.y < rect.greaterYDiagonalPoint.y && this.y > rect.smallerYDiagonalPoint.y);
+    }
+
+    toString() {
+        return `(${this.x}, ${this.y})`;
+    }
+}
