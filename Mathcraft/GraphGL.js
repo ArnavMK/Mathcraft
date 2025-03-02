@@ -3,10 +3,11 @@ import { Point } from "./Point.js";
 
 export class GraphGL {
 
-    static defaultColorSelectedEntityColor = "white";
+    static defaultSelectedEntityColor = "white";
     
     /** @type {Map}*/ #coordinates;
-    /** @type {Map}*/ #equations;   
+    /** @type {Map}*/ #equations;
+    /** @type {Map}*/ #entities;
     /** @type {HTMLCanvasElement}*/ gridCanvas;
     /** @type {CanvasRenderingContext2D} */ gridC;
     /** @type {HTMLCanvasElement}*/ pointCanvas;
@@ -16,32 +17,34 @@ export class GraphGL {
     /** @type {HTMLCanvasElement}*/ miscCanvas;
     /** @type {CanvasRenderingContext2D} */ miscC;
     /** @type {Set}*/ #selectedEquations;
+    /** @type {Set}*/ #selectedEntities;
+    #selectedPoints
     scale;
     #pointDisplay;
     #isGridVisible = true;
     #Axis = {x: true, y: false};
     #canDrawSelectionRect = false;
     #canPointDisplayAppear = false;
-    #selectedPoints
     #theme
 
 
     constructor (canvas, scale = 35,) {
 
+        this.#entities = new Map();
         this.#coordinates = new Map();
         this.#equations = new Map();
         this.#selectedPoints = new Set();
         this.#selectedEquations = new Set();
+        this.#selectedEntities = new Set();
 
         this.gridCanvas = canvas;
         this.gridC = this.gridCanvas.getContext("2d");
         this.scale = scale;
         this.#theme = {
-            color: "white",
+            selectionColor: "white",
             translucentColor: "rgba(255, 255, 255, 0.14)",
             themeName: "dark"
         };
-
         let canvasDiv = document.getElementById("canvases");
 
         this.pointCanvas = document.createElement("canvas");
@@ -140,45 +143,45 @@ export class GraphGL {
 
     RenderPoint(mathPoint, color = mathPoint.GetColor()) {
         this.#coordinates.set(mathPoint.toString(), mathPoint);
+        this.#entities.set(mathPoint.toString(), mathPoint);
         this.#DrawPoint(mathPoint,Point.Radius, color);
         this.#RefreshPointLayerOfGraph();
     }
     
-    SelectPoint(point, color) {
-        point.SetColor(this.#theme.color);
+    SelectPoint(point) {
+        point.SetColor(this.#theme.selectionColor);
         this.#selectedPoints.add(point);
+        this.#selectedEntities.add(point);
         this.#RefreshPointLayerOfGraph();
     }
 
-    SelectEquation(equation, color) {
-        equation.SetColor(this.#theme.color);  
+    SelectEquation(equation) {
+        equation.SetColor(this.#theme.selectionColor);  
         this.#selectedEquations.add(equation);
+        this.#selectedEntities.add(equation);
         this.#RefreshEquationLayerOfGraph();
     }
 
-    SelectPoints(points, color) {
+    SelectPoints(points) {
+
         for (let point of points) {
+            point.SetColor(this.#theme.selectionColor);
+            this.#selectedEntities.add(point);
             this.#selectedPoints.add(point);
         }
-
-        this.#selectedPoints.forEach((point) => {
-            point.SetColor(this.#theme.color);
-        });
 
         this.#RefreshPointLayerOfGraph();
     }
 
     DeselectEntities() {
 
-        this.#selectedPoints.forEach((point) => {
-            point.SetColor(Point.defaultColor);
+        this.#selectedEntities.forEach((entity) => {
+            entity.SetColor(entity.GetOriginalColor());
         });
-        this.#selectedPoints.clear();
 
-        this.#selectedEquations.forEach((equation) => {
-            equation.SetColor(equation.GetOriginalColor());
-        });
+        this.#selectedPoints.clear();
         this.#selectedEquations.clear();
+        this.#selectedEntities.clear();
 
         this.#RefreshEquationLayerOfGraph();
 
@@ -187,19 +190,22 @@ export class GraphGL {
     ClearPoint(mathPoint) {
 
         this.#coordinates.delete(mathPoint.toString());
+        this.#entities.delete(mathPoint.toString());
         this.#DrawPoint(mathPoint, Point.Radius + 1, "black");
-        this.#RefreshPointLayerOfGraph()
+        this.#RefreshPointLayerOfGraph();
 
     }
 
     RenderEquation(equation) {
         this.#equations.set(equation.toString(), equation);
+        this.#entities.set(equation.toString(), equation);
         this.#DrawCurve(equation);
     }
 
     ClearEquation(equationID, equationUIDiv) {
 
         this.#equations.delete(equationID);
+        this.#entities.delete(equationID);
         equationUIDiv.remove();
         this.#RefreshEquationLayerOfGraph();
 
@@ -209,7 +215,7 @@ export class GraphGL {
 
         this.#RefreshMiscLayerOfGraph();
 
-        this.miscC.strokeStyle = this.#theme.color;
+        this.miscC.strokeStyle = this.#theme.selectionColor;
         this.miscC.lineWidth = 1;
         this.miscC.setLineDash([5, 8]); 
 
@@ -228,7 +234,7 @@ export class GraphGL {
 
         this.#RefreshMiscLayerOfGraph();
 
-        this.miscC.strokeStyle = this.#theme.color;
+        this.miscC.strokeStyle = this.#theme.selectionColor;
         this.miscC.lineWidth = 1;
         this.miscC.setLineDash([5, 8]); 
 
@@ -250,13 +256,13 @@ export class GraphGL {
     ToggleTheme(themeToggleButton) {
         
         if (this.#theme.themeName === "light") {
-            this.#theme.color = "white";
+            this.#theme.selectionColor = "white";
             this.#theme.themeName = "dark";
             this.#theme.translucentColor = "rgba(255, 255, 255, 0.14)";
             themeToggleButton.style.backgroundColor = "white";
         }
         else {
-            this.#theme.color = "black";
+            this.#theme.selectionColor = "black";
             this.#theme.themeName = "light"
             this.#theme.translucentColor = "rgba(0, 0, 0, 0.14)";
             themeToggleButton.style.backgroundColor = "black";
@@ -264,18 +270,19 @@ export class GraphGL {
 
         document.body.classList.toggle("light-theme");
 
-        if (this.#selectedEquations.size > 0) {
-            this.#selectedEquations.forEach((equation) => {
-                equation.SetColor(this.#theme.color);
-            });
-            this.#RefreshEquationLayerOfGraph();
-        }
+        let pointCounter = 0; let equationCounter = 0;
 
-        if (this.#selectedPoints.size > 0) {
-            this.#selectedPoints.forEach((point) => {
-                point.SetColor(this.#theme.color);
+        if (this.#selectedEntities.size > 0) {
+
+            this.#selectedEntities.forEach((entity) => {
+                entity.SetColor(this.#theme.selectionColor);
+                entity instanceof Point ? pointCounter++ : equationCounter++;
             });
+
+            console.log(pointCounter, equationCounter);
+
             this.#RefreshPointLayerOfGraph();
+            this.#RefreshEquationLayerOfGraph();
         }
 
         this.#RefreshGridLayerOfGraph();
@@ -293,7 +300,7 @@ export class GraphGL {
     #DrawXAxis(gridLineNumbers) {
 
         this.gridC.beginPath();
-        this.gridC.strokeStyle = this.#theme.color;
+        this.gridC.strokeStyle = this.#theme.selectionColor;
         this.gridC.moveTo(0, this.gridCanvas.height/2);
         this.gridC.lineTo(this.gridCanvas.width, this.gridCanvas.height/2);
         this.gridC.stroke();
@@ -318,7 +325,7 @@ export class GraphGL {
     
     #DrawYAxis(gridLineNumbers) {
         this.gridC.beginPath();
-        this.gridC.strokeStyle = this.#theme.color;
+        this.gridC.strokeStyle = this.#theme.selectionColor;
         this.gridC.moveTo(this.gridCanvas.width/2, 0);
         this.gridC.lineTo(this.gridCanvas.width/2, this.gridCanvas.height);
         this.gridC.stroke();
@@ -404,14 +411,8 @@ export class GraphGL {
 
         this.#RefreshMiscLayerOfGraph();
 
-        let currentCanvasPoint = new Point(event.offsetX, event.offsetY);
-        let currentMouseMathPoint = Point.GetMathPoint(currentCanvasPoint, this.equationCanvas, this.scale)
-        let ellipseCentreMathPoint = Point.GetMathPoint(ellipseCentreCanvasPoint, this.equationCanvas, this.scale);
-        let height = 2 * Math.abs(ellipseCentreMathPoint.y - currentMouseMathPoint.y);
-        let length = 2 * Math.abs(ellipseCentreMathPoint.x - currentMouseMathPoint.x);
-        console.log(length);
         
-        this.miscC.strokeStyle = this.#theme.color;
+        this.miscC.strokeStyle = this.#theme.selectionColor;
         this.miscC.lineWidth = 1;
         this.miscC.setLineDash([5, 8]); 
 
@@ -425,7 +426,7 @@ export class GraphGL {
         this.gridC.font = "10px monospace";
         this.gridC.textAlign = "start";
         this.gridC.textBaseline = "top";
-        this.gridC.strokeStyle = this.#theme.color;
+        this.gridC.strokeStyle = this.#theme.selectionColor;
 
         if (isXAxis) {
             this.gridC.strokeText(numberToBeDrawn.toString(), canvasPosPoint.x, canvasPosPoint.y + 3);
@@ -529,8 +530,8 @@ export class GraphGL {
 
         let ellipseCentreCanvasPoint = Point.GetCanvasPoint(ellipse.GetCentre(), this.equationCanvas, this.scale);
         let majorMinorAxisPoint = ellipse.GetMajorMinorAxisPoint();
-        // draw the ellipse on the graph
 
+        // draw the ellipse on the graph
         this.equationC.beginPath();
         this.equationC.strokeStyle = ellipse.color;
         this.equationC.ellipse(ellipseCentreCanvasPoint.x, ellipseCentreCanvasPoint.y, majorMinorAxisPoint.x*this.scale, majorMinorAxisPoint.y*this.scale, 0, 0, Math.PI * 2);

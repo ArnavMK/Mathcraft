@@ -8,8 +8,8 @@ import { Point } from "./Point.js";
 export class Graph {
 
     /** @type {Map}*/ coordinates;
+    /** @type {Map}*/ entities;
     /** @type {Map}*/ equations;
-    /** @type {Map}*/ circleEquations;
     /** @type {GraphGL} */ renderer;   
     /** @type {Array}*/ selectedCoordinates;
     /** @type {Array}*/ selectedEquations;
@@ -19,7 +19,6 @@ export class Graph {
     /** @type {HTMLDialogElement}*/ #informationModal;
 
     #debugEnable = false;
-
     #currentGraphMode;
     #currentPlottingMode = "Remove";
     
@@ -27,8 +26,8 @@ export class Graph {
     constructor (renderer, mode = "function", startUpPoints = []) {
 
         this.coordinates = new Map();
+        this.entities = new Map();
         this.equations = new Map();
-        this.circleEquations = new Map();
 
         this.selectedCoordinates = [];
         this.selectedEquations = [];
@@ -39,54 +38,69 @@ export class Graph {
 
         for(let point of startUpPoints) this.TryAddPoint(point);   
 
+        // setting up events like on left mouse button down
         this.renderer.GetClickableCanvas().addEventListener("mousedown", (event) => {
             let onMouseDownFunctionCalls = {2 : this.#OnRightMouseButtonDown.bind(this), 0 : this.#OnLeftMouseButtonDown.bind(this)}
             onMouseDownFunctionCalls[event.button](event);
         });
 
+        // setting up events like on left mouse button up
         this.renderer.GetClickableCanvas().addEventListener("mouseup", (event) => {
             let onMouseUpFunctionCalls = {2 : this.#OnRightMouseButtonUp.bind(this), 0 : this.#OnLeftMouseButtonUp.bind(this)};
             onMouseUpFunctionCalls[event.button](event);
         });
 
+        // setting up on mouse move event, treated like the update method in unity.
         document.addEventListener("mousemove", this.#OnMouseMove.bind(this));
 
+        // to either add or remove points (based on the graph state), when user clicked the screen
         this.renderer.GetClickableCanvas().addEventListener("click", this.HandlePointEntryExitSelection_OnClick.bind(this));
 
+        // when the user clicks the command
         this.customMenu.OnAnyCommandClicked.addEventListener("click", (e) => {
             this.OnAnyCommandClicked(e)
         });
 
         this.#whenSignificantChangesHappen.addEventListener("changes", this.#OnSignificantChangesHappen.bind(this));
 
-        document.getElementById("PlottingModeSelector").onchange = (event) => this.#currentPlottingMode = event.target.value;
-        document.getElementById("ModeSelector").onchange = (event) => this.#currentGraphMode = event.target.value;
+        document.getElementById("PlottingModeSelector").onchange = (event) => this.ChangePlottingModeTo(event.target.value);
+        document.getElementById("ModeSelector").onchange = (event) => this.ChangeModeTo(event.target.value);
 
         this.#informationModal = document.getElementById("EquationDialog");
     }
     
     OnAnyCommandClicked(e) {
 
+        // get the clicked command based on the command ID (the name of the command)
         const clickedCommand = new CommandSelector(this).GetCommand(e.detail.commandID);
-        clickedCommand.Run();   
-        this.DeselectSelectedEntities();
+        clickedCommand.Run(); // run the command.
+        this.DeselectSelectedEntities(); // deselect if any selected entities exists (as the focus has been changed)
     }
 
     ChangeModeTo(mode) {
         this.#currentGraphMode = mode;
     }
 
+    ChangePlottingModeTo(mode) {
+        this.#currentPlottingMode = mode;
+    }
+
     GetMode() {
         return this.#currentGraphMode;
     }
     
+    GetPlottingMode() {
+        return this.#currentPlottingMode;
+    }
+
     GetInformationModal() {
         return this.#informationModal;
     }
 
     RefreshInformationModalWithGivenMode(mode) {
         
-        // change the default equation and domain crap to radius and centre for circle mode
+        // whenever the user triggers any event that brings up the modal, we need to make sure that the labels and information in the 
+        // modal correspond to the mode of the graph
         
         let currentModeEquationInfo = {
             "function" : {
@@ -135,6 +149,8 @@ export class Graph {
         
     }
 
+    // this is the state machine that keeps track of the state of the graph. This is used to determine which commands can show up in the
+    // command selector
     #OnSignificantChangesHappen() {
 
         this.coordinates.size >= 1 && this.selectedCoordinates.length == 0 ? 
@@ -146,7 +162,7 @@ export class Graph {
         this.coordinates.size >= 2 ? 
             this.customMenu.AddCommand("Best Fit") : this.customMenu.RemoveCommand("Best Fit");
 
-        this.coordinates.size > 0 &&  this.circleEquations.size > 0 ?
+        this.coordinates.size > 0 &&  this.equations.size > 0 ?
             this.customMenu.AddCommand("Get Tangents") : this.customMenu.RemoveCommand("Get Tangents");
 
         this.equations.size > 0 ?
@@ -168,11 +184,12 @@ export class Graph {
     
     #OnRightMouseButtonDown(event) {
         let currentMousePoint = new Point(event.offsetX, event.offsetY);
-        this.renderer.EnableSelectionRect(currentMousePoint);
+        this.renderer.EnableSelectionRect(currentMousePoint); // flags the renderer to start drawing the selection rect until the mouse is up
     }
     
     #OnRightMouseButtonUp(event) {
         let selectionRect = this.renderer.DisableSelectionRect(event);
+        if (this.GetPlottingMode() !== "Select") return;
         this.SelectPointsUnderRect(selectionRect);
     }
     
@@ -196,7 +213,7 @@ export class Graph {
 
         this.selectedCoordinates = [];
         this.selectedEquations = [];
-        this.renderer.DeselectEntities();
+        this.renderer.DeselectEntities(); // basically tells the renderer to change the visuals of all the selected entities back to normal
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
 
@@ -209,7 +226,7 @@ export class Graph {
             }            
         }
 
-        this.renderer.SelectPoints(this.selectedCoordinates, GraphGL.defaultColorSelectedEntityColor);
+        this.renderer.SelectPoints(this.selectedCoordinates, GraphGL.defaultSelectedEntityColor);
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
 
@@ -220,55 +237,28 @@ export class Graph {
     TrySelectEntityUnderMouse(mousePoint) {
 
         let mouseMathPoint = Point.GetMathPoint(mousePoint, this.renderer.GetClickableCanvas(), this.renderer.GetScale());
-        let selectedPoint = null;
-        let selectedEquation = null;
+        let selectedEntity = null;
+        let entities = [...this.coordinates.values(), ...this.equations.values()];
 
-        for (let point of this.coordinates.values()) {
-            
-            if (Point.AreRoughlySamePoints(mouseMathPoint, point)) {
-                selectedPoint = point;
+        for (let entity of entities) {
+            if (entity.CanSelect(mouseMathPoint)) {
+                selectedEntity = entity;
             }
         }
 
-        for (let equation of this.equations.values()) { 
-            
-            if (equation.GetType() == "function") {
-                let functionYValue = equation.GetValue(mouseMathPoint.x);
-                let actualClickedPoint = new Point(mouseMathPoint.x, functionYValue);
+        if (selectedEntity != null) {
 
-                if (Point.AreRoughlySamePoints(actualClickedPoint, mouseMathPoint)) {
-                    selectedEquation = equation;
-                }
+            if (selectedEntity instanceof Point) {
+                this.selectedCoordinates.push(selectedEntity);
+                this.renderer.SelectPoint(selectedEntity, GraphGL.defaultSelectedEntityColor);
             }
-            else if (equation.GetType() == "Circle") {
-
-                let distanceFromClickedPointToCentre = Point.Distance(equation.GetCentre(), mouseMathPoint);
-                if (Math.abs(distanceFromClickedPointToCentre - equation.GetRadius()) <= 0.1) {
-                    selectedEquation = equation;
-                }
+            else {
+                this.selectedEquations.push(selectedEntity);
+                this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
             }
-            else if (equation.GetType() == "Ellipse") {
-                if (equation.IsPointOnEllipse(mouseMathPoint)) {
-                    selectedEquation = equation;
-                }
-            }
-        }   
-
-        if (selectedEquation != null) {
-            this.selectedEquations.push(selectedEquation);
-            this.renderer.SelectEquation(selectedEquation, GraphGL.defaultColorSelectedEntityColor);
             return true;
-        }
-
-        if (selectedPoint != null) {
-            this.selectedCoordinates.push(selectedPoint);
-            this.renderer.SelectPoint(selectedPoint, GraphGL.defaultColorSelectedEntityColor);
-            return true;
-        }
-
-        if (selectedPoint == null && selectedEquation == null) {
-            return false;
-        }
+        } 
+        return false;
 
     }
 
@@ -280,7 +270,8 @@ export class Graph {
 
         let oldLength = this.coordinates.size;
         this.coordinates.set(mathPoint.toString(), mathPoint);
-    
+        this.entities.set(mathPoint.toString(), mathPoint);
+
         if (!(this.coordinates.size > oldLength)) {
             throw new Error("DuplicatePointException: Point already exists.");
         }
@@ -295,7 +286,6 @@ export class Graph {
             return new Error("InvalidEquation: the equation " + equation + " is undefined");
         }
         
-
         if (this.equations.has(equation.toString())) {
             throw new Error(`The equation: ${equation.toString()} is already present in the graph.`);
         }
@@ -307,10 +297,6 @@ export class Graph {
         if (this.#currentGraphMode === "Circle" && equation != undefined) {
             this.TryAddPoint(equation.GetCentre(), equation.GetOriginalColor());
             this.dynamicCircleEquationByUserDrag = undefined;
-        }
-
-        if (equation.GetType() == "Circle") {
-            this.circleEquations.set(equation.toString(), equation);
         }
 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);

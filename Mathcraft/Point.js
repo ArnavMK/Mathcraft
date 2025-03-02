@@ -1,14 +1,14 @@
+import { Entity } from "./Entity.js";
 
-export class Point {
-    x; y; color;
+export class Point extends Entity{
+    x; y;
     static Radius = 2.7;
     static defaultColor = "cyan";
 
     constructor (x, y, color = "cyan") {
+        super(color);
         this.x = x;
         this.y = y;
-        this.color = color;
-        this.originalColor = this.color;
     }
 
     static IsValid(point) {        
@@ -44,16 +44,8 @@ export class Point {
         return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
-    GetColor() {
-        return this.color;
-    }
-
-    GetOriginalColor() {
-        return this.originalColor;
-    }
-
-    SetColor(colorString) {
-        this.color = colorString;
+    CanSelect(mouseMathPoint) {
+        return Point.AreRoughlySamePoints(mouseMathPoint, this);
     }
 
     static Compare(a, b) {
@@ -77,7 +69,6 @@ export class Point {
             gy = b;
             sy = a;
         }
-
 
         return {greaterX : gx, smallerX : sx, smallerY : sy, greaterY : gy};
     }

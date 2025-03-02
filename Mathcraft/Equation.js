@@ -1,41 +1,27 @@
+import { Entity } from "./Entity.js";
 import { Point } from "./Point.js";
 
-export class Equation {
+export class Equation extends Entity{
     
     /** @type {Function}*/ #function;
     #domain; #centre;
     #type; #circleRadius
-    color; originalColor;
-    #roots; #majorMinorAxisPoint
+    #majorMinorAxisPoint
 
     static DefaultColor = "cyan";
 
     constructor (expression, accompaniedInfo, type = "function", color = "cyan") {
-
+        super(color);
         this.firstInfo = expression;
         this.accompaniedInfo = accompaniedInfo
-        this.color = color;
-        this.originalColor = color;
         this.#type = type;
-        this.#roots = [new Point(1, 2)];
 
         this.#ParseGivenInfoBasedOnType();
-        this.#AssignRoots();
 
     }
     
     static IsValid(equation) {
         return equation != undefined;
-    }
-    
-    #AssignRoots(){
-        
-
-
-    }
-
-    GetRoots() {
-        return this.#roots;
     }
     
     GetValue(inputX) {
@@ -154,14 +140,6 @@ export class Equation {
         }
     }
 
-    SetColor(color) {
-        this.color = color;
-    }
-
-    GetOriginalColor() {
-        return this.originalColor;
-    }
-
     #ParseDomain(text) {
 
         if (text === "" || text === "Reals") {
@@ -190,5 +168,25 @@ export class Equation {
 
     toString() {
         return this.firstInfo;
+    }
+
+    CanSelect(mouseMathPoint) {
+        
+        if (this.GetType() == "function") {
+            let functionYValue = this.GetValue(mouseMathPoint.x);
+            let actualClickedPoint = new Point(mouseMathPoint.x, functionYValue);
+
+            if (Point.AreRoughlySamePoints(actualClickedPoint, mouseMathPoint)) return true;
+        }
+        else if (this.GetType() == "Circle") {
+
+            let distanceFromClickedPointToCentre = Point.Distance(this.GetCentre(), mouseMathPoint);
+            if (Math.abs(distanceFromClickedPointToCentre - this.GetRadius()) <= 0.1) return true;
+        }
+        else if (this.GetType() == "Ellipse") {
+            if (this.IsPointOnEllipse(mouseMathPoint)) return true;
+        }
+
+        return false;
     }
 }
