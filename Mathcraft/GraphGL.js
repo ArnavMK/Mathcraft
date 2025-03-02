@@ -37,6 +37,8 @@ export class GraphGL {
         this.#selectedEquations = new Set();
         this.#selectedEntities = new Set();
 
+        
+
         this.gridCanvas = canvas;
         this.gridC = this.gridCanvas.getContext("2d");
         this.scale = scale;

@@ -1,9 +1,10 @@
 import { Entity } from "./Entity.js";
 import { Point } from "./Point.js";
 
+
 export class Equation extends Entity{
     
-    /** @type {Function}*/ #function;
+    #function;
     #domain; #centre;
     #type; #circleRadius
     #majorMinorAxisPoint
@@ -25,7 +26,8 @@ export class Equation extends Entity{
     }
     
     GetValue(inputX) {
-        return this.#function(inputX);
+        let scope = {x: inputX};
+        return this.#function.evaluate(scope);
     }
     
     #ParseGivenInfoBasedOnType() {
@@ -41,7 +43,7 @@ export class Equation extends Entity{
     }
 
     FunctionTypeParsing() {
-        this.#function = new Function("x", `return ${this.firstInfo}`);
+        this.#function = math.parse(this.firstInfo);
         this.#domain = this.#ParseDomain(this.accompaniedInfo);
     }
 
