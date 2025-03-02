@@ -17,22 +17,20 @@ graph.OnEditEquationRequestReceived.addEventListener("edit", EditEquationSequenc
 
 
 function EditEquationSequence(event) {
-    graph.RefreshInformationModalWithGivenMode(graph.GetMode());
     let equation = event.detail.equation;
+    graph.RefreshInformationModalWithGivenMode(equation.GetType());
 
     equationText.value = equation.toString();
     domainText.value =  equation.GetDomainExpression();
-    
     graph.RemoveEquation(equation);
     equationModal.showModal();
 }
 
-
 function SaveEquationInformation() {
 
     let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPickerButton.style.backgroundColor);
-    graph.AppendDebug("Equation was Saved");
-    graph.TryAddEquation(equation);
+
+    if (!graph.TryAddEquation(equation)) return;
     equationModal.close();
 
 }
