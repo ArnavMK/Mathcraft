@@ -18,11 +18,27 @@ export class Equation extends Entity{
         this.#type = type;
 
         this.#ParseGivenInfoBasedOnType();
-
     }
     
     static IsValid(equation) {
-        return equation != undefined;
+
+        if (equation == undefined || equation.toString() == "") {
+            console.log("the equation was either empty or undefined");
+            return false;
+        }
+
+        if (equation.GetType() == "function") {
+            try {
+                equation.GetValue(0);
+                return true;
+            }
+            catch (error) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
     }
     
     GetValue(inputX) {
@@ -43,7 +59,16 @@ export class Equation extends Entity{
     }
 
     FunctionTypeParsing() {
-        this.#function = math.parse(this.firstInfo);
+        
+        console.log(this.firstInfo);
+
+        try {
+            this.#function = math.parse(this.firstInfo);
+        }
+        catch(error) {
+            console.error(error.message)
+        }
+        
         this.#domain = this.#ParseDomain(this.accompaniedInfo);
     }
 

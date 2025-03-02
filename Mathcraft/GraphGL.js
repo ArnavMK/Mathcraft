@@ -1,6 +1,7 @@
 import { Equation } from "./Equation.js";
 import { Point } from "./Point.js";
 
+
 export class GraphGL {
 
     static defaultSelectedEntityColor = "white";
@@ -26,7 +27,8 @@ export class GraphGL {
     #canDrawSelectionRect = false;
     #canPointDisplayAppear = false;
     #theme
-
+    MAX_SCALE_VALUE = 350;
+    MIN_SCALE_VALUE = 25;
 
     constructor (canvas, scale = 35,) {
 
@@ -36,8 +38,6 @@ export class GraphGL {
         this.#selectedPoints = new Set();
         this.#selectedEquations = new Set();
         this.#selectedEntities = new Set();
-
-        
 
         this.gridCanvas = canvas;
         this.gridC = this.gridCanvas.getContext("2d");
@@ -663,12 +663,12 @@ export class GraphGL {
     }
 
     DecreaseScale(amount) {
-        this.scale = this.Clamp(this.scale - amount, 25, 350);
+        this.scale = this.Clamp(this.scale - amount, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
         this.#RefreshEntireGraph();
     }
 
     IncreaseScale(amount) {
-        this.scale = this.Clamp(this.scale + amount, 25, 350);
+        this.scale = this.Clamp(this.scale + amount, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
         this.#RefreshEntireGraph();
     }  
     

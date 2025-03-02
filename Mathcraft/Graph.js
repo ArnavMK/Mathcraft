@@ -262,6 +262,7 @@ export class Graph {
 
     }
 
+    
     TryAddPoint(mathPoint, color = mathPoint.GetColor()) {
         
         if (!Point.IsValid(mathPoint)) {
@@ -283,11 +284,11 @@ export class Graph {
     TryAddEquation(equation) {
     
         if (!Equation.IsValid(equation)) {
-            return new Error("InvalidEquation: the equation " + equation + " is undefined");
+            return false;
         }
-        
+
         if (this.equations.has(equation.toString())) {
-            throw new Error(`The equation: ${equation.toString()} is already present in the graph.`);
+            return false;
         }
 
         this.equations.set(equation.toString(), equation);
@@ -300,6 +301,7 @@ export class Graph {
         }
 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
+        return true;
     }
 
     HandlePointEntryExitSelection_OnClick(event) {
