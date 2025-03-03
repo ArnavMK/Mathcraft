@@ -1,8 +1,10 @@
 import { Graph } from "./Graph.js";
 import { GraphGL } from "./GraphGL.js";
 import { Equation } from "./Equation.js";
+import {ErrorLogger} from "./ErrorLogger.js"
 
 let graph = new Graph(new GraphGL(document.getElementById("canvas")));
+window.errorLogger = new ErrorLogger(Array.from(document.querySelectorAll(".ErrorLogger")));
 
 let equationModal = document.getElementById("EquationDialog");
 let equationText = document.getElementById("EquationDialog_equation");

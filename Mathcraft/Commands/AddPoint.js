@@ -46,6 +46,15 @@ export class AddPoint extends Command {
 
     OnPointSaveButtonClicked() {
 
+        let x = parseFloat(this.informationModalStats["x"].value);
+        let y = parseFloat(this.informationModalStats["y"].value);
+
+
+        if (isNaN(x) || isNaN(y)) {
+            window.errorLogger.ShowNewError("Invalid input for a point. Both x and y have to be numbers");
+            return;
+        }
+
         this.graph.TryAddPoint(new Point(
             parseFloat(this.informationModalStats["x"].value),
             parseFloat(this.informationModalStats["y"].value),

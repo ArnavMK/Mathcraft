@@ -152,10 +152,7 @@ export class Graph {
     // this is the state machine that keeps track of the state of the graph. This is used to determine which commands can show up in the
     // command selector
     #OnSignificantChangesHappen() {
-
-        this.coordinates.size >= 1 && this.selectedCoordinates.length == 0 ? 
-            this.customMenu.AddCommand("Remove") : this.customMenu.RemoveCommand("Remove");
-
+        
         if (this.selectedCoordinates.length > 0) 
             this.customMenu.AddCommand("Remove All"); else this.customMenu.RemoveCommand("Remove All");
 
@@ -266,19 +263,20 @@ export class Graph {
     TryAddPoint(mathPoint, color = mathPoint.GetColor()) {
         
         if (!Point.IsValid(mathPoint)) {
-            throw new Error(`InvalidPoint: the point: ${mathPoint.toString()} is invalid`);
+            window.errorLogger.ShowNewError(`InvalidPoint: the point: ${mathPoint.toString()} is invalid`);
+            return false;
         }
 
-        let oldLength = this.coordinates.size;
+        if (this.coordinates.has(mathPoint.toString())) {
+            window.errorLogger.ShowNewError(`${mathPoint.toString()}. This point already exists`);
+            return false;
+        }
+
         this.coordinates.set(mathPoint.toString(), mathPoint);
         this.entities.set(mathPoint.toString(), mathPoint);
-
-        if (!(this.coordinates.size > oldLength)) {
-            throw new Error("DuplicatePointException: Point already exists.");
-        }
-
         this.renderer.RenderPoint(mathPoint, color);
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
+        return true;
     }
 
     TryAddEquation(equation) {
@@ -288,10 +286,12 @@ export class Graph {
         }
 
         if (this.equations.has(equation.toString())) {
+            window.errorLogger.ShowNewError(`${equation.toString()}. This point already exists`);
             return false;
         }
 
         this.equations.set(equation.toString(), equation);
+        this.entities.set(equation.toString(), equation);
         this.renderer.InstantiateEquationUIElement(equation, this.OnAnyRemoveButtonClicked.bind(this), this.OnAnyEditButtonClicked.bind(this));
         this.renderer.RenderEquation(equation);
 
