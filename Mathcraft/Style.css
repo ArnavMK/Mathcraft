@@ -29,6 +29,9 @@ body.light-theme .ErrorLogger {
     color: black;
 }
 
+body.light-theme .exceptionalDivs, .exceptionalDivs {
+    background-color: inherit;
+}
 
 body.light-theme .ErrorLoggerContainer {
     background-color: transparent;
@@ -274,6 +277,10 @@ div {
     content: "!";
     position: relative;
     color: rgb(255, 94, 0);
-    margin-right: 7px;
+    margin-right: 3px;
 }
 
+a {
+    color: #007BFF; 
+    margin-left: 20px;
+}

@@ -21,9 +21,9 @@ export class ErrorLogger {
         if (this.isFree) {
 
             for (let element of this.loggerElements) {
-                element.style.display = "block";
+                element.style.display = "flex";
                 element.style.opacity = "1";
-                element.innerHTML = errorMessage;
+                element.firstChild.innerHTML = errorMessage;
             }
             setTimeout(() => this.#HideErrorLogger(errorMessage), 5000);
             this.isFree = false;
