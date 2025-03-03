@@ -33,6 +33,7 @@ export class Equation extends Entity{
                 return true;
             }
             catch (error) {
+                window.errorLogger.ShowNewError(error.message);
                 return false;
             }
         }

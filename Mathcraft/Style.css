@@ -11,7 +11,7 @@ body.light-theme {
     background-color: white;
 }
 body.light-theme div {
-    background-color:  rgba(255, 255, 255, 0.329);;
+    background-color:  rgba(255, 255, 255, 0.329);
 }
 body.light-theme button{
     background-color: white;
@@ -22,6 +22,11 @@ body.light-theme #ModeSelector, body.light-theme #PlottingModeSelector{
     background-color: white;
     color: black;
     border-color: black; 
+}
+
+body.light-theme .ErrorLogger {
+    background-color: rgb(235, 235, 235);
+    color: black;
 }
 
 body.light-theme .modal {
@@ -164,10 +169,10 @@ button {
     position: absolute;
     bottom: 30px;
     left: 10px;
-    display: flex; /* Use Flexbox for row layout */
-    gap: 2px; /* Add spacing between child elements */
+    display: flex; 
+    gap: 2px;
     width: auto;
-    align-items: center; /* Align items vertically in the center */
+    align-items: center;
 }
 
 #ToggleTheme {
@@ -236,3 +241,26 @@ div {
     padding: 5px;
     z-index: 999;
 }
+
+.ErrorLogger {
+    position:fixed;
+    left: 37vw;
+    top: 0;
+    padding: 20px;
+    background-color:#222;
+    margin: 10px 10px;
+    border-radius: 7px;
+    display: block;
+    opacity: 1;
+    z-index: 100;
+    color: white;
+    transition: opacity 0.2s ease-in, opacity 0.2s ease-out;
+}
+
+.ErrorLogger::before{
+    content: "!";
+    position: relative;
+    color: rgb(255, 94, 0);
+    margin-right: 7px;
+}
+
