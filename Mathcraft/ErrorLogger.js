@@ -21,6 +21,7 @@ export class ErrorLogger {
         if (this.isFree) {
 
             for (let element of this.loggerElements) {
+                element.style.display = "block"
                 element.style.opacity = "1";
                 element.innerHTML = errorMessage;
             }
@@ -38,6 +39,13 @@ export class ErrorLogger {
         for (let element of this.loggerElements) {
             element.style.opacity = "0";
         }
+
+        setTimeout(() => {
+            for (let logger in this.loggerElements) {
+                this.loggerElements.style.display = "none";
+                element.innerHTML = "";
+            }
+        }, 200)
 
         this.isFree = true;
         

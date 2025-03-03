@@ -29,6 +29,11 @@ body.light-theme .ErrorLogger {
     color: black;
 }
 
+
+body.light-theme .ErrorLoggerContainer {
+    background-color: transparent;
+}
+
 body.light-theme .modal {
     color: black;
 }
@@ -242,9 +247,17 @@ div {
     z-index: 999;
 }
 
+.ErrorLoggerContainer {
+    display: flex;
+    background-color: transparent;
+    height: fit-content;
+    justify-content: center;
+}
+
 .ErrorLogger {
     position:fixed;
-    left: 37vw;
+    right: auto;
+    align-self: centre;
     top: 0;
     padding: 20px;
     background-color:#222;

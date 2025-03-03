@@ -7,10 +7,9 @@ export class Roots extends Command {
     Run() {
         console.log("Getting the roots");
 
-        if (this.graph.selectedEquations > 1) {
-            throw new Error("CannotShowTheRoots: you have to select at least one equation");
+        if (this.graph.selectedEquations < 1) {
+            window.errorLogger.ShowNewError("You have to select at least one equation")
         }
-
         
         for (let equation of this.graph.selectedEquations) {
             

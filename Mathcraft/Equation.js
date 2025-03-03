@@ -22,8 +22,12 @@ export class Equation extends Entity{
     
     static IsValid(equation) {
 
-        if (equation == undefined || equation.toString() == "") {
-            console.log("the equation was either empty or undefined");
+        if (equation == undefined) {
+            return false;
+        }
+
+        if (equation.toString() == "") {
+            window.errorLogger.ShowNewError("The input fields cant be empty")
             return false;
         }
 
@@ -37,9 +41,8 @@ export class Equation extends Entity{
                 return false;
             }
         }
-        else {
-            return true;
-        }
+
+        return true;    
     }
     
     GetValue(inputX) {
@@ -60,8 +63,6 @@ export class Equation extends Entity{
     }
 
     FunctionTypeParsing() {
-        
-        console.log(this.firstInfo);
 
         try {
             this.#function = math.parse(this.firstInfo);
@@ -170,6 +171,8 @@ export class Equation extends Entity{
 
     #ParseDomain(text) {
 
+        console.log(text)
+
         if (text === "" || text === "Reals") {
             return "Reals";
         }
@@ -177,6 +180,7 @@ export class Equation extends Entity{
         let domainString = "";
 
         for (let i of text) {
+
             if (!(i === "[" || i ==="]")) {
                 domainString += i;
             }
