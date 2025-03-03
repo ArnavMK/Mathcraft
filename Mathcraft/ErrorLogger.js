@@ -21,7 +21,7 @@ export class ErrorLogger {
         if (this.isFree) {
 
             for (let element of this.loggerElements) {
-                element.style.display = "block"
+                element.style.display = "block";
                 element.style.opacity = "1";
                 element.innerHTML = errorMessage;
             }
@@ -40,18 +40,19 @@ export class ErrorLogger {
             element.style.opacity = "0";
         }
 
-        setTimeout(() => {
-            for (let logger in this.loggerElements) {
-                this.loggerElements.style.display = "none";
-                element.innerHTML = "";
-            }
-        }, 200)
-
         this.isFree = true;
-        
+
         if (this.errorList.size > 0) {
             // to give enough time for the animation to complete
-            setTimeout(() =>  this.ShowNewError(this.errorList.entries().next().value[0]), 402);
+            setTimeout(() =>  this.ShowNewError(this.errorList.entries().next().value[0]), 202);
         }
+        
+        setTimeout(() => {
+
+            for (let element of this.loggerElements) {
+                element.style.display = "none";
+            }
+
+        }, 200)
     }
 }
