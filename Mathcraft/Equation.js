@@ -53,14 +53,11 @@ export class Equation extends Entity{
                 window.errorLogger.ShowNewError(error.message);
                 return false;
             }
-        }
-
-        return true;    
+        }  
     }
     
     GetValue(inputX) {
-        let scope = {x: inputX};
-        return this.#function.evaluate(scope);
+        return this.#function(inputX);
     }
     
     #ParseGivenInfoBasedOnType() {
@@ -77,8 +74,13 @@ export class Equation extends Entity{
 
     FunctionTypeParsing() {
 
+        console.log(`Parsing the equation: ${this.toString()}`)
+
         try {
-            this.#function = math.parse(this.firstInfo);
+
+            let mathFunction = math.parse(this.firstInfo);
+            console.log(mathFunction.toString())
+            this.#function = new Function("x", `return ${this.firstInfo}`);
             this.#domain = this.#ParseDomain(this.accompaniedInfo);
         }
         catch(error) {
