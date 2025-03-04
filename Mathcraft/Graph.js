@@ -286,7 +286,7 @@ export class Graph {
         }
 
         if (this.equations.has(equation.toString())) {
-            window.errorLogger.ShowNewError(`${equation.toString()}. This point already exists`);
+            window.errorLogger.ShowNewError(`${equation.toString()}. This equation already exists`);
             return false;
         }
 

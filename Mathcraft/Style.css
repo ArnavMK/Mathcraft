@@ -281,6 +281,8 @@ div {
 }
 
 a {
-    color: #007BFF; 
-    margin-left: 20px;
+    color: #3594fa; 
+    margin-left: 10px;
+    font-weight: bolder;
+    font-size: medium;
 }

@@ -23,7 +23,7 @@ export class ErrorLogger {
             for (let element of this.loggerElements) {
                 element.style.display = "flex";
                 element.style.opacity = "1";
-                element.firstChild.innerHTML = errorMessage;
+                element.children[0].innerHTML = errorMessage
             }
             setTimeout(() => this.#HideErrorLogger(errorMessage), 5000);
             this.isFree = false;

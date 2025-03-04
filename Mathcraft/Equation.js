@@ -9,6 +9,8 @@ export class Equation extends Entity{
     #type; #circleRadius
     #majorMinorAxisPoint
 
+    hasValidSecondInfo;
+
     static DefaultColor = "cyan";
 
     constructor (expression, accompaniedInfo, type = "function", color = "cyan") {
@@ -26,7 +28,7 @@ export class Equation extends Entity{
             return false;
         }
 
-        if (equation.toString() == "") {
+        if (equation.toString() == "" || equation.accompaniedInfo == "") {
             window.errorLogger.ShowNewError("The input fields cant be empty")
             return false;
         }
@@ -34,6 +36,17 @@ export class Equation extends Entity{
         if (equation.GetType() == "function") {
             try {
                 equation.GetValue(0);
+                if (!equation.hasValidSecondInfo) throw new Error("Invalid tokens found in the inputs");
+                return true;
+            }
+            catch (error) {
+                window.errorLogger.ShowNewError(error.message);
+                return false;
+            }
+        }
+        else {
+            try {
+                if (!equation.hasValidSecondInfo) throw new Error("Invalid tokens found in the inputs");
                 return true;
             }
             catch (error) {
@@ -66,12 +79,13 @@ export class Equation extends Entity{
 
         try {
             this.#function = math.parse(this.firstInfo);
+            this.#domain = this.#ParseDomain(this.accompaniedInfo);
         }
         catch(error) {
             console.error(error.message)
         }
         
-        this.#domain = this.#ParseDomain(this.accompaniedInfo);
+        
     }
 
     IsPointOnEllipse(point) {
@@ -97,26 +111,42 @@ export class Equation extends Entity{
             if (!(i === "(" || i ===")")) {
                 centreString += i;
             }
+            
+            if (i !== "," && isNaN(parseFloat(i))) {
+                this.hasValidSecondInfo = false;
+                return;
+            }
         }
 
+        
         let centreCoordinateList = centreString.split(',').map(Number);
         this.#centre = new Point(centreCoordinateList[0], centreCoordinateList[1]);
 
-        this.#circleRadius = parseFloat(this.accompaniedInfo);        
+        if (isNaN(parseFloat(this.accompaniedInfo))) {
+            this.hasValidSecondInfo = false;
+            return;
+        }
 
+        this.hasValidSecondInfo = true;
+        this.#circleRadius = parseFloat(this.accompaniedInfo);        
+        
     }
 
     EllipseTypeParsing() {
-        let centreString = "";
+
+
+        let centreString = ""; let bool1 = true; let bool2 = true;
 
         for (let i of this.accompaniedInfo) {
             if (!(i === "(" || i ===")")) {
                 centreString += i;
             }
+            
+            if (i !== "," && isNaN(parseFloat(i))) {
+                bool1 = false;
+            }
         }
 
-        let centreCoordinateList = centreString.split(',').map(Number);
-        this.#centre = new Point(centreCoordinateList[0], centreCoordinateList[1]);
 
         let majorMinorAxisPointString = "";
 
@@ -124,10 +154,25 @@ export class Equation extends Entity{
             if (!(i === "(" || i ===")")) {
                 majorMinorAxisPointString += i;
             }
+            if (i !== "," && isNaN(parseFloat(i))) {
+                bool2 = false;
+            }
+        }
+
+        console.log(bool1, bool2)
+
+        if ((bool1 && bool2)) {
+            this.hasValidSecondInfo = true;
+        }
+        else {
+            this.hasValidSecondInfo = false;
+            return;
         }
 
         let majorMinorList = majorMinorAxisPointString.split(',').map(Number);
         this.#majorMinorAxisPoint = new Point(majorMinorList[0], majorMinorList[1]);
+        let centreCoordinateList = centreString.split(',').map(Number);
+        this.#centre = new Point(centreCoordinateList[0], centreCoordinateList[1]);
     }
 
     GetDomainExpression() {
@@ -171,9 +216,8 @@ export class Equation extends Entity{
 
     #ParseDomain(text) {
 
-        console.log(text)
-
         if (text === "" || text === "Reals") {
+            this.hasValidSecondInfo = true;
             return "Reals";
         }
 
@@ -184,10 +228,16 @@ export class Equation extends Entity{
             if (!(i === "[" || i ==="]")) {
                 domainString += i;
             }
+
+
+            if (i !== "," && isNaN(parseFloat(i))) {
+                this.hasValidSecondInfo = false;
+                return;
+            }
         }
 
         let domainList = domainString.split(',').map(Number);
-
+        this.hasValidSecondInfo = true;
         return {
             min: domainList[0],
             max: domainList[1]
