@@ -28,7 +28,7 @@ export class Equation extends Entity{
             return false;
         }
 
-        if (equation.toString() == "" || equation.accompaniedInfo == "") {
+        if (equation.toString() == "" ) {
             window.errorLogger.ShowNewError("The input fields cant be empty")
             return false;
         }
@@ -46,7 +46,7 @@ export class Equation extends Entity{
         }
         else {
             try {
-                if (!equation.hasValidSecondInfo) throw new Error("Invalid tokens found in the inputs");
+                if (!equation.hasValidSecondInfo || equation.accompaniedInfo == "") throw new Error("Invalid Inputs");
                 return true;
             }
             catch (error) {
