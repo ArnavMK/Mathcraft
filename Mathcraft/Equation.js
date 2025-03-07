@@ -45,6 +45,9 @@ export class Equation extends Entity{
             }
         }
         else {
+
+            console.log(equation)
+
             try {
                 if (!equation.hasValidSecondInfo || equation.accompaniedInfo == "") throw new Error("Invalid Inputs");
                 return true;
@@ -115,18 +118,30 @@ export class Equation extends Entity{
         let centreString = "";
 
         for (let i of this.firstInfo) {
+
+            
             if (!(i === "(" || i ===")")) {
                 centreString += i;
             }
+        }
+
+        let centreCoordinateList = centreString.split(',');
+        
+        if (centreCoordinateList.length != 2) {
+            this.hasValidSecondInfo = false;
+            return;
+        }
+
+        // TODO: add the evaluation functionality in the inputs.
+
+        for (let number of centreCoordinateList)  {
             
-            if (i !== "," && isNaN(parseFloat(i))) {
+            if (isNaN(parseFloat(number))) {
                 this.hasValidSecondInfo = false;
                 return;
             }
         }
 
-        
-        let centreCoordinateList = centreString.split(',').map(Number);
         this.#centre = new Point(centreCoordinateList[0], centreCoordinateList[1]);
 
         if (isNaN(parseFloat(this.accompaniedInfo))) {
