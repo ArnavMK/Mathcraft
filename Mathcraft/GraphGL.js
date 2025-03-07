@@ -52,7 +52,7 @@ export class GraphGL {
         this.pointCanvas = document.createElement("canvas");
         this.pointC = this.pointCanvas.getContext("2d");
         this.pointCanvas.setAttribute("id", "pointCanvas")
-
+ 
         this.equationCanvas = document.createElement("canvas");
         this.equationC = this.equationCanvas.getContext("2d");
         this.equationCanvas.setAttribute("id", "equationCanvas");

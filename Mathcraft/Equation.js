@@ -78,15 +78,20 @@ export class Equation extends Entity{
 
         try {
 
-            let mathFunction = math.parse(this.firstInfo);
-            console.log(mathFunction.toString())
-            this.#function = new Function("x", `return ${this.firstInfo}`);
+            let expr = this.firstInfo;
+            const mathFunctions = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp'];
+            mathFunctions.forEach(func => {
+                expr = expr.replace(new RegExp(`\\b${func}\\b`, 'g'), `Math.${func}`);
+            });
+    
+            expr = expr.replace(/(\S+)\s*\^\s*(\S+)/g, "($1 ** $2)");    
+
+            this.#function = new Function("x", `return ${expr}`);
             this.#domain = this.#ParseDomain(this.accompaniedInfo);
         }
         catch(error) {
             console.error(error.message)
         }
-        
         
     }
 
