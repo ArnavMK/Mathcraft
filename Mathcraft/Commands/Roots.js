@@ -83,8 +83,13 @@ export class Roots extends Command {
         let r = equation.GetRadius();
         let centre = equation.GetCentre();
 
+        console.log(r)
+        console.log(centre)
+
         let x1 = centre.x + Math.sqrt(r*r - centre.y*centre.y);
         let x2 = centre.x - Math.sqrt(r*r - centre.y*centre.y);
+
+        console.log(x1, x2);
 
         this.graph.TryAddPoint(new Point(x1, 0));
         this.graph.TryAddPoint(new Point(x2, 0));

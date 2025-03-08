@@ -134,19 +134,16 @@ export class Equation extends Entity{
             }
         }
 
-        let centreCoordinateList = centreString.split(',');
+        let centreCoordinateList = centreString.split(',').map(Number);
         
         if (centreCoordinateList.length != 2) {
             this.hasValidSecondInfo = false;
             return;
         }
 
-        for (let number of centreCoordinateList)  {
-            
-            if (isNaN(parseFloat(number))) {
-                this.hasValidSecondInfo = false;
-                return;
-            }
+        if (centreCoordinateList.some(isNaN)){
+            this.hasValidSecondInfo = false;
+            return;
         }
 
         this.#centre = new Point(centreCoordinateList[0], centreCoordinateList[1]);
