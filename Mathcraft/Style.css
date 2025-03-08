@@ -192,12 +192,28 @@ body.light-theme .SquareButtons_Remove {
 
 /* Modals */
 .modal {
-    max-height: 200px;
-    max-width: 300px;
+    max-height: 300px;
+    max-width: 400px;
     background-color: rgba(0, 0, 0, 0.247);
-    border: 2px solid white;
+    border: 1px solid rgb(255, 255, 255);
+    padding: 20px;
+    padding-bottom: 10px;
     color: white;
+    border-radius: 10px;
 }
+.modal input {
+    margin: 6px;
+}
+
+.modal input[type="color"] {
+    width: 32px;
+    height: 30px;
+    position: relative;
+    top: 3px;
+    border: 0.5px solid;
+    border-radius: 5px;
+}
+
 .modal::backdrop {
     backdrop-filter: blur(10px);
 }

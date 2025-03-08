@@ -4,7 +4,7 @@ export class RemoveAllSelectedPoints extends Command {
 
     Run() {
 
-        for (let point of this.graph.selectedCoordinates) {
+        for (let point of this.graph.selectedCoordinates.values()) {
             this.graph.RemovePoint(point);
         }
 

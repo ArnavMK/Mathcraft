@@ -2,9 +2,11 @@ import { Graph } from "./Graph.js";
 import { GraphGL } from "./GraphGL.js";
 import { Equation } from "./Equation.js";
 import {ErrorLogger} from "./ErrorLogger.js"
+import { Calculus } from "./Calculus.js";
 
 let graph = new Graph(new GraphGL(document.getElementById("canvas")));
 window.errorLogger = new ErrorLogger(Array.from(document.querySelectorAll(".ErrorLogger")));
+window.calculus = new Calculus(graph);
 
 let equationModal = document.getElementById("EquationDialog");
 let equationText = document.getElementById("EquationDialog_equation");
@@ -14,7 +16,6 @@ let colorPickerButton = document.getElementById("EquationDialog_colorPicker");
 // event subscriptions
 document.getElementById("NewEquation").addEventListener('click', NewEquationCommand);
 document.getElementById("EquationDialog_save").addEventListener("click", SaveEquationInformation);
-colorPickerButton.addEventListener("click", ShuffleColorPicker); ShuffleColorPicker();
 graph.OnEditEquationRequestReceived.addEventListener("edit", EditEquationSequence);
 
 
@@ -24,22 +25,18 @@ function EditEquationSequence(event) {
 
     equationText.value = equation.toString();
     domainText.value =  equation.GetDomainExpression();
+    colorPickerButton.value = equation.GetOriginalColor();
     graph.RemoveEquation(equation);
     equationModal.showModal();
 }
 
 function SaveEquationInformation() {
 
-    let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPickerButton.style.backgroundColor);
+    let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPickerButton.value);
 
     if (!graph.TryAddEquation(equation)) return;
     equationModal.close();
 
-}
-
-function ShuffleColorPicker() {
-    let colors = ["red", "cyan", "blue", "pink", "purple", "magenta", "yellow"];
-    colorPickerButton.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 }
 
 function NewEquationCommand() {

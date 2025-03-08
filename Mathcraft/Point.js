@@ -2,8 +2,8 @@ import { Entity } from "./Entity.js";
 
 export class Point extends Entity{
     x; y;
-    static Radius = 2.7;
-    static defaultColor = "cyan";
+    static Radius = 3.2;
+    static defaultColor = "#00ffff";
 
     constructor (x, y, color = "cyan") {
         super(color);
@@ -14,6 +14,7 @@ export class Point extends Entity{
     static IsValid(point) {        
         return (point != undefined && isFinite(point.x) && isFinite(point.y));
     }
+
 
     static AreRoughlySamePoints(mousePoint, point) {
         let minimumRemoveDistance = 0.06;

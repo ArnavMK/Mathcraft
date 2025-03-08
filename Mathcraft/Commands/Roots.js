@@ -7,11 +7,11 @@ export class Roots extends Command {
     Run() {
         console.log("Getting the roots");
 
-        if (this.graph.selectedEquations < 1) {
+        if (this.graph.selectedEquations.size < 1) {
             window.errorLogger.ShowNewError("You have to select at least one equation")
         }
         
-        for (let equation of this.graph.selectedEquations) {
+        for (let equation of this.graph.selectedEquations.values()) {
             
             let rootFunctionCalls = {
                 "function": this.FunctionRootPlotter.bind(this),

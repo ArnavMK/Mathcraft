@@ -11,8 +11,8 @@ export class Graph {
     /** @type {Map}*/ entities;
     /** @type {Map}*/ equations;
     /** @type {GraphGL} */ renderer;   
-    /** @type {Array}*/ selectedCoordinates;
-    /** @type {Array}*/ selectedEquations;
+    /** @type {Map}*/ selectedCoordinates;
+    /** @type {Map}*/ selectedEquations;
     /** @type {EventTarget}*/OnEditEquationRequestReceived = new EventTarget();
     /** @type {EventTarget}*/#whenSignificantChangesHappen = new EventTarget();
     /** @type {EventTarget}*/#whenSignificantChangesHappen_Event = new CustomEvent("changes", {detail : {}});
@@ -29,8 +29,8 @@ export class Graph {
         this.entities = new Map();
         this.equations = new Map();
 
-        this.selectedCoordinates = [];
-        this.selectedEquations = [];
+        this.selectedCoordinates = new Map();
+        this.selectedEquations = new Map();
 
         this.renderer = renderer;
         this.#currentGraphMode = mode;
@@ -106,7 +106,7 @@ export class Graph {
             "function" : {
                 Label1: "Equation: ",
                 Label2: "Domain: ",
-                input1PlaceHolder: "Math.sin(x)",
+                input1PlaceHolder: "sin(x)",
                 input2PlaceHolder: "Reals"
             },
             
@@ -153,7 +153,7 @@ export class Graph {
     // command selector
     #OnSignificantChangesHappen() {
         
-        if (this.selectedCoordinates.length > 0) 
+        if (this.selectedCoordinates.size > 0) 
             this.customMenu.AddCommand("Remove All"); else this.customMenu.RemoveCommand("Remove All");
 
         this.coordinates.size >= 2 ? 
@@ -165,7 +165,7 @@ export class Graph {
         this.equations.size > 0 ?
             this.customMenu.AddCommand("Roots") : this.customMenu.RemoveCommand("Roots");
 
-        if (this.selectedCoordinates.length == 1)
+        if (this.selectedCoordinates.size == 1)
             this.customMenu.AddCommand("Open"); else this.customMenu.RemoveCommand("Open");
     }
 
@@ -204,12 +204,12 @@ export class Graph {
     
     DeselectSelectedEntities() {
 
-        if (this.selectedCoordinates.length == 0 && this.selectedEquations.length == 0) {
+        if (this.selectedCoordinates.size == 0 && this.selectedEquations.size == 0) {
             return;
         }   
 
-        this.selectedCoordinates = [];
-        this.selectedEquations = [];
+        this.selectedCoordinates.clear();
+        this.selectedEquations.clear();
         this.renderer.DeselectEntities(); // basically tells the renderer to change the visuals of all the selected entities back to normal
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
@@ -219,7 +219,7 @@ export class Graph {
         for (let point of this.coordinates.values()) {
 
             if (point.IsUnderThisSelectionRect(rect)) {
-                this.selectedCoordinates.push(point);
+                this.selectedCoordinates.set(point.toString(), point);
             }            
         }
 
@@ -246,11 +246,11 @@ export class Graph {
         if (selectedEntity != null) {
 
             if (selectedEntity instanceof Point) {
-                this.selectedCoordinates.push(selectedEntity);
+                this.selectedCoordinates.set(selectedEntity.toString(), selectedEntity);
                 this.renderer.SelectPoint(selectedEntity, GraphGL.defaultSelectedEntityColor);
             }
             else {
-                this.selectedEquations.push(selectedEntity);
+                this.selectedEquations.set(selectedEntity.toString(), selectedEntity);
                 this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
             }
             return true;

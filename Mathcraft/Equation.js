@@ -8,7 +8,6 @@ export class Equation extends Entity{
     #domain; #centre;
     #type; #circleRadius
     #majorMinorAxisPoint
-
     hasValidSecondInfo;
 
     static DefaultColor = "cyan";
@@ -22,6 +21,17 @@ export class Equation extends Entity{
         this.#ParseGivenInfoBasedOnType();
     }
     
+    static IsPointOnCurve(point, equation) {
+
+        let distanceToCurve = Math.abs(equation.GetValue(point.x) - point.y);
+
+        if (distanceToCurve <= 0.1) {
+            return true;
+        }
+
+        return false;
+    }
+
     static IsValid(equation) {
 
         if (equation == undefined) {
@@ -119,7 +129,6 @@ export class Equation extends Entity{
 
         for (let i of this.firstInfo) {
 
-            
             if (!(i === "(" || i ===")")) {
                 centreString += i;
             }
@@ -131,8 +140,6 @@ export class Equation extends Entity{
             this.hasValidSecondInfo = false;
             return;
         }
-
-        // TODO: add the evaluation functionality in the inputs.
 
         for (let number of centreCoordinateList)  {
             
@@ -158,17 +165,11 @@ export class Equation extends Entity{
 
 
         let centreString = ""; let bool1 = true; let bool2 = true;
-
         for (let i of this.accompaniedInfo) {
             if (!(i === "(" || i ===")")) {
                 centreString += i;
             }
-            
-            if (i !== "," && isNaN(parseFloat(i))) {
-                bool1 = false;
-            }
         }
-
 
         let majorMinorAxisPointString = "";
 
@@ -176,24 +177,31 @@ export class Equation extends Entity{
             if (!(i === "(" || i ===")")) {
                 majorMinorAxisPointString += i;
             }
-            if (i !== "," && isNaN(parseFloat(i))) {
+        }
+
+        let majorMinorList = majorMinorAxisPointString.split(',').map(Number);
+        let centreCoordinateList = centreString.split(',').map(Number);
+
+        for (let number of majorMinorList)  {
+            
+            if (isNaN(number) || number <= 0) {
+                bool1 = false;
+            }
+        }
+
+        for (let number of centreCoordinateList) {
+            if (isNaN(number)) {
                 bool2 = false;
             }
         }
 
-        console.log(bool1, bool2)
+        this.hasValidSecondInfo = bool1 && bool2;
 
-        if ((bool1 && bool2)) {
-            this.hasValidSecondInfo = true;
-        }
-        else {
-            this.hasValidSecondInfo = false;
+        if (!this.hasValidSecondInfo) {
             return;
         }
 
-        let majorMinorList = majorMinorAxisPointString.split(',').map(Number);
         this.#majorMinorAxisPoint = new Point(majorMinorList[0], majorMinorList[1]);
-        let centreCoordinateList = centreString.split(',').map(Number);
         this.#centre = new Point(centreCoordinateList[0], centreCoordinateList[1]);
     }
 
@@ -250,15 +258,18 @@ export class Equation extends Entity{
             if (!(i === "[" || i ==="]")) {
                 domainString += i;
             }
+        }
 
+        let domainList = domainString.split(',').map(Number);
 
-            if (i !== "," && isNaN(parseFloat(i))) {
+        for (let number of domainList)  {
+            
+            if (isNaN(parseFloat(number))) {
                 this.hasValidSecondInfo = false;
                 return;
             }
         }
 
-        let domainList = domainString.split(',').map(Number);
         this.hasValidSecondInfo = true;
         return {
             min: domainList[0],

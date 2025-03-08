@@ -166,7 +166,7 @@ export class GraphGL {
 
     SelectPoints(points) {
 
-        for (let point of points) {
+        for (let point of points.values()) {
             point.SetColor(this.#theme.selectionColor);
             this.#selectedEntities.add(point);
             this.#selectedPoints.add(point);
