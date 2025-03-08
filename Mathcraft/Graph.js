@@ -1,3 +1,4 @@
+
 import { CommandSelector } from "./Commands/CommandSelector.js";
 import { CustomMenu } from "./CustomMenu.js";
 import { Equation } from "./Equation.js";

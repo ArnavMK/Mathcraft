@@ -1,3 +1,4 @@
+
 import { Equation } from "./Equation.js";
 import { Point } from "./Point.js";
 

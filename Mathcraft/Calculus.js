@@ -64,6 +64,8 @@ export class Calculus {
 
     GetTangentAtPoint(equation, point) {
 
+        console.log(equation)
+
         function FunctionMode(thisClass) {
             let m = thisClass.NumericalDifferentiation(equation, point);
             return thisClass.GetSlopePointFormLinearEquation(m, point);
@@ -94,7 +96,7 @@ export class Calculus {
     }
 
     GetSlopePointFormLinearEquation(m, point){
-        let equationString = `${m.toFixed(0)}*(x - ${point.x}) + ${point.y}`;
+        let equationString = `${m.toFixed(1)}*(x - ${point.x}) + ${point.y}`;
         return new Equation(equationString, "Reals", "function", Equation.DefaultColor);
     }
 }

@@ -1,6 +1,6 @@
-import { Point } from "../Point.js";
+
 import { Command } from "./Command.js";
-import { Equation } from "../Equation.js";
+
 
 export class BestFit extends Command    {
 
