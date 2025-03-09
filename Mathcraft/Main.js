@@ -17,21 +17,30 @@ let colorPicker = document.getElementById("EquationDialog_colorPicker");
 // event subscriptions
 document.getElementById("NewEquation").addEventListener('click', NewEquationCommand);
 document.getElementById("EquationDialog_save").addEventListener("click", SaveEquationInformation);
+document.getElementById("EquationDialog_cancel").addEventListener("click", () => equationModal.close())
 graph.OnEditEquationRequestReceived.addEventListener("edit", EditEquationSequence);
+
+let existingEquation;
 
 
 function EditEquationSequence(event) {
-    let equation = event.detail.equation;
-    graph.RefreshInformationModalWithGivenMode(equation.GetType());
+    existingEquation = event.detail.equation;
+    graph.RefreshInformationModalWithGivenMode(existingEquation.GetType());
 
-    equationText.value = equation.toString();
-    domainText.value =  equation.GetAccompaniedInfo();
-    colorPicker.value = equation.GetOriginalColor();
-    graph.RemoveEquation(equation);
+    equationText.value = existingEquation.toString();
+    domainText.value =  existingEquation.GetAccompaniedInfo();
+    colorPicker.value = existingEquation.GetOriginalColor();
     equationModal.showModal();
 }
 
 function SaveEquationInformation() {
+
+    if (existingEquation != undefined) {
+        graph.RemoveEquation(existingEquation);
+        existingEquation = undefined;
+        equationModal.close();
+        return;
+    }
 
     let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPicker.value);
 

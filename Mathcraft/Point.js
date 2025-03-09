@@ -5,7 +5,7 @@ export class Point extends Entity{
     static Radius = 3.2;
     static defaultColor = "#00ffff";
 
-    constructor (x, y, color = "cyan") {
+    constructor (x, y, color = Point.defaultColor) {
         super(color);
         this.x = x;
         this.y = y;

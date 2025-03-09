@@ -108,28 +108,32 @@ export class Graph {
                 Label1: "Equation: ",
                 Label2: "Domain: ",
                 input1PlaceHolder: "sin(x)",
-                input2PlaceHolder: "Reals"
+                input2PlaceHolder: "Reals",
+                divInfo: "Enter the expression and hit save"
             },
             
             "Circle" : {
                 Label1: "Centre: ",
                 Label2: "Radius: ",
                 input1PlaceHolder: "(0,0)",
-                input2PlaceHolder: "5"
+                input2PlaceHolder: "5",
+                divInfo: "Enter the centre and radius and hit save"
             },
 
             "Ellipse" : {
                 Label1: "Major/Minor: ",
                 Label2: "Centre: ",
                 input1PlaceHolder: "5,2",
-                input2PlaceHolder: "(0,0)"
+                input2PlaceHolder: "(0,0)",
+                divInfo: "Enter the values and hit save"
             },
 
             "Point" : {
                 Label1: "x: ",
                 Label2: "y: ",
                 input1PlaceHolder : "0",
-                input2PlaceHolder : "0"
+                input2PlaceHolder : "0",
+                divInfo: "Enter the numbers and hit save"
             }
         }
         
@@ -145,6 +149,9 @@ export class Graph {
             }
             else if (child.id === "EquationDialog_domain") {
                 child.placeholder = currentModeEquationInfo[mode].input2PlaceHolder;
+            }
+            else if (child.id === "EquationDialog_modalInfo") {
+                child.innerHTML = currentModeEquationInfo[mode].divInfo;
             }
         }
         
