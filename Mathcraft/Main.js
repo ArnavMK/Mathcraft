@@ -12,7 +12,7 @@ window.calculus = new Calculus(graph);
 let equationModal = document.getElementById("EquationDialog");
 let equationText = document.getElementById("EquationDialog_equation");
 let domainText = document.getElementById("EquationDialog_domain");
-let colorPickerButton = document.getElementById("EquationDialog_colorPicker");
+let colorPicker = document.getElementById("EquationDialog_colorPicker");
 
 // event subscriptions
 document.getElementById("NewEquation").addEventListener('click', NewEquationCommand);
@@ -25,15 +25,15 @@ function EditEquationSequence(event) {
     graph.RefreshInformationModalWithGivenMode(equation.GetType());
 
     equationText.value = equation.toString();
-    domainText.value =  equation.GetDomainExpression();
-    colorPickerButton.value = equation.GetOriginalColor();
+    domainText.value =  equation.GetAccompaniedInfo();
+    colorPicker.value = equation.GetOriginalColor();
     graph.RemoveEquation(equation);
     equationModal.showModal();
 }
 
 function SaveEquationInformation() {
 
-    let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPickerButton.value);
+    let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPicker.value);
 
     if (!graph.TryAddEquation(equation)) return;
     equationModal.close();

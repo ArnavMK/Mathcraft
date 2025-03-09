@@ -58,7 +58,7 @@ export class Calculus {
 
     }
 
-    NumericalDifferentiation(equation, point, h = 0.000000000001) {
+    NumericalDifferentiation(equation, point, h = 0.00000000001) {
         return (equation.GetValue(point.x + h) - equation.GetValue(point.x))/h
     }
 
@@ -74,7 +74,7 @@ export class Calculus {
         function CircleMode(thisClass) {
 
             let centre = equation.GetCentre();
-            let radiusSlope = (point.y - centre.y)/(point.x - centre.y);
+            let radiusSlope = (point.y - centre.y)/(point.x - centre.x);
             let m = -1/radiusSlope;
 
             return thisClass.GetSlopePointFormLinearEquation(m, point);
@@ -96,7 +96,7 @@ export class Calculus {
     }
 
     GetSlopePointFormLinearEquation(m, point){
-        let equationString = `${m.toFixed(1)}*(x - ${point.x}) + ${point.y}`;
+        let equationString = `${m}*(x - ${point.x}) + ${point.y}`;
         return new Equation(equationString, "Reals", "function", Equation.DefaultColor);
     }
 }

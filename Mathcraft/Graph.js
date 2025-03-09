@@ -282,7 +282,7 @@ export class Graph {
 
     TryAddEquation(equation) {
     
-        if (!Equation.IsValid(equation)) {
+        if (!Equation.IsValidEquation(equation)) {
             return false;
         }
 
@@ -296,7 +296,7 @@ export class Graph {
         this.renderer.InstantiateEquationUIElement(equation, this.OnAnyRemoveButtonClicked.bind(this), this.OnAnyEditButtonClicked.bind(this));
         this.renderer.RenderEquation(equation);
 
-        if (this.#currentGraphMode === "Circle" && equation != undefined) {
+        if (equation.GetType() === "Circle" && equation != undefined) {
             this.TryAddPoint(equation.GetCentre(), equation.GetOriginalColor());
             this.dynamicCircleEquationByUserDrag = undefined;
         }

@@ -27,7 +27,7 @@ export class AddPoint extends Command {
         for (let child of this.informationModal.children) {
 
             if (child.id === "EquationDialog_domain" && isSelectedEquationPresent) {
-                child.placeholder = this.selectedEquation.toString();
+                child.placeholder = this.selectedEquation.toString(); child.value = "";
                 child.disabled = true;
             }
 
@@ -68,6 +68,16 @@ export class AddPoint extends Command {
         let x = parseFloat(this.informationModalStats["x"].value);
         let y = this.selectedEquation.GetValue(x);
         let color = this.informationModalStats["color"].value;
+    
+        if (y instanceof Array) { // if there are more than one values (circle);
+
+            if (y.some(isNaN)) {window.errorLogger.ShowNewError(`There are no values for x = ${x} on this circle`); return;}
+
+            y.forEach((value) => {
+                this.AddPoint(x, value, color, "Invalid inputs. x has to be a number");
+            });
+            return; 
+        }
 
         this.AddPoint(x,y,color, "Invalid inputs. x has to be a number");
     }
@@ -90,7 +100,10 @@ export class AddPoint extends Command {
 
         this.graph.TryAddPoint(new Point(x, y, color));
 
-        this.informationModal.replaceChild(this.originalSaveButton, this.newPointSaveButton);
+        try {
+            this.informationModal.replaceChild(this.originalSaveButton, this.newPointSaveButton);
+        } catch (e) {}
+        
         this.informationModalStats["y"].disabled = false;
         this.graph.GetInformationModal().close();
     }
