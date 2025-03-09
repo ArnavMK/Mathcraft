@@ -36,8 +36,10 @@
       <button id="NewEquation">Add New Equation</button> <br>
     </div>
 
-    <div class="ErrorLogger">
-      Some Text
+    <div class="ErrorLoggerContainer">
+      <div class="ErrorLogger">
+        <div class="exceptionalDivs">Some Text</div><a href="https://www.google.com">Help</a>
+      </div>
     </div>
 
     <dialog class="modal" id="EquationDialog">
@@ -47,14 +49,15 @@
 
       <label for="EquationDialog_domain" id="Label2">Domain:   </label>
       <input id="EquationDialog_domain" placeholder="Reals"></input> <br>
-    
-      <button id="EquationDialog_save", class="SquareButtons">Save</button>
-      <button id="EquationDialog_colorPicker" class="SquareButtons"></button>
 
-      <div class="ErrorLogger">
-        Some Text
+      <button id="EquationDialog_save" class="SquareButtons">Save</button>
+      <input type="color" id="EquationDialog_colorPicker" class="SquareButtons" value="#00FFFF">  
+
+      <div class="ErrorLoggerContainer">
+        <div class="ErrorLogger">
+          <div class="exceptionalDivs">Some Text</div><a href="https://www.google.com">Help</a>
+        </div>
       </div>
-
     </dialog>
     
     <p id="debug" class="debug"></p>

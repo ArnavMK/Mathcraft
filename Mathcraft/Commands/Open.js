@@ -11,7 +11,7 @@ export class Open extends Command {
         this.graph.RefreshInformationModalWithGivenMode("Point");
         
         this.informationModal = this.graph.GetInformationModal();
-        this.selectedPoint = this.graph.selectedCoordinates[0];
+        this.selectedPoint = Array.from(this.graph.selectedCoordinates.values())[0];
         this.informationModalStats = {}
 
 
@@ -31,7 +31,7 @@ export class Open extends Command {
             }
             else if (child.id === "EquationDialog_colorPicker") {
 
-                child.style.backgroundColor = this.selectedPoint.GetOriginalColor();
+                child.value = this.selectedPoint.GetOriginalColor();
                 this.informationModalStats["color"] = child;
 
             }
@@ -58,7 +58,7 @@ export class Open extends Command {
         this.graph.TryAddPoint(new Point(
             parseFloat(this.informationModalStats["x"].value),
             parseFloat(this.informationModalStats["y"].value),
-            this.informationModalStats["color"].style.backgroundColor
+            this.informationModalStats["color"].value
         ));
 
         this.informationModal.replaceChild(this.originalPointSaveButton, this.newPointSaveButton);

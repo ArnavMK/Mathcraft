@@ -4,6 +4,7 @@ import { RemoveAllSelectedPoints } from "./RemoveAllSelectedPoints.js";
 import { Roots } from "./Roots.js";
 import { Tangents } from "./Tangents.js";
 import { AddPoint } from "./AddPoint.js";
+import { Differentiate } from "./Differentiate.js";
 
 export class CommandSelector {
 
@@ -40,6 +41,10 @@ export class CommandSelector {
             "Add Point" : () => {
                 return new AddPoint(this.graph);
             },
+
+            "Differentiate" : () => {
+                return new Differentiate(this.graph);
+            }
         }
 
         return commandCalls[commandString]();

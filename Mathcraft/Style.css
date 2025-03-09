@@ -13,20 +13,24 @@ body.light-theme {
 body.light-theme div {
     background-color:  rgba(255, 255, 255, 0.329);
 }
-body.light-theme button{
-    background-color: white;
+body.light-theme button, body.light-theme #ModeSelector, body.light-theme #PlottingModeSelector{
+    background-color: rgb(236, 235, 235);
     color: black;
-    border-color: black;
+    border-color: rgb(155, 155, 155);
 }
-body.light-theme #ModeSelector, body.light-theme #PlottingModeSelector{
-    background-color: white;
-    color: black;
-    border-color: black; 
-}
+
 
 body.light-theme .ErrorLogger {
     background-color: rgb(235, 235, 235);
     color: black;
+}
+
+body.light-theme .exceptionalDivs, .exceptionalDivs {
+    background-color: inherit;
+}
+
+body.light-theme .ErrorLoggerContainer {
+    background-color: transparent;
 }
 
 body.light-theme .modal {
@@ -64,14 +68,14 @@ input:focus {
 }
 button {
     margin: 5px 0 2px 5px;
-    background-color: black;
-    border: thin solid white;
+    background-color: rgb(20, 20, 20);
+    border: thin solid rgb(102, 102, 102);  
     color: white;
-    padding: 5px;
+    padding: 7px 7px;
     font-family: monospace;
     width: 110px;
     cursor: pointer;
-    border-radius: 2px;
+    border-radius: 5px;
     z-index: 1000;
 }
 
@@ -114,6 +118,12 @@ button {
 .SquareButtons_Image {
     background-image: url("images/edit.png");
 }
+body.light-theme .SquareButtons_Image {
+    background-image: url("images/lightedit.png");
+}
+body.light-theme .SquareButtons_Remove {
+    background-image: url("images/lightremove.png");
+}
 .SquareButtons_Remove {
     background-image: url("images/remove.png");
 }
@@ -153,11 +163,12 @@ button {
     position: absolute;
     top: 23px;
     z-index: 1000;
-    background-color: black;
+    background-color: rgb(20, 20, 20);
     color: white;
     min-height: 26px;
-    border: 1px solid white;
-    border-radius: 4px;
+    padding: 7px;
+    border: thin solid rgb(102, 102, 102);
+    border-radius: 5px;
 }
 #ModeSelector {
     left: 210px;
@@ -181,12 +192,28 @@ button {
 
 /* Modals */
 .modal {
-    max-height: 200px;
-    max-width: 300px;
+    max-height: 300px;
+    max-width: 400px;
     background-color: rgba(0, 0, 0, 0.247);
-    border: 2px solid white;
+    border: 1px solid rgb(255, 255, 255);
+    padding: 20px;
+    padding-bottom: 10px;
     color: white;
+    border-radius: 10px;
 }
+.modal input {
+    margin: 6px;
+}
+
+.modal input[type="color"] {
+    width: 32px;
+    height: 30px;
+    position: relative;
+    top: 3px;
+    border: 0.5px solid;
+    border-radius: 5px;
+}
+
 .modal::backdrop {
     backdrop-filter: blur(10px);
 }
@@ -195,19 +222,34 @@ button {
 #custom-menu {
     display: none;
     position: absolute;
-    background-color: #333;
+    background-color: #1a1a1a;
     color: white;
-    border: 1px solid #ccc;
-    border-radius: 3px;
+    border: 1px solid #616161;
+    border-radius: 10px;
     z-index: 1000;
 }
 #custom-menu div {
     padding: 5px 10px;
+    border-radius: 10px;
     cursor: pointer;
+    background-color: inherit;
+    transition: background-color 0.1s ease-in;
 }
 #custom-menu div:hover {
-    background-color: #555;
+    background-color: #3f3f3f;
 }
+
+body.light-theme #custom-menu {
+    display: none;
+    position: absolute;
+    background-color: #e6e4e4;
+    color: black;
+}
+
+body.light-theme #custom-menu div:hover {
+    background-color: #c5c4c4;
+}
+
 
 /* Point Display */
 #pointDisplay {
@@ -242,16 +284,24 @@ div {
     z-index: 999;
 }
 
+.ErrorLoggerContainer {
+    display: flex;
+    background-color: transparent;
+    height: fit-content;
+    justify-content: center;
+}
+
 .ErrorLogger {
     position:fixed;
-    left: 37vw;
+    right: auto;
+    align-self: centre;
     top: 0;
-    padding: 20px;
+    padding: 15px;
     background-color:#222;
-    margin: 10px 10px;
+    margin-top: 10px;
     border-radius: 7px;
     display: block;
-    opacity: 1;
+    opacity: 0;
     z-index: 100;
     color: white;
     transition: opacity 0.2s ease-in, opacity 0.2s ease-out;
@@ -260,7 +310,15 @@ div {
 .ErrorLogger::before{
     content: "!";
     position: relative;
+    font-weight: bolder;
+    font-size: larger;
     color: rgb(255, 94, 0);
-    margin-right: 7px;
+    margin-right: 3px;
 }
 
+a {
+    color: #3594fa; 
+    margin-left: 10px;
+    font-weight: bolder;
+    font-size: medium;
+}

@@ -7,12 +7,11 @@ export class Roots extends Command {
     Run() {
         console.log("Getting the roots");
 
-        if (this.graph.selectedEquations > 1) {
-            throw new Error("CannotShowTheRoots: you have to select at least one equation");
+        if (this.graph.selectedEquations.size < 1) {
+            window.errorLogger.ShowNewError("You have to select at least one equation")
         }
-
         
-        for (let equation of this.graph.selectedEquations) {
+        for (let equation of this.graph.selectedEquations.values()) {
             
             let rootFunctionCalls = {
                 "function": this.FunctionRootPlotter.bind(this),
@@ -84,8 +83,13 @@ export class Roots extends Command {
         let r = equation.GetRadius();
         let centre = equation.GetCentre();
 
+        console.log(r)
+        console.log(centre)
+
         let x1 = centre.x + Math.sqrt(r*r - centre.y*centre.y);
         let x2 = centre.x - Math.sqrt(r*r - centre.y*centre.y);
+
+        console.log(x1, x2);
 
         this.graph.TryAddPoint(new Point(x1, 0));
         this.graph.TryAddPoint(new Point(x2, 0));

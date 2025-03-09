@@ -1,115 +1,13 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #121212;
-            color: white;
-            margin: 0;
-            text-align: center;
-            overflow: hidden;
-        }
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 15px;
-            background: #222;
-        }
-        .nav button {
-            background: #444;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .nav button:hover {
-            background: #666;
-        }
-        .wrapper {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .container {
-            position: absolute;
-            top: 50px;
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 50px);
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-            transform: translateX(100%);
-            opacity: 0;
-            transition: transform 0.5s ease-in-out, opacity 0.5s;
-            z-index: 0;
-        }
-        .container.active {
-            transform: translateX(0);
-            opacity: 1;
-            z-index: 1;
-        }
-        .box {
-            background: #333;
-            padding: 20px;
-            border-radius: 10px;
-        }
-    </style>
+    <title>Document</title>
 </head>
 <body>
-    <nav class="nav">
-        <button onclick="showPage('home')">Home</button>
-        <button onclick="showPage('projects')">Projects</button>
-        <button onclick="showPage('contact')">Contact</button>
-    </nav>
-
-    <div class="wrapper">
-        <div id="home" class="container active">
-            <div class="box">Who am I?</div>
-            <div class="box">Education</div>
-            <div class="box">Technologies</div>
-            <div class="box">Quote</div>
-        </div>
-
-        <div id="projects" class="container">
-            <div class="box">Wild-Kamera.com</div>
-            <div class="box">Zu Freundlich RP</div>
-        </div>
-
-        <div id="contact" class="container">
-            <div class="box">Contact Me</div>
-        </div>
-    </div>
-
-    <script>
-        let currentPage = document.getElementById('home');
-
-        function showPage(page) {
-            if (currentPage.id !== page) {
-                currentPage.classList.remove('active');
-                setTimeout(() => {
-                    currentPage.style.transform = 'translateX(-100%)';
-                    currentPage.style.opacity = '0';
-                }, 100);
-                
-                currentPage = document.getElementById(page);
-                currentPage.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    currentPage.classList.add('active');
-                    currentPage.style.transform = 'translateX(0)';
-                }, 100);
-            }
-        }
-    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.1/math.js" defer></script>
+    
+    <script src="script.js" type="module"></script>
 </body>
 </html>

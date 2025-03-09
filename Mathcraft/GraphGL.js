@@ -1,3 +1,4 @@
+
 import { Equation } from "./Equation.js";
 import { Point } from "./Point.js";
 
@@ -52,7 +53,7 @@ export class GraphGL {
         this.pointCanvas = document.createElement("canvas");
         this.pointC = this.pointCanvas.getContext("2d");
         this.pointCanvas.setAttribute("id", "pointCanvas")
-
+ 
         this.equationCanvas = document.createElement("canvas");
         this.equationC = this.equationCanvas.getContext("2d");
         this.equationCanvas.setAttribute("id", "equationCanvas");
@@ -166,7 +167,7 @@ export class GraphGL {
 
     SelectPoints(points) {
 
-        for (let point of points) {
+        for (let point of points.values()) {
             point.SetColor(this.#theme.selectionColor);
             this.#selectedEntities.add(point);
             this.#selectedPoints.add(point);

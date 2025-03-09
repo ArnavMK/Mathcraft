@@ -1,4 +1,5 @@
 
+
 export class ErrorLogger {
 
     isFree;
@@ -21,8 +22,9 @@ export class ErrorLogger {
         if (this.isFree) {
 
             for (let element of this.loggerElements) {
+                element.style.display = "flex";
                 element.style.opacity = "1";
-                element.innerHTML = errorMessage;
+                element.children[0].innerHTML = errorMessage
             }
             setTimeout(() => this.#HideErrorLogger(errorMessage), 5000);
             this.isFree = false;
@@ -40,10 +42,18 @@ export class ErrorLogger {
         }
 
         this.isFree = true;
-        
+
         if (this.errorList.size > 0) {
             // to give enough time for the animation to complete
-            setTimeout(() =>  this.ShowNewError(this.errorList.entries().next().value[0]), 402);
+            setTimeout(() =>  this.ShowNewError(this.errorList.entries().next().value[0]), 202);
         }
+        
+        setTimeout(() => {
+
+            for (let element of this.loggerElements) {
+                element.style.display = "none";
+            }
+
+        }, 200)
     }
 }
