@@ -24,7 +24,9 @@ let existingEquation;
 
 
 function EditEquationSequence(event) {
+
     existingEquation = event.detail.equation;
+    console.log(existingEquation);
     graph.RefreshInformationModalWithGivenMode(existingEquation.GetType());
 
     equationText.value = existingEquation.toString();
@@ -35,13 +37,15 @@ function EditEquationSequence(event) {
 
 function SaveEquationInformation() {
 
+    let mode = graph.GetMode();
     if (existingEquation != undefined) {
         graph.RemoveEquation(existingEquation);
+        mode = existingEquation.GetType()
         existingEquation = undefined;
         equationModal.close();
     }
 
-    let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPicker.value);
+    let equation = new Equation(equationText.value, domainText.value, mode, colorPicker.value);
 
     if (!graph.TryAddEquation(equation)) return;
     equationModal.close();

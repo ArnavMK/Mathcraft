@@ -21,7 +21,7 @@ export class Graph {
 
     #debugEnable = false;
     #currentGraphMode;
-    #currentPlottingMode = "Remove";
+    #currentPlottingMode = "Select";
     
 
     constructor (renderer, mode = "function", startUpPoints = []) {
@@ -64,7 +64,6 @@ export class Graph {
 
         this.#whenSignificantChangesHappen.addEventListener("changes", this.#OnSignificantChangesHappen.bind(this));
 
-        document.getElementById("PlottingModeSelector").onchange = (event) => this.ChangePlottingModeTo(event.target.value);
         document.getElementById("ModeSelector").onchange = (event) => this.ChangeModeTo(event.target.value);
 
         this.#informationModal = document.getElementById("EquationDialog");
@@ -74,13 +73,9 @@ export class Graph {
         const clickedCommand = new CommandSelector(this).GetCommand(e.detail.commandID);
         clickedCommand.Run(); // run the command.
     }
-
+    
     ChangeModeTo(mode) {
         this.#currentGraphMode = mode;
-    }
-
-    ChangePlottingModeTo(mode) {
-        this.#currentPlottingMode = mode;
     }
 
     GetMode() {
@@ -190,15 +185,15 @@ export class Graph {
     }
     
     #OnRightMouseButtonUp(event) {
+        console.log("right up")
         let selectionRect = this.renderer.DisableSelectionRect(event);
-        if (this.GetPlottingMode() !== "Select") return;
         this.SelectPointsUnderRect(selectionRect);
     }
     
     #OnLeftMouseButtonUp(event) {
         this.renderer.DisablePointDisplayRendering();
         this.isLeftMouseDown = false;
-        this.TryAddEquation(this.dynamicCircleEquationByUserDrag); // no equation will be added when the Rad(circle) is undefined
+        this.TryAddEquation(this.dynamicCircleEquationByUserDrag); 
     }
     
     #OnLeftMouseButtonDown(event) {
@@ -213,9 +208,11 @@ export class Graph {
             return;
         }   
 
+        console.log("Deselecting")
+
         this.selectedCoordinates.clear();
         this.selectedEquations.clear();
-        this.renderer.DeselectEntities(); // basically tells the renderer to change the visuals of all the selected entities back to normal
+        this.renderer.DeselectEntities(); 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
 
@@ -266,11 +263,14 @@ export class Graph {
     
     SelectEquation(selectedEntity) {
 
+        console.log(this.dynamicCircleEquationByUserDrag)
         if (this.selectedEquations.has(selectedEntity.toString())) {
             this.selectedEquations.delete(selectedEntity.toString());
             this.renderer.DeselectEquation(selectedEntity);
             return;
         }
+
+        console.log(this.selectedCoordinates)
 
         this.selectedEquations.set(selectedEntity.toString(), selectedEntity);
         this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
@@ -319,7 +319,6 @@ export class Graph {
         this.renderer.RenderEquation(equation);
 
         if (equation.GetType() === "Circle" && equation != undefined) {
-            this.TryAddPoint(equation.GetCentre(), equation.GetOriginalColor());
             this.dynamicCircleEquationByUserDrag = undefined;
         }
 
@@ -332,23 +331,11 @@ export class Graph {
         let mousePoint = new Point(event.offsetX, event.offsetY);
         let mouseMathPoint = Point.GetMathPoint(mousePoint, this.renderer.GetClickableCanvas(), this.renderer.GetScale());
 
+        
+        if (this.TrySelectEntityUnderMouse(mousePoint)) {
+            return;
+        }
         this.DeselectSelectedEntities();
-
-        if (this.#currentPlottingMode == "Remove") {
-
-            for (let point of this.coordinates.values()) {
-                
-                if (Point.AreRoughlySamePoints(mouseMathPoint, point)) {
-                    this.RemovePoint(point); return;
-                }
-            }
-
-        }
-        else {
-            if (this.TrySelectEntityUnderMouse(mousePoint)) {
-                return;
-            }
-        }
         
         this.TryAddPoint(mouseMathPoint);
     }

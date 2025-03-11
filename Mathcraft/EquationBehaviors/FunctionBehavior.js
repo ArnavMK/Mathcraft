@@ -49,7 +49,14 @@ export class FunctionBehavior {
         }
 
         this.isValid = true;
-        return { min: domainList[0], max: domainList[1] };
+        if (domainList[0] < domainList[1]) {
+            return { min: domainList[0], max: domainList[1] };
+        }
+        else if (domainList[0] > domainList[1]) {
+            return { min: domainList[1], max: domainList[0] };
+        }
+         
+        return { min: domainList[0], max: domainList[0] };
         
     }
 
