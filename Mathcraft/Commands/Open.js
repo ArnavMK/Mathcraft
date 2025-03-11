@@ -63,6 +63,7 @@ export class Open extends Command {
 
         this.informationModal.replaceChild(this.originalPointSaveButton, this.newPointSaveButton);
         this.graph.GetInformationModal().close();
+        this.OnComplete();
     }
 
 }

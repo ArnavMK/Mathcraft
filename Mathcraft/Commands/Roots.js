@@ -5,7 +5,6 @@ import { Command } from "./Command.js";
 export class Roots extends Command {
 
     Run() {
-        console.log("Getting the roots");
 
         if (this.graph.selectedEquations.size < 1) {
             window.errorLogger.ShowNewError("You have to select at least one equation")
@@ -20,8 +19,9 @@ export class Roots extends Command {
             }
 
             rootFunctionCalls[equation.GetType()](equation);
-
         }
+
+        this.OnComplete();
     }   
 
     FunctionRootPlotter(equation) {

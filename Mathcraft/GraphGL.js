@@ -699,6 +699,7 @@ export class GraphGL {
 
             editButton.setAttribute("class", "SquareButtons_Image");
             editButton.setAttribute("id", "Edit_" + equation.toString());
+            editButton.setAttribute("title", "Edit the equation");
             editButton.addEventListener("click", OnEditClickedCallBack);
             
         equationUIdiv.appendChild(editButton);
@@ -708,6 +709,7 @@ export class GraphGL {
 
             removeButton.setAttribute("class", "SquareButtons_Remove");
             removeButton.setAttribute("id", "Remove_" + equation.toString());
+            removeButton.setAttribute("title", "Remove the equation");
             removeButton.addEventListener("click", OnRemoveClickedCallback);
 
         equationUIdiv.appendChild(removeButton);
@@ -717,6 +719,7 @@ export class GraphGL {
 
             selectButton.setAttribute("class", "SquareButtons_Select");
             selectButton.setAttribute("id", "Select_" + equation.toString());
+            selectButton.setAttribute("title", "Select the equation");
             selectButton.addEventListener("click", OnSelectClickedCallBack);
 
         equationUIdiv.appendChild(selectButton);
@@ -725,6 +728,7 @@ export class GraphGL {
         let equationName = document.createElement("button");
 
             equationName.setAttribute("class", "EquationName");
+            equationName.setAttribute("title", "Expression of the equation");
             equationName.innerHTML = equation.toString();
             equationName.style.color = equation.color;
             

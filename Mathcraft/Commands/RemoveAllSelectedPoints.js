@@ -8,7 +8,11 @@ export class RemoveAllSelectedPoints extends Command {
             this.graph.RemovePoint(point);
         }
 
-        this.graph.DeselectSelectedEntities();
+        for (let equation of this.graph.selectedEquations.values()) {
+            this.graph.RemoveEquation(equation);
+        }
+
+        this.OnComplete();        
     }
 
 

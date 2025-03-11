@@ -53,6 +53,21 @@ export class EllipseBehavior {
         return Math.abs(1 - offset) <= 0.1;
     }
 
+    GetValue(x) {
+
+
+        let k = this.#centre.y; let h = this.#centre.x; let b = this.#majorMinorAxisPoint.y; let a = this.#majorMinorAxisPoint.x;
+
+        console.log(h,k,a,b)
+
+        let y1 = k + Math.sqrt( (b**2/a**2) * (a**2 - (x - h)**2));
+        let y2 = k - Math.sqrt( (b**2/a**2) * (a**2 - (x - h)**2));
+
+        if (y1 == y2) return y1;
+
+        return [y1, y2];
+    }
+
     toString() {
         return this.centreString;
     }

@@ -39,7 +39,6 @@ function SaveEquationInformation() {
         graph.RemoveEquation(existingEquation);
         existingEquation = undefined;
         equationModal.close();
-        return;
     }
 
     let equation = new Equation(equationText.value, domainText.value, graph.GetMode(), colorPicker.value);

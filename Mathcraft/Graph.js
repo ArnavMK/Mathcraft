@@ -71,11 +71,8 @@ export class Graph {
     }
     
     OnAnyCommandClicked(e) {
-
-        // get the clicked command based on the command ID (the name of the command)
         const clickedCommand = new CommandSelector(this).GetCommand(e.detail.commandID);
         clickedCommand.Run(); // run the command.
-        this.DeselectSelectedEntities(); // deselect if any selected entities exists (as the focus has been changed)
     }
 
     ChangeModeTo(mode) {
@@ -352,7 +349,7 @@ export class Graph {
                 return;
             }
         }
-    
+        
         this.TryAddPoint(mouseMathPoint);
     }
 
