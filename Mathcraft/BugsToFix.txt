@@ -1,0 +1,5 @@
+5. User Theme button name.
+8. User manual
+9. Grid button name
+11. Make command for line between two selected points.  
+12. Fix error logger not disabling issue

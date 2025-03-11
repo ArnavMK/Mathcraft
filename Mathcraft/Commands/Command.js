@@ -13,4 +13,8 @@ export class Command {
         throw new Error("Run() must be implemented by subclass");
     }
 
+    OnComplete() {
+        console.log("A command has been finished");
+        this.graph.DeselectSelectedEntities();
+    }
 }

@@ -34,7 +34,16 @@ export class FunctionBehavior {
         let domainString = text.replace(/[\[\]]/g, "");
         let domainList = domainString.split(',').map(Number);
 
+        console.log(domainList)
+
+        if (domainList.length != 2) {
+            window.errorLogger.ShowNewError("The domain expects two numbers eg: -1, 2");
+            this.isValid = false;
+            return;
+        }
+
         if (domainList.some(isNaN)) {
+            window.errorLogger.ShowNewError("All inputs have to be numbers");
             this.isValid = false;
             return;
         }

@@ -88,6 +88,7 @@ button {
 #EquationDialog_save {
     width: auto;
     position: relative;
+    margin-right: 10px;
 }
 
 /* Debugging Info */
@@ -106,7 +107,7 @@ button {
     margin: 15px 0 0 10px;
     position: relative;
 }
-.SquareButtons_Image, .SquareButtons_Remove {
+.SquareButtons_Image, .SquareButtons_Remove, .SquareButtons_Select{
     width: 28px;
     height: 27px;
     margin-left: 3px;
@@ -118,6 +119,15 @@ button {
 .SquareButtons_Image {
     background-image: url("images/edit.png");
 }
+
+.SquareButtons_Select {
+    background-image: url("./images/SelectButton.png");
+}
+
+body.light-theme .SquareButtons_Select {
+    background-image: url("./images/SelectButtonLight.png");
+}
+
 body.light-theme .SquareButtons_Image {
     background-image: url("images/lightedit.png");
 }
@@ -125,7 +135,7 @@ body.light-theme .SquareButtons_Remove {
     background-image: url("images/lightremove.png");
 }
 .SquareButtons_Remove {
-    background-image: url("images/remove.png");
+    background-image: url("images/removeNOBorder.png");
 }
 
 /* Canvas Layers */
@@ -134,6 +144,7 @@ body.light-theme .SquareButtons_Remove {
     top: 0;
     left: 0;
 }
+
 #canvas {
     z-index: 1;
 }
@@ -202,7 +213,42 @@ body.light-theme .SquareButtons_Remove {
     border-radius: 10px;
 }
 .modal input {
-    margin: 6px;
+    margin: 4px;
+}
+
+body.light-theme #EquationDialog_cancel {
+    background-image: url('./images/lightremove.png');
+}
+
+.modal .modalInfo {
+    margin-top: 10px;
+    color:  rgb(97, 97, 97);
+    margin-left: 0;
+}
+
+body.light-theme .modalInfo {
+    background-color: rgba(168, 167, 167, 0.281);
+}
+
+.modal button {
+    margin: 0 0;
+    margin-top: 14px;
+}
+
+.modal #EquationDialog_cancel {
+    position: absolute;
+    margin: 0 0;
+    top: 10px; right: 10px;
+    background-image: url("./images/removeNOBorder.png");
+    background-repeat: no-repeat;
+    background-size: contain; 
+    background-repeat: no-repeat; 
+    background-position: center; 
+    border: none; 
+    width: 15px; height: 15px;
+
+    background-color: transparent; 
+    color: white;
 }
 
 .modal input[type="color"] {
@@ -212,11 +258,13 @@ body.light-theme .SquareButtons_Remove {
     top: 3px;
     border: 0.5px solid;
     border-radius: 5px;
+    margin-left: 0px;
 }
 
 .modal::backdrop {
     backdrop-filter: blur(10px);
 }
+
 
 /* Custom Menu */
 #custom-menu {

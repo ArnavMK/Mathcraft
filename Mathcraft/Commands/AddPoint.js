@@ -61,6 +61,7 @@ export class AddPoint extends Command {
         }
 
         this.informationModal.showModal();
+        this.OnComplete();
     }
 
     AddPointOnCurve() {
@@ -69,9 +70,11 @@ export class AddPoint extends Command {
         let y = this.selectedEquation.GetValue(x);
         let color = this.informationModalStats["color"].value;
     
+        console.log(y)
+
         if (y instanceof Array) { // if there are more than one values (circle);
 
-            if (y.some(isNaN)) {window.errorLogger.ShowNewError(`There are no values for x = ${x} on this circle`); return;}
+            if (y.some(isNaN)) {window.errorLogger.ShowNewError(`There are no values for x = ${x} on this curve`); return;}
 
             y.forEach((value) => {
                 this.AddPoint(x, value, color, "Invalid inputs. x has to be a number");
@@ -80,6 +83,7 @@ export class AddPoint extends Command {
         }
 
         this.AddPoint(x,y,color, "Invalid inputs. x has to be a number");
+        
     }
 
     AddGeneralPointOnSave() {

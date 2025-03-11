@@ -5,7 +5,7 @@ export class Point extends Entity{
     static Radius = 3.2;
     static defaultColor = "#00ffff";
 
-    constructor (x, y, color = "cyan") {
+    constructor (x, y, color = Point.defaultColor) {
         super(color);
         this.x = x;
         this.y = y;
@@ -17,8 +17,8 @@ export class Point extends Entity{
 
 
     static AreRoughlySamePoints(mousePoint, point) {
-        let minimumRemoveDistance = 0.06;
-        return Point.Distance(mousePoint, point) <= minimumRemoveDistance; 
+        let minimumThreshold = 0.15;
+        return Point.Distance(mousePoint, point) <= minimumThreshold; 
     }
 
     static GetCanvasPoint(point, canvas, scale) {

@@ -18,9 +18,20 @@ export class Tangents extends Command {
             this.PlotTangentsAtPoint(selectedEquation, selectedPoint);
         }
         else {
-            window.errorLogger.ShowNewError("Can only handle tangents at point, yet!!");return;
-            //this.PlotTangentsFromPoint(selectedEquation, selectedPoint);
+            this.PlotTangentsFromPoint(selectedEquation, selectedPoint);
         }
+    }
+
+    PlotTangentsFromPoint(equation, point) {
+
+        let tangent = window.calculus.GetTangentFromPoint(equation, point);
+        
+        if (!tangent) {
+            window.errorLogger.ShowNewError("Cant find tangents for this situation.");
+            return;
+        }
+
+        tangent.forEach((t) => this.graph.TryAddEquation(t));
     }
 
     PlotTangentsAtPoint(equation, point) {

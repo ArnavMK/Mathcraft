@@ -1,6 +1,7 @@
 import { Equation } from "./Equation.js";
 import { Graph } from "./Graph.js";
 import { Point } from "./Point.js";
+import {Parser} from "./Parser.js";
 
 export class Calculus {
 
@@ -64,14 +65,12 @@ export class Calculus {
 
     GetTangentAtPoint(equation, point) {
 
-        console.log(equation)
-
-        function FunctionMode(thisClass) {
+        function FunctionType(thisClass) {
             let m = thisClass.NumericalDifferentiation(equation, point);
             return thisClass.GetSlopePointFormLinearEquation(m, point);
         }
 
-        function CircleMode(thisClass) {
+        function CircleType(thisClass) {
 
             let centre = equation.GetCentre();
             let radiusSlope = (point.y - centre.y)/(point.x - centre.x);
@@ -80,17 +79,87 @@ export class Calculus {
             return thisClass.GetSlopePointFormLinearEquation(m, point);
         }
 
-        function EllipseMode(thisClass) {
-            return new Equation("x", "Reals", "function", "red");
+        function EllipseType(thisClass) {
+            
+            let axes = equation.GetMajorMinorAxisPoint();
+            let centre = equation.GetCentre();
+
+            let b = axes.y; let a = axes.x; let h = centre.x; let k = centre.y;
+            let m = (b**2)/(a**2) * ((point.x - h)/(k - point.y));
+
+            return thisClass.GetSlopePointFormLinearEquation(m, point);
         }
 
         let lookupObject = {
-            "function": FunctionMode,
-            "Circle": CircleMode,
-            "Ellipse": EllipseMode
+            "function": FunctionType,
+            "Circle": CircleType,
+            "Ellipse": EllipseType
         }
 
-        console.log("Getting the tangents")
+        return lookupObject[equation.GetType()](this);
+    }
+
+    GetTangentFromPoint(equation, point) {
+
+        function CircleType(thisClass) {
+
+            let centre = equation.GetCentre();
+            let r = equation.GetRadius();
+            let d = Point.Distance(centre, point);
+
+            let M = (point.y - centre.y)/(point.x - centre.x);
+            let alpha = r/(Math.sqrt(d**2 - r**2))
+
+            let m1 = (M - alpha)/(1 + M*alpha);
+            let m2 = (M + alpha)/(1 - M*alpha);
+
+            if ([m1, m2].some(isNaN)) {
+                return undefined;
+            }
+
+            return [thisClass.GetSlopePointFormLinearEquation(m1, point), thisClass.GetSlopePointFormLinearEquation(m2, point)];
+        }
+
+        function EllipseType(thisClass) {
+            let axes = equation.GetMajorMinorAxisPoint();
+            let a = axes.x; // Semi-major axis
+            let b = axes.y; // Semi-minor axis
+            let center = equation.GetCentre();
+            let h = center.x; // x-coordinate of the center
+            let k = center.y; // y-coordinate of the center
+        
+            // Shift the point relative to the ellipse center
+            let X0 = point.x - h;
+            let Y0 = point.y - k;
+        
+            let A = a**2 - X0**2;
+            let B = 2 * X0 * Y0;
+            let C = b**2 - Y0**2;
+        
+            let discriminant = B**2 - 4 * A * C;
+        
+            if (discriminant <= 0) return undefined;            
+
+            let m1 = (-B + Math.sqrt(discriminant)) / (2 * A);
+            let m2 = (-B - Math.sqrt(discriminant)) / (2 * A);
+        
+            // Return the equations of the tangent lines in slope-point form
+            return [
+                thisClass.GetSlopePointFormLinearEquation(m1, point),
+                thisClass.GetSlopePointFormLinearEquation(m2, point)
+            ];
+        }
+
+        // TODO: implement this after differentiation
+        function FunctionType(thisClass) {
+            return undefined;
+        }
+
+        let lookupObject = {
+            "function": FunctionType,
+            "Circle": CircleType,
+            "Ellipse": EllipseType
+        }
 
         return lookupObject[equation.GetType()](this);
     }
@@ -99,4 +168,11 @@ export class Calculus {
         let equationString = `${m}*(x - ${point.x}) + ${point.y}`;
         return new Equation(equationString, "Reals", "function", Equation.DefaultColor);
     }
+
+    SymbolicDifferentiation(equation) {
+
+        console.log("Implement differentiation");
+
+    }
+
 }

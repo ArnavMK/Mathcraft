@@ -165,6 +165,13 @@ export class GraphGL {
         this.#RefreshEquationLayerOfGraph();
     }
 
+    DeselectEquation(equation) {
+        equation.SetColor(equation.GetOriginalColor());
+        this.#selectedEquations.delete(equation.toString());
+        this.#selectedEntities.delete(equation.toString());
+        this.#RefreshEquationLayerOfGraph();
+    }
+
     SelectPoints(points) {
 
         for (let point of points.values()) {
@@ -677,7 +684,7 @@ export class GraphGL {
         return this.pointCanvas;
     }
     
-    InstantiateEquationUIElement(equation, OnRemoveClickedCallback, OnEditClickedCallBack) {
+    InstantiateEquationUIElement(equation, OnRemoveClickedCallback, OnEditClickedCallBack, OnSelectClickedCallBack) {
 
         let equationContainerDiv = document.getElementById("EquationContainer");
 
@@ -692,6 +699,7 @@ export class GraphGL {
 
             editButton.setAttribute("class", "SquareButtons_Image");
             editButton.setAttribute("id", "Edit_" + equation.toString());
+            editButton.setAttribute("title", "Edit the equation");
             editButton.addEventListener("click", OnEditClickedCallBack);
             
         equationUIdiv.appendChild(editButton);
@@ -701,14 +709,26 @@ export class GraphGL {
 
             removeButton.setAttribute("class", "SquareButtons_Remove");
             removeButton.setAttribute("id", "Remove_" + equation.toString());
+            removeButton.setAttribute("title", "Remove the equation");
             removeButton.addEventListener("click", OnRemoveClickedCallback);
 
         equationUIdiv.appendChild(removeButton);
+
+        // create select equation button
+        let selectButton = document.createElement("button");
+
+            selectButton.setAttribute("class", "SquareButtons_Select");
+            selectButton.setAttribute("id", "Select_" + equation.toString());
+            selectButton.setAttribute("title", "Select the equation");
+            selectButton.addEventListener("click", OnSelectClickedCallBack);
+
+        equationUIdiv.appendChild(selectButton);
 
         // create equation area
         let equationName = document.createElement("button");
 
             equationName.setAttribute("class", "EquationName");
+            equationName.setAttribute("title", "Expression of the equation");
             equationName.innerHTML = equation.toString();
             equationName.style.color = equation.color;
             
