@@ -17,8 +17,8 @@ export class Point extends Entity{
 
 
     static AreRoughlySamePoints(mousePoint, point) {
-        let minimumRemoveDistance = 0.06;
-        return Point.Distance(mousePoint, point) <= minimumRemoveDistance; 
+        let minimumThreshold = 0.15;
+        return Point.Distance(mousePoint, point) <= minimumThreshold; 
     }
 
     static GetCanvasPoint(point, canvas, scale) {

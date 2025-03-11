@@ -258,8 +258,7 @@ export class Graph {
                 this.renderer.SelectPoint(selectedEntity, GraphGL.defaultSelectedEntityColor);
             }
             else {
-                this.selectedEquations.set(selectedEntity.toString(), selectedEntity);
-                this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
+                this.SelectEquation(selectedEntity);
             }
             return true;
         } 
@@ -268,6 +267,18 @@ export class Graph {
     }
 
     
+    SelectEquation(selectedEntity) {
+
+        if (this.selectedEquations.has(selectedEntity.toString())) {
+            this.selectedEquations.delete(selectedEntity.toString());
+            this.renderer.DeselectEquation(selectedEntity);
+            return;
+        }
+
+        this.selectedEquations.set(selectedEntity.toString(), selectedEntity);
+        this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
+    }
+
     TryAddPoint(mathPoint, color = mathPoint.GetColor()) {
         
         if (!Point.IsValid(mathPoint)) {
@@ -300,7 +311,14 @@ export class Graph {
 
         this.equations.set(equation.toString(), equation);
         this.entities.set(equation.toString(), equation);
-        this.renderer.InstantiateEquationUIElement(equation, this.OnAnyRemoveButtonClicked.bind(this), this.OnAnyEditButtonClicked.bind(this));
+
+        this.renderer.InstantiateEquationUIElement(
+            equation, 
+            this.OnAnyRemoveButtonClicked.bind(this), 
+            this.OnAnyEditButtonClicked.bind(this),
+            this.OnAnySelectButtonClicked.bind(this)
+        );
+
         this.renderer.RenderEquation(equation);
 
         if (equation.GetType() === "Circle" && equation != undefined) {
@@ -317,20 +335,21 @@ export class Graph {
         let mousePoint = new Point(event.offsetX, event.offsetY);
         let mouseMathPoint = Point.GetMathPoint(mousePoint, this.renderer.GetClickableCanvas(), this.renderer.GetScale());
 
+        this.DeselectSelectedEntities();
+
         if (this.#currentPlottingMode == "Remove") {
+
             for (let point of this.coordinates.values()) {
                 
                 if (Point.AreRoughlySamePoints(mouseMathPoint, point)) {
                     this.RemovePoint(point); return;
                 }
             }
+
         }
         else {
             if (this.TrySelectEntityUnderMouse(mousePoint)) {
                 return;
-            }
-            else {
-                this.DeselectSelectedEntities();
             }
         }
     
@@ -357,13 +376,6 @@ export class Graph {
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
 
-    toString() {
-        let result = ""
-        for (let x of this.coordinates.keys()) {
-            result += " " + x
-        }
-        return result;
-    }
    
     OnAnyRemoveButtonClicked(event) {
         
@@ -371,7 +383,14 @@ export class Graph {
 
         if (!this.equations.has(sender.id)) return;
 
-        this.RemoveEquation(this.equations.get(sender.id))
+        this.RemoveEquation(this.equations.get(sender.id));
+    }
+
+    OnAnySelectButtonClicked(event) {
+        console.log("Hello")
+        let sender = event.target.parentElement;
+        if (!this.equations.has(sender.id)) return;
+        this.SelectEquation(this.equations.get(sender.id));
     }
    
     OnAnyEditButtonClicked(event) {

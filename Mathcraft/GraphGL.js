@@ -165,6 +165,13 @@ export class GraphGL {
         this.#RefreshEquationLayerOfGraph();
     }
 
+    DeselectEquation(equation) {
+        equation.SetColor(equation.GetOriginalColor());
+        this.#selectedEquations.delete(equation.toString());
+        this.#selectedEntities.delete(equation.toString());
+        this.#RefreshEquationLayerOfGraph();
+    }
+
     SelectPoints(points) {
 
         for (let point of points.values()) {
@@ -677,7 +684,7 @@ export class GraphGL {
         return this.pointCanvas;
     }
     
-    InstantiateEquationUIElement(equation, OnRemoveClickedCallback, OnEditClickedCallBack) {
+    InstantiateEquationUIElement(equation, OnRemoveClickedCallback, OnEditClickedCallBack, OnSelectClickedCallBack) {
 
         let equationContainerDiv = document.getElementById("EquationContainer");
 
@@ -704,6 +711,15 @@ export class GraphGL {
             removeButton.addEventListener("click", OnRemoveClickedCallback);
 
         equationUIdiv.appendChild(removeButton);
+
+        // create select equation button
+        let selectButton = document.createElement("button");
+
+            selectButton.setAttribute("class", "SquareButtons_Select");
+            selectButton.setAttribute("id", "Select_" + equation.toString());
+            selectButton.addEventListener("click", OnSelectClickedCallBack);
+
+        equationUIdiv.appendChild(selectButton);
 
         // create equation area
         let equationName = document.createElement("button");

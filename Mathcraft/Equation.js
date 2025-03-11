@@ -7,6 +7,7 @@ export class Equation extends Entity {
     
     #type;
     #behavior;
+    isSelected = false;
     static DefaultColor = "#00ffff";
 
     constructor(firstInfo, accompaniedInfo, type = "function", color = Equation.DefaultColor) {

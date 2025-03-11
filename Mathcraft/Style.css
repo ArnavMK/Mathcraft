@@ -107,7 +107,7 @@ button {
     margin: 15px 0 0 10px;
     position: relative;
 }
-.SquareButtons_Image, .SquareButtons_Remove {
+.SquareButtons_Image, .SquareButtons_Remove, .SquareButtons_Select{
     width: 28px;
     height: 27px;
     margin-left: 3px;
@@ -119,6 +119,16 @@ button {
 .SquareButtons_Image {
     background-image: url("images/edit.png");
 }
+
+.SquareButtons_Select {
+    background-image: url("./images/SelectButton.png");
+}
+
+body.light-theme .SquareButtons_Select {
+    background-image: url("./images/SelectButtonLight.png");
+}
+
+
 body.light-theme .SquareButtons_Image {
     background-image: url("images/lightedit.png");
 }
