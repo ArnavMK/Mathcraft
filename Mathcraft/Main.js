@@ -26,13 +26,13 @@ let existingEquation;
 function EditEquationSequence(event) {
 
     existingEquation = event.detail.equation;
-    console.log(existingEquation);
     graph.RefreshInformationModalWithGivenMode(existingEquation.GetType());
 
     equationText.value = existingEquation.toString();
     domainText.value =  existingEquation.GetAccompaniedInfo();
     colorPicker.value = existingEquation.GetOriginalColor();
     equationModal.showModal();
+
 }
 
 function SaveEquationInformation() {

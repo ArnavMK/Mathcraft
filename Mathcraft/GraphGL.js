@@ -163,7 +163,6 @@ export class GraphGL {
         this.#selectedEquations.add(equation);
         this.#selectedEntities.add(equation);
         this.#RefreshEquationLayerOfGraph();
-       // this.#RefreshPointLayerOfGraph();
     }
 
     DeselectEquation(equation) {

@@ -20,8 +20,16 @@ export class FunctionBehavior {
         });
 
         expression = expression.replace(/(\S+)\s*\^\s*(\S+)/g, "($1 ** $2)"); // replace the ^ with **
-        
-        return new Function("x", `return ${expression}`);
+    
+        if (expression.indexOf(",") >= 0) {
+            window.errorLogger.ShowNewError("Cant have punctuation in expression")
+            this.isValid = false;
+            return;
+        }
+
+        let f = new Function("x", `return ${expression}`);
+
+        return f;
     }
 
     #ParseDomain(text) {
@@ -45,7 +53,7 @@ export class FunctionBehavior {
         if (domainList.some(isNaN)) {
             window.errorLogger.ShowNewError("All inputs have to be numbers");
             this.isValid = false;
-            return;
+            return; 
         }
 
         this.isValid = true;

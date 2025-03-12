@@ -191,7 +191,7 @@ export class Graph {
         this.SelectPointsUnderRect(selectionRect);
     }
     
-    #OnLeftMouseButtonUp(event) {
+    #OnLeftMouseButtonUp() {
         this.renderer.DisablePointDisplayRendering();
         this.isLeftMouseDown = false;
         this.TryAddEquation(this.dynamicCircleEquationByUserDrag);
@@ -199,9 +199,9 @@ export class Graph {
     
     #OnLeftMouseButtonDown(event) {
         this.isLeftMouseDown = true;
+        this.HandlePointEntryExitSelection_OnClick(event); 
         this.initialMousePositionWhenLeftClicked = new Point(event.offsetX, event.offsetY);
         this.renderer.EnablePointDisplayRendering(event);
-        this.HandlePointEntryExitSelection_OnClick(event); 
     }
     
     DeselectSelectedEntities() {
@@ -338,8 +338,9 @@ export class Graph {
             return;
         }
         this.DeselectSelectedEntities();
-        
+
         this.TryAddPoint(mouseMathPoint);
+        console.log(this.coordinates)
     }
 
 
@@ -352,12 +353,9 @@ export class Graph {
     }
 
     RemoveEquation(equation) {
+
         this.equations.delete(equation.toString());
         this.renderer.ClearEquation(equation.toString(), document.getElementById(equation.toString()));
-
-        if (equation.GetType() === "Circle") {
-            this.RemovePoint(equation.GetCentre());
-        }
 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
@@ -373,7 +371,6 @@ export class Graph {
     }
 
     OnAnySelectButtonClicked(event) {
-        console.log("Hello")
         let sender = event.target.parentElement;
         if (!this.equations.has(sender.id)) return;
         this.SelectEquation(this.equations.get(sender.id));

@@ -7,8 +7,6 @@ export class CircleBehavior {
     isValid;
 
     constructor(centreString, radiusString) {
-        
-        console.log(centreString, radiusString);
 
         this.#centre = this.#ParseCentre(centreString);
         this.#radius = this.#ParseRadius(radiusString);

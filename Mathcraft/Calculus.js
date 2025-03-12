@@ -122,13 +122,12 @@ export class Calculus {
 
         function EllipseType(thisClass) {
             let axes = equation.GetMajorMinorAxisPoint();
-            let a = axes.x; // Semi-major axis
-            let b = axes.y; // Semi-minor axis
+            let a = axes.x; 
+            let b = axes.y; 
             let center = equation.GetCentre();
-            let h = center.x; // x-coordinate of the center
-            let k = center.y; // y-coordinate of the center
+            let h = center.x; 
+            let k = center.y; 
         
-            // Shift the point relative to the ellipse center
             let X0 = point.x - h;
             let Y0 = point.y - k;
         
@@ -143,7 +142,6 @@ export class Calculus {
             let m1 = (-B + Math.sqrt(discriminant)) / (2 * A);
             let m2 = (-B - Math.sqrt(discriminant)) / (2 * A);
         
-            // Return the equations of the tangent lines in slope-point form
             return [
                 thisClass.GetSlopePointFormLinearEquation(m1, point),
                 thisClass.GetSlopePointFormLinearEquation(m2, point)
@@ -171,7 +169,7 @@ export class Calculus {
 
     SymbolicDifferentiation(equation) {
 
-        console.log("Implement differentiation");
+        console.log(JSON.stringify(new Parser().Parse(equation.toString()), null, 2))
 
     }
 

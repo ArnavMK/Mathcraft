@@ -25,6 +25,7 @@ export class Parser {
 
         let tokens = this.TokenizeExpression(expression);
         let index = 0;
+        console.log(tokens)
 
         function ParseExpression() {
 
@@ -55,7 +56,7 @@ export class Parser {
 
             let node = ParseFactor();
 
-            while (index < tokens.length && (tokens[index] === "*" || tokens[index] === "/")) {
+            while (index < tokens.length && (tokens[index] === "^")) {
                 let operator = tokens[index]; index++;
                 node = {type: "operator", operator: operator, left: node, right: ParseFactor()}
             }
@@ -107,7 +108,9 @@ export class Parser {
 
         }
 
-        return ParseExpression();
+        let parsed =  ParseExpression();
+
+        return parsed;
     }
 
     
