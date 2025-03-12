@@ -16,9 +16,10 @@ export class CircleBehavior {
 
     #ParseCentre(centreString) {
 
-        let centre = centreString.replace(/[()]/g, "").split(",").map(Number);
+        let centre = centreString.replace(/[\[\]()]/g, "").split(",").map(Number);
+        
         if (centre.length !== 2 || centre.some(isNaN)) {
-            window.errorLogger.ShowNewError("Invalid input, the centre has to be two numbers");
+            window.errorLogger.ShowNewError("Invalid input, the centre has to be two numbers in the form");
             this.isValid = false;
             return;
         }
@@ -29,6 +30,10 @@ export class CircleBehavior {
 
     #ParseRadius(radiusString) {
         let radius = parseFloat(radiusString);
+
+        if (!this.isValid) {
+            return;
+        }
 
         if (isNaN(radius)) {
             window.errorLogger.ShowNewError("Invalid input, the radius has to bea number");

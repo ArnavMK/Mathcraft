@@ -164,6 +164,7 @@ export class GraphGL {
         this.#selectedEntities.add(equation);
         this.#RefreshEquationLayerOfGraph();
     }
+    
 
     DeselectEquation(equation) {
         equation.SetColor(equation.GetOriginalColor());

@@ -186,7 +186,6 @@ export class Graph {
     }
     
     #OnRightMouseButtonUp(event) {
-        console.log("right up")
         let selectionRect = this.renderer.DisableSelectionRect(event);
         this.SelectPointsUnderRect(selectionRect);
     }
@@ -209,8 +208,6 @@ export class Graph {
         if (this.selectedCoordinates.size == 0 && this.selectedEquations.size == 0) {
             return;
         }   
-
-        console.log("Deselecting")
 
         this.selectedCoordinates.clear();
         this.selectedEquations.clear();

@@ -59,6 +59,26 @@ export class Calculus {
 
     }
 
+    GetRootsOfCircle(equation) {
+        
+        let r = equation.GetRadius();
+        let centre = equation.GetCentre();
+
+        let x1 = centre.x + Math.sqrt(r*r - centre.y*centre.y);
+        let x2 = centre.x - Math.sqrt(r*r - centre.y*centre.y);
+
+        if ([x1, x2].some(isNaN)) {
+            return undefined;
+        } 
+
+        if (x1 == x2) {
+            return [new Point(x1, 0)];
+        }
+
+        return [new Point(x1, 0), new Point(x2, 0)];
+
+    }
+
     NumericalDifferentiation(equation, point, h = 0.00000000001) {
         return (equation.GetValue(point.x + h) - equation.GetValue(point.x))/h
     }

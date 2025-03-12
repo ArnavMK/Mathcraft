@@ -25,7 +25,6 @@ export class Parser {
 
         let tokens = this.TokenizeExpression(expression);
         let index = 0;
-        console.log(tokens)
 
         function ParseExpression() {
 

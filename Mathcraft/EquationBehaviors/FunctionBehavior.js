@@ -24,10 +24,12 @@ export class FunctionBehavior {
         if (expression.indexOf(",") >= 0) {
             window.errorLogger.ShowNewError("Cant have punctuation in expression")
             this.isValid = false;
-            return;
+            return undefined;
         }
 
-        let f = new Function("x", `return ${expression}`);
+        this.isValid = true;
+        let f;
+        try {f = new Function("x", `return ${expression}`);}catch(error) {}
 
         return f;
     }
@@ -39,7 +41,7 @@ export class FunctionBehavior {
             return "Reals";
         }
 
-        let domainString = text.replace(/[\[\]]/g, "");
+        let domainString = text.replace(/[\[\]()]/g, "");
         let domainList = domainString.split(',').map(Number);
 
         console.log(domainList)
@@ -57,6 +59,7 @@ export class FunctionBehavior {
         }
 
         this.isValid = true;
+
         if (domainList[0] < domainList[1]) {
             return { min: domainList[0], max: domainList[1] };
         }
@@ -88,6 +91,7 @@ export class FunctionBehavior {
 
     IsValid() {
         try {
+            if (this.#function == undefined) return false;
             this.GetValue(0);
             return this.isValid;
         }
