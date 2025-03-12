@@ -55,7 +55,7 @@ export class Graph {
         document.addEventListener("mousemove", this.#OnMouseMove.bind(this));
 
         // to either add or remove points (based on the graph state), when user clicked the screen
-        this.renderer.GetClickableCanvas().addEventListener("click", this.HandlePointEntryExitSelection_OnClick.bind(this));
+        // this.renderer.GetClickableCanvas().addEventListener("click", this.HandlePointEntryExitSelection_OnClick.bind(this));
 
         // when the user clicks the command
         this.customMenu.OnAnyCommandClicked.addEventListener("click", (e) => {
@@ -176,6 +176,7 @@ export class Graph {
 
         if (this.#currentGraphMode == "Ellipse" && this.isLeftMouseDown) {
             this.dynamicEllipseEquationByDrag = this.renderer.DynamicEllipseRendering(this.initialMousePositionWhenLeftClicked, event);
+            this.dynamicCircleEquationByUserDrag.isDynamic = true;
         }
     }
     
@@ -193,13 +194,14 @@ export class Graph {
     #OnLeftMouseButtonUp(event) {
         this.renderer.DisablePointDisplayRendering();
         this.isLeftMouseDown = false;
-        this.TryAddEquation(this.dynamicCircleEquationByUserDrag); 
+        this.TryAddEquation(this.dynamicCircleEquationByUserDrag);
     }
     
     #OnLeftMouseButtonDown(event) {
         this.isLeftMouseDown = true;
         this.initialMousePositionWhenLeftClicked = new Point(event.offsetX, event.offsetY);
         this.renderer.EnablePointDisplayRendering(event);
+        this.HandlePointEntryExitSelection_OnClick(event); 
     }
     
     DeselectSelectedEntities() {

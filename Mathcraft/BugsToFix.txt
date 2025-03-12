@@ -3,3 +3,4 @@
 2. Domain ordering error i 
 3. Divide by zero and other checks i
 4. always selects the circle when drag
+5. boundary condition for selection rect?
