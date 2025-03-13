@@ -28,8 +28,8 @@ export class GraphGL {
     #canDrawSelectionRect = false;
     #canPointDisplayAppear = false;
     #theme
-    MAX_SCALE_VALUE = 350;
-    MIN_SCALE_VALUE = 25;
+    MAX_SCALE_VALUE = 320;
+    MIN_SCALE_VALUE = 35;
 
     constructor (canvas, scale = 35,) {
 
@@ -163,8 +163,8 @@ export class GraphGL {
         this.#selectedEquations.add(equation);
         this.#selectedEntities.add(equation);
         this.#RefreshEquationLayerOfGraph();
-       // this.#RefreshPointLayerOfGraph();
     }
+    
 
     DeselectEquation(equation) {
         equation.SetColor(equation.GetOriginalColor());
@@ -186,16 +186,20 @@ export class GraphGL {
 
     DeselectEntities() {
 
+        let equationCounter = 0; let pointCounter = 0;
         this.#selectedEntities.forEach((entity) => {
             entity.SetColor(entity.GetOriginalColor());
+
+            if (entity instanceof Point) pointCounter ++;
+            else equationCounter ++;
         });
 
         this.#selectedPoints.clear();
         this.#selectedEquations.clear();
         this.#selectedEntities.clear();
 
-        this.#RefreshEquationLayerOfGraph();
-
+        if (pointCounter > 0) this.#RefreshPointLayerOfGraph();
+        if (equationCounter > 0) this.#RefreshEquationLayerOfGraph();
     }
 
     ClearPoint(mathPoint) {

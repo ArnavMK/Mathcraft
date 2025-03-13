@@ -20,6 +20,7 @@ export class Tangents extends Command {
         else {
             this.PlotTangentsFromPoint(selectedEquation, selectedPoint);
         }
+        this.OnComplete();
     }
 
     PlotTangentsFromPoint(equation, point) {

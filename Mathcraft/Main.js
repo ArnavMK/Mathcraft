@@ -6,8 +6,11 @@ import {ErrorLogger} from "./ErrorLogger.js"
 import { Calculus } from "./Calculus.js";
 
 let graph = new Graph(new GraphGL(document.getElementById("canvas")));
+
+// properties global to the entire codebase
 window.errorLogger = new ErrorLogger(Array.from(document.querySelectorAll(".ErrorLogger")));
 window.calculus = new Calculus(graph);
+window.allSymbols = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "log10", "E", "atan", "acos", "asin"];
 
 let equationModal = document.getElementById("EquationDialog");
 let equationText = document.getElementById("EquationDialog_equation");
@@ -26,13 +29,13 @@ let existingEquation;
 function EditEquationSequence(event) {
 
     existingEquation = event.detail.equation;
-    console.log(existingEquation);
     graph.RefreshInformationModalWithGivenMode(existingEquation.GetType());
 
     equationText.value = existingEquation.toString();
     domainText.value =  existingEquation.GetAccompaniedInfo();
     colorPicker.value = existingEquation.GetOriginalColor();
     equationModal.showModal();
+
 }
 
 function SaveEquationInformation() {

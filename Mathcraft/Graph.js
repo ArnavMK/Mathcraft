@@ -35,7 +35,7 @@ export class Graph {
 
         this.renderer = renderer;
         this.#currentGraphMode = mode;
-        this.customMenu = new CustomMenu(["Add Point", "Differentiate"]);
+        this.customMenu = new CustomMenu(["Add Point", "Differentiate", "Line Segment"]);
 
         for(let point of startUpPoints) this.TryAddPoint(point);   
 
@@ -55,7 +55,7 @@ export class Graph {
         document.addEventListener("mousemove", this.#OnMouseMove.bind(this));
 
         // to either add or remove points (based on the graph state), when user clicked the screen
-        this.renderer.GetClickableCanvas().addEventListener("click", this.HandlePointEntryExitSelection_OnClick.bind(this));
+        // this.renderer.GetClickableCanvas().addEventListener("click", this.HandlePointEntryExitSelection_OnClick.bind(this));
 
         // when the user clicks the command
         this.customMenu.OnAnyCommandClicked.addEventListener("click", (e) => {
@@ -176,6 +176,7 @@ export class Graph {
 
         if (this.#currentGraphMode == "Ellipse" && this.isLeftMouseDown) {
             this.dynamicEllipseEquationByDrag = this.renderer.DynamicEllipseRendering(this.initialMousePositionWhenLeftClicked, event);
+            this.dynamicCircleEquationByUserDrag.isDynamic = true;
         }
     }
     
@@ -185,19 +186,19 @@ export class Graph {
     }
     
     #OnRightMouseButtonUp(event) {
-        console.log("right up")
         let selectionRect = this.renderer.DisableSelectionRect(event);
         this.SelectPointsUnderRect(selectionRect);
     }
     
-    #OnLeftMouseButtonUp(event) {
+    #OnLeftMouseButtonUp() {
         this.renderer.DisablePointDisplayRendering();
         this.isLeftMouseDown = false;
-        this.TryAddEquation(this.dynamicCircleEquationByUserDrag); 
+        this.TryAddEquation(this.dynamicCircleEquationByUserDrag);
     }
     
     #OnLeftMouseButtonDown(event) {
         this.isLeftMouseDown = true;
+        this.HandlePointEntryExitSelection_OnClick(event); 
         this.initialMousePositionWhenLeftClicked = new Point(event.offsetX, event.offsetY);
         this.renderer.EnablePointDisplayRendering(event);
     }
@@ -207,8 +208,6 @@ export class Graph {
         if (this.selectedCoordinates.size == 0 && this.selectedEquations.size == 0) {
             return;
         }   
-
-        console.log("Deselecting")
 
         this.selectedCoordinates.clear();
         this.selectedEquations.clear();
@@ -336,8 +335,9 @@ export class Graph {
             return;
         }
         this.DeselectSelectedEntities();
-        
+
         this.TryAddPoint(mouseMathPoint);
+        console.log(this.coordinates)
     }
 
 
@@ -350,12 +350,9 @@ export class Graph {
     }
 
     RemoveEquation(equation) {
+
         this.equations.delete(equation.toString());
         this.renderer.ClearEquation(equation.toString(), document.getElementById(equation.toString()));
-
-        if (equation.GetType() === "Circle") {
-            this.RemovePoint(equation.GetCentre());
-        }
 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
@@ -371,7 +368,6 @@ export class Graph {
     }
 
     OnAnySelectButtonClicked(event) {
-        console.log("Hello")
         let sender = event.target.parentElement;
         if (!this.equations.has(sender.id)) return;
         this.SelectEquation(this.equations.get(sender.id));

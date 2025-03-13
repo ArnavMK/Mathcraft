@@ -5,7 +5,7 @@ export class EllipseBehavior {
     
     #centre;
     #majorMinorAxisPoint;
-    isValid;
+    isValid = true;
 
     constructor(majorMinorAxisString, centreString) {
 
@@ -21,22 +21,32 @@ export class EllipseBehavior {
 
     #ParseCentre(centreString) {
 
+        if(!this.isValid) return;
 
-        let centre = centreString.replace(/[()]/g, "").split(",").map(Number);
-        if (centre.length !== 2 || centre.some(isNaN)) {
-            window.errorLogger.ShowNewError("Invalid inputs, try again");
-            this.isValid = false;
-            return;
+        let centre = centreString.replace(/[\[\]()]/g, "").split(",").map(Number);
+
+        if (centre.length !== 2) {
+            window.errorLogger.ShowNewError("Invalid centre: you can only have two numbers x, y");
+            this.isValid = false; return;
+        } 
+
+        if (centre.some(isNaN)) {
+            window.errorLogger.ShowNewError("Invalid centre: x, y have to be constant numbers");
+            this.isValid = false; return;
         }
+        console.log()
         this.isValid = true;
         return new Point(centre[0], centre[1]);
     }
 
     #ParseMajorMinorAxis(majorMinorAxisString) {
 
+        if(!this.isValid) return;
+        console.log("PArsing the axes")
 
         let axes = majorMinorAxisString.replace(/[()]/g, "").split(",").map(Number);
         
+
         if (axes.length !== 2 || axes.some(isNaN) || axes.some(val => val <= 0)) {
             window.errorLogger.ShowNewError("Invalid inputs, try again");
             this.isValid = false;
