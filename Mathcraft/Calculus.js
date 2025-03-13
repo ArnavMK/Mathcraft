@@ -329,7 +329,7 @@ export class Calculus {
                     }
                 }
 
-                // a^f(x) cases
+                // a^f(x) cases // f(x)^g(x)
                 if (base.type === "number") {
 
                     return {
@@ -430,6 +430,10 @@ export class Calculus {
                 }
 
             }
+
+            // log10
+
+            // sqrt
         }
         return undefined;
     }
