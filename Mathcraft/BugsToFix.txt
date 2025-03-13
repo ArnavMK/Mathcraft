@@ -1,4 +1,2 @@
 12. Fix error logger not disabling issue
-1. comma input Fix i  
-3. Divide by zero and other checks i
 5. boundary condition for selection rect?

@@ -11,9 +11,16 @@ export class Differentiate extends Command {
  
         let equation = this.graph.selectedEquations.values().next().value;
         
-        let derivative = window.calculus.SymbolicDifferentiation(equation);
+        let derivative = window.calculus.GetDerivativeOf(equation);
 
-        console.log(derivative);
+        if (!derivative) {
+            window.errorLogger.ShowNewError("Cannot find the derivative in this situation");
+            return;
+        }
+
+        this.graph.TryAddEquation(derivative);
+
+        this.OnComplete();
     }
 
 }

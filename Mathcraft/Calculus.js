@@ -60,7 +60,7 @@ export class Calculus {
     }
 
     GetRootsOfCircle(equation) {
-        
+
         let r = equation.GetRadius();
         let centre = equation.GetCentre();
 
@@ -77,6 +77,25 @@ export class Calculus {
 
         return [new Point(x1, 0), new Point(x2, 0)];
 
+    }
+
+    GetRootsOfEllipse(equation) {
+
+        let axes = equation.GetMajorMinorAxisPoint();
+        let centre = equation.GetCentre();
+
+        let x1 = centre.x + Math.sqrt((axes.x**2/axes.y**2) * (axes.y**2 - centre.y**2));
+        let x2 = centre.x - Math.sqrt((axes.x**2/axes.y**2) * (axes.y**2 - centre.y**2));
+
+        if ([x1, x2].some(isNaN)) {
+            return undefined;
+        }
+
+        if (x1 == x2) {
+            return [new Point(x1, 0)];
+        }
+
+        return [new Point(x1, 0), new Point(x2, 0)];
     }
 
     NumericalDifferentiation(equation, point, h = 0.00000000001) {
@@ -183,14 +202,263 @@ export class Calculus {
     }
 
     GetSlopePointFormLinearEquation(m, point){
+
         let equationString = `${m}*(x - ${point.x}) + ${point.y}`;
         return new Equation(equationString, "Reals", "function", Equation.DefaultColor);
+
     }
 
-    SymbolicDifferentiation(equation) {
+    GetDerivativeOf(equation) {
 
-        console.log(JSON.stringify(new Parser().Parse(equation.toString()), null, 2))
+        let parsedExpression = new Parser().Parse(equation.toString());
+        console.log(JSON.stringify(parsedExpression, null, 2));
 
+        let derivative = this.SymbolicDifferentiation(parsedExpression);
+
+        return new Equation(this.TreeToString(derivative), "Reals", "function", "#d941a6");
+    }
+
+    TreeToString(node) {
+
+        console.log(node)
+
+        if (node.type === "number") {
+
+            return node.value.toString();
+
+        } else if (node.type === "variable") {
+
+            return node.value;
+
+        } else if (node.type === "operator") {
+
+            const leftStr = this.TreeToString(node.left);
+            const rightStr = this.TreeToString(node.right);
+            return `(${leftStr} ${node.value} ${rightStr})`;
+
+        } else if (node.type === "function") {
+
+            const argStr = this.TreeToString(node.argument);
+            return `${node.value}(${argStr})`;
+
+        }
+    }
+
+    SymbolicDifferentiation(node) {
+
+        if (node.type === "variable") {
+            return {type: "number", value: 1};
+        }
+
+        if (node.type === "number") {
+            return {type: "number", value: 0};
+        }
+
+        if (node.type === "operator") {
+
+            // Addition and subtraction
+            if (node.value === "+" || node.value === "-") {
+
+                return {
+                    type: "operator",
+                    value: node.value,
+                    left : this.SymbolicDifferentiation(node.left),
+                    right : this.SymbolicDifferentiation(node.right)
+                }
+
+            }
+
+            // Multiplication: the u*v rule
+            if (node.value === "*") {
+
+                let u = node.left; let v = node.right;
+
+                return {
+                    type: "operator",
+                    value: "+",
+                    left : {
+                        type: "operator", 
+                        value: "*",
+                        left: u,
+                        right: this.SymbolicDifferentiation(v)
+                    },
+                    right: {
+                        type: "operator",
+                        value: "*",
+                        left: v,
+                        right: this.SymbolicDifferentiation(u)
+                    }
+                }
+            }
+
+            // Division: the u/v rule
+            if (node.value === "/") {
+
+                let u = node.left; let v = node.right;
+                
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: {
+                        type: "operator",
+                        value: "-",
+                        left: {
+                            type: "operator",
+                            value: "*",
+                            left: v,
+                            right: this.SymbolicDifferentiation(u)
+                        },
+                        right: {
+                            type: "operator",
+                            value: "*",
+                            left: u,
+                            right: this.SymbolicDifferentiation(v)
+                        }
+                    },
+                    right: {
+                        type: "operator",
+                        value: "^",
+                        left: v,
+                        right: {
+                            type: "number",
+                            value: 2
+                        }
+                    }
+                }
+            }
+
+            // Exponential cases
+            if (node.value === "^") {
+
+                let base = node.left; let exponent = node.right;
+
+                // x^f(x) cases
+                if (exponent.type === "number") {
+
+                    return {
+                        type: "operator",
+                        value: "*",
+                        left: {
+                            type: "operator",
+                            value: "*",
+                            left: exponent,
+                            right: {
+                                type: "operator",
+                                value: "^",
+                                left: base,
+                                right: {
+                                    type:"number",
+                                    value: exponent.value - 1
+                                }
+                            }
+                        },
+                        right: this.SymbolicDifferentiation(base)
+                    }
+                }
+
+                // a^f(x) cases
+                if (base.type === "number") {
+
+                    return {
+                        type : "operator",
+                        value: "*",
+                        left: {
+                            type: "operator",
+                            value: "*",
+                            left: {
+                                type: "operator",
+                                value: "^",
+                                left: base,
+                                right: exponent
+                            },
+                            right: {
+                                type: "function",
+                                value: "ln",
+                                argument: base
+                            }
+                        },
+                        right: this.SymbolicDifferentiation(exponent)
+                    }
+                }
+
+            }
+        }
+
+
+        if (node.type === "function") {
+
+            if (node.value === "sin") {
+                
+                return {
+                    type: "operator",
+                    value: "*",
+                    left: {
+                        type: "function",
+                        value: "cos",
+                        argument: node.argument,
+                    },
+                    right: this.SymbolicDifferentiation(node.argument)
+                }
+
+            }
+
+            if (node.value == "cos") {
+
+                return {
+                    type: "operator",
+                    value: "*",
+                    left: {
+                        type: "operator",
+                        value: "*",
+                        left: {
+                            type: "number",
+                            value: -1
+                        },
+                        right: {
+                            type: "function",
+                            value: "sin",
+                            argument: node.argument
+                        }
+                    },
+                    right: this.SymbolicDifferentiation(node.argument)
+                }
+            }
+
+            if (node.value === "tan") {
+                
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: this.SymbolicDifferentiation(node.argument),
+                    right: {
+                        type: "operator",
+                        value: "^",
+                        left: {
+                            type: "function",
+                            value: "cos",
+                            argument: node.argument
+                        },
+                        right: {
+                            type: "number",
+                            value: 2
+                        }
+                    }
+                }
+
+            }
+
+            if (node.value === "ln") {
+
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: this.SymbolicDifferentiation(node.argument),
+                    right: node.argument
+                }
+
+            }
+        }
+        return undefined;
     }
 
 }

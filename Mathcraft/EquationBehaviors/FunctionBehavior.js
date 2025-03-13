@@ -13,25 +13,39 @@ export class FunctionBehavior {
 
     #ParseFunction(expression) {
 
+        expression = expression.replace(/\blog\b/g, "log10");
+        expression = expression.replace(/\bln\b/g, "log");
+
         // append Math. before functions
-        const mathFunctions = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp'];
+        let mathFunctions = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "log10", "E", "atan", "acos", "asin"];
         mathFunctions.forEach(func => {
             expression = expression.replace(new RegExp(`\\b${func}\\b`, 'g'), `Math.${func}`);
         });
 
-        expression = expression.replace(/(\S+)\s*\^\s*(\S+)/g, "($1 ** $2)"); // replace the ^ with **
+        expression = expression.replace(/\^/g, "**"); // replaces ^ with **
+
     
-        if (expression.indexOf(",") >= 0) {
-            window.errorLogger.ShowNewError("Cant have punctuation in expression")
-            this.isValid = false;
-            return undefined;
-        }
+        this.isValid = this.#ValidateFunctionExpression(expression);
+        if (!this.isValid) return;
+
+        console.log(expression)
 
         this.isValid = true;
-        let f;
-        try {f = new Function("x", `return ${expression}`);}catch(error) {}
+        return new Function("x", `return ${expression}`);
+    }
 
-        return f;
+    #ValidateFunctionExpression(expression) {
+        if (expression.indexOf(",") >= 0) {
+            window.errorLogger.ShowNewError("Cant have punctuation in expression")
+            return false;
+        }
+
+        if (expression.indexOf("log10") >= 0) {
+            window.errorLogger.ShowNewError("log10 is undefined");
+            return false;
+        }
+
+        return true;
     }
 
     #ParseDomain(text) {
@@ -59,15 +73,7 @@ export class FunctionBehavior {
         }
 
         this.isValid = true;
-
-        if (domainList[0] < domainList[1]) {
-            return { min: domainList[0], max: domainList[1] };
-        }
-        else if (domainList[0] > domainList[1]) {
-            return { min: domainList[1], max: domainList[0] };
-        }
-         
-        return { min: domainList[0], max: domainList[0] };
+        return { min: Math.min(...domainList), max: Math.max(...domainList)};
         
     }
 

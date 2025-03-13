@@ -85,6 +85,7 @@ export class Roots extends Command {
     }
 
     CircleRootPlotter(equation) {
+
         let roots = window.calculus.GetRootsOfCircle(equation);
 
         if (!roots) {
@@ -96,7 +97,14 @@ export class Roots extends Command {
     }
 
     EllipseRootFinder(equation) {
-        // Implementation for ellipse roots
+        let roots = window.calculus.GetRootsOfEllipse(equation);
+
+        if (!roots) {
+            window.errorLogger.ShowNewError("Could not find any roots for this ellipse");
+            return; 
+        }
+
+        roots.forEach((root) => {this.graph.TryAddPoint(root)});
     }
 
     BisectionMethod(initialDomain, equation) {
