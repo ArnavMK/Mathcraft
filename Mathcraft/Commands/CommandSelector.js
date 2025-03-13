@@ -5,6 +5,7 @@ import { Roots } from "./Roots.js";
 import { Tangents } from "./Tangents.js";
 import { AddPoint } from "./AddPoint.js";
 import { Differentiate } from "./Differentiate.js";
+import { LineSegment } from "./LineSegment.js";
 
 export class CommandSelector {
 
@@ -44,6 +45,10 @@ export class CommandSelector {
 
             "Differentiate" : () => {
                 return new Differentiate(this.graph);
+            },
+
+            "Line Segment": () => {
+                return new LineSegment(this.graph);
             }
         }
 

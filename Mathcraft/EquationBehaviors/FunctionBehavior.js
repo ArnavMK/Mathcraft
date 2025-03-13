@@ -17,18 +17,15 @@ export class FunctionBehavior {
         expression = expression.replace(/\bln\b/g, "log");
 
         // append Math. before functions
-        let mathFunctions = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "log10", "E", "atan", "acos", "asin"];
-        mathFunctions.forEach(func => {
-            expression = expression.replace(new RegExp(`\\b${func}\\b`, 'g'), `Math.${func}`);
-        });
+        let symbols = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "log10", "E", "atan", "acos", "asin"];
+        for (let symbol of symbols) {
+            expression = expression.replace(new RegExp(`\\b${symbol}\\b`, 'g'), `Math.${symbol}`);
+        }
 
         expression = expression.replace(/\^/g, "**"); // replaces ^ with **
 
-    
         this.isValid = this.#ValidateFunctionExpression(expression);
         if (!this.isValid) return;
-
-        console.log(expression)
 
         this.isValid = true;
         return new Function("x", `return ${expression}`);
@@ -83,8 +80,15 @@ export class FunctionBehavior {
     }
 
     IsPointOnCurve(point) {
+    
+        if (!this.IsPointInDomain(point)) return false;
+
         let distanceToCurve = Math.abs(this.#function(point.x) - point.y);
         return distanceToCurve <= 0.1;
+    }
+
+    IsPointInDomain(point) {
+        return (point.x <= this.#domain.max) && (point.x >= this.#domain.min);
     }
 
     GetDomain() {

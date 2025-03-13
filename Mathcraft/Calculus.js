@@ -212,36 +212,9 @@ export class Calculus {
 
         let parsedExpression = new Parser().Parse(equation.toString());
         console.log(JSON.stringify(parsedExpression, null, 2));
-
         let derivative = this.SymbolicDifferentiation(parsedExpression);
 
-        return new Equation(this.TreeToString(derivative), "Reals", "function", "#d941a6");
-    }
-
-    TreeToString(node) {
-
-        console.log(node)
-
-        if (node.type === "number") {
-
-            return node.value.toString();
-
-        } else if (node.type === "variable") {
-
-            return node.value;
-
-        } else if (node.type === "operator") {
-
-            const leftStr = this.TreeToString(node.left);
-            const rightStr = this.TreeToString(node.right);
-            return `(${leftStr} ${node.value} ${rightStr})`;
-
-        } else if (node.type === "function") {
-
-            const argStr = this.TreeToString(node.argument);
-            return `${node.value}(${argStr})`;
-
-        }
+        return new Equation(Parser.ConvertTreeToString(derivative), "Reals", "function");
     }
 
     SymbolicDifferentiation(node) {
@@ -461,4 +434,13 @@ export class Calculus {
         return undefined;
     }
 
+    GetLineSegment(points) {
+
+        let domainString = `${points[0].x}, ${points[1].x}`
+        let m = (points[0].y - points[1].y)/(points[0].x - points[1].x);
+        let expression = `${m}*(x - ${points[0].x}) + ${points[0].y}`
+
+        return new Equation(expression, domainString, "function");
+
+    }
 }

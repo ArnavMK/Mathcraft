@@ -35,7 +35,7 @@ export class Graph {
 
         this.renderer = renderer;
         this.#currentGraphMode = mode;
-        this.customMenu = new CustomMenu(["Add Point", "Differentiate"]);
+        this.customMenu = new CustomMenu(["Add Point", "Differentiate", "Line Segment"]);
 
         for(let point of startUpPoints) this.TryAddPoint(point);   
 

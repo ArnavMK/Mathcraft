@@ -88,4 +88,30 @@ export class Parser {
     
         return ParseExpression();
     }
+
+    static ConvertTreeToString(node) {
+
+        console.log(node)
+
+        if (node.type === "number") {
+
+            return node.value.toString();
+
+        } else if (node.type === "variable") {
+
+            return node.value;
+
+        } else if (node.type === "operator") {
+
+            const leftStr = Parser.ConvertTreeToString(node.left);
+            const rightStr = Parser.ConvertTreeToString(node.right);
+            return `(${leftStr} ${node.value} ${rightStr})`;
+
+        } else if (node.type === "function") {
+
+            const argStr = Parser.ConvertTreeToString(node.argument);
+            return `${node.value}(${argStr})`;
+
+        }
+    }
 }

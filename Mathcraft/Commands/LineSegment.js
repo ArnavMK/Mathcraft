@@ -9,8 +9,12 @@ export class LineSegment extends Command {
             return;
         }
 
-        
+        let points = Array.from(this.graph.selectedCoordinates.values())
+        let segment = window.calculus.GetLineSegment(points);
 
+        this.graph.TryAddEquation(segment);
+
+        this.OnComplete();
     }
 
 }
