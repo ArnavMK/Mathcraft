@@ -28,11 +28,12 @@ export class FunctionBehavior {
         if (!this.isValid) return;
 
         try {
+            let func = new Function("x", `return ${expression}`)
             this.isValid = true;
-            return new Function("x", `return ${expression}`)
+            return func;
         }
         catch (error) {
-            this.isValid = false
+            this.isValid = false;
             window.errorLogger.ShowNewError(error.message);
             return undefined;
         }
@@ -41,11 +42,6 @@ export class FunctionBehavior {
     #ValidateFunctionExpression(expression) {
         if (expression.indexOf(",") >= 0) {
             window.errorLogger.ShowNewError("Cant have punctuation in expression")
-            return false;
-        }
-
-        if (expression.indexOf("log10") >= 0) {
-            window.errorLogger.ShowNewError("log10 is undefined");
             return false;
         }
 

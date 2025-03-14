@@ -13,6 +13,7 @@ export class CustomMenu {
         this.#menuDiv.setAttribute("class", htmlClass);
         document.body.appendChild(this.#menuDiv);
 
+
         this.#commandDivs = new Map();
 
         for (let command of commands) {
@@ -24,6 +25,11 @@ export class CustomMenu {
             this.OnContextMenuCalled(event);
         });
 
+        document.addEventListener("keydown", (e) => {
+            if (e.key == "Escape" && this.isMenuActive) {
+                this.SetActive(false);
+            }
+        })
         document.addEventListener("mousedown", this.OnClick_AnyWhere.bind(this));
     }
 
@@ -65,6 +71,7 @@ export class CustomMenu {
     }
 
     SetActive(boolean) {
+        this.isMenuActive = boolean;
         boolean == true ? this.#menuDiv.style.display = "block" : this.#menuDiv.style.display = "none";
     }
 

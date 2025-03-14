@@ -71,6 +71,7 @@ export class CommandSearch {
         }
 
         this.EventSystem.dispatchEvent(new CustomEvent("commandEntered", {detail: {commandID: input}}))
+        this.ClearResultBox();
     }
 
     HandleAutoComplete() {

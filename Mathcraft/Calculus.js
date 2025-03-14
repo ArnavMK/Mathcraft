@@ -470,7 +470,24 @@ export class Calculus {
 
             }
 
-            // log10
+            // log to the base 10
+            if (node.value === "log") {
+
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: this.SymbolicDifferentiation(node.argument),
+                    right: {
+                        type: "operator",
+                        value: "*",
+                        left: node.argument,
+                        right: {
+                            type: "number",
+                            value: Math.LOG10E
+                        }
+                    }
+                }
+            }
 
             // sqrt
         }

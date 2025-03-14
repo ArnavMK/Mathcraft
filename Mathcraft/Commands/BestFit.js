@@ -7,7 +7,7 @@ export class BestFit extends Command    {
     Run() {
 
         if (this.graph.coordinates.size < 2) {
-            window.errorLogger.ShowNewError("There are not enough points in the graph");
+            window.errorLogger.ShowNewError("A minimum of 2 points are required for this command");
             return;
         }
         
