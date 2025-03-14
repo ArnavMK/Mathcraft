@@ -41,7 +41,6 @@ export class Equation extends Entity {
             case "Circle":
                 return new CircleBehavior(firstInfo, accompaniedInfo);
             case "Ellipse":
-                console.log(firstInfo, accompaniedInfo)
                 return new EllipseBehavior(firstInfo, accompaniedInfo);
             default:
                 throw new Error(`Unknown equation type: ${type}`);

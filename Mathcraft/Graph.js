@@ -266,14 +266,12 @@ export class Graph {
     
     SelectEquation(selectedEntity) {
 
-        console.log(this.dynamicCircleEquationByUserDrag)
         if (this.selectedEquations.has(selectedEntity.toString())) {
             this.selectedEquations.delete(selectedEntity.toString());
             this.renderer.DeselectEquation(selectedEntity);
             return;
         }
 
-        console.log(this.selectedCoordinates)
 
         this.selectedEquations.set(selectedEntity.toString(), selectedEntity);
         this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
@@ -344,7 +342,6 @@ export class Graph {
         this.DeselectSelectedEntities();
 
         this.TryAddPoint(mouseMathPoint);
-        console.log(this.coordinates)
     }
 
 
