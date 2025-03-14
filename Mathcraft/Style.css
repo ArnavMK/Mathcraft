@@ -370,3 +370,57 @@ a {
     font-weight: bolder;
     font-size: medium;
 }
+
+
+.searchBox {
+    position: absolute;
+    top: 13px; right: 10px;
+    z-index: 100;
+    height: fit-content;
+    align-content: center;
+    background: transparent;
+    border: 1px; border-width: thin; border-style: solid;
+    border-color: rgb(143, 143, 143);
+    border-radius: 5px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+}
+
+.row input{
+    flex: 1;
+    background: transparent;
+}
+
+.row button {
+    background-image: url("./images/commandDark.png");
+    border: none;
+    width: 28px;
+    height: 27px;
+    margin-right: 5px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 28px 27px;
+    cursor: pointer;
+}
+
+.resultBox ul{
+    border-top: 1px solid white;
+    padding: 15px 10px;
+    margin: 0px 0px;
+    color: white;
+}
+
+.resultBox ul li {
+    list-style: none;
+    border-radius: 3px;
+    padding: 7px;
+    cursor: pointer;
+    background: inherit;
+}
+
+.resultBox ul li :hover {
+    background: rgb(182, 166, 166);
+}

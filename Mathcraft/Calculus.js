@@ -9,29 +9,24 @@ export class Calculus {
 
     constructor (graph) {
         this.graph = graph;
-        console.log("Methamatics is now on");
     }
 
     GetLineOfBestFit(decimalPlaces = 2) {
-
 
         let meanPoint = this.#GetMeanPointOfGraph();
         let slope = this.#GetAverageSlope(decimalPlaces, meanPoint.x, meanPoint.y);
         let yIntercept = parseFloat((meanPoint.y - (slope * meanPoint.x)).toFixed(decimalPlaces));
 
-        let equation = new Equation(
-            `${this.#GetStringRepresentationOf(slope)} * x ${this.#GetStringRepresentationOf(yIntercept)}`, 
-            "Reals",
-            "function",
-            Equation.DefaultColor);
-
-        return equation;
+        return this.GetSlopePointFormLinearEquation(slope, new Point(0, yIntercept));
     }
 
     #GetMeanPointOfGraph() {
 
         let totalX = 0, totalY = 0;
-        for (let point of this.graph.coordinates.values()) {
+
+        let coordinates = this.graph.selectedCoordinates.size === 0 ? this.graph.coordinates.values() : this.graph.selectedCoordinates.values();
+
+        for (let point of coordinates) {
             totalX += point.x;
             totalY += point.y;
         }
@@ -42,7 +37,9 @@ export class Calculus {
 
         let numerator = 0, denominator = 0;
 
-        for (let point of this.graph.coordinates.values()) {
+        let coordinates = this.graph.selectedCoordinates.size === 0 ? this.graph.coordinates.values() : this.graph.selectedCoordinates.values();
+        
+        for (let point of coordinates) {
             numerator += (point.x - xMean) * (point.y - yMean);
             denominator += Math.pow(point.x - xMean, 2);
         }
@@ -51,13 +48,6 @@ export class Calculus {
         return result;
     }
 
-
-    #GetStringRepresentationOf(number) {
-
-        if (number >= 0) return " + " + number.toString();
-        else return " - " + Math.abs(number)
-
-    }
 
     GetRootsOfCircle(equation) {
 
@@ -156,6 +146,10 @@ export class Calculus {
                 return undefined;
             }
 
+            if (![m1, m2].some(isFinite)) {
+                return undefined;
+            }
+
             return [thisClass.GetSlopePointFormLinearEquation(m1, point), thisClass.GetSlopePointFormLinearEquation(m2, point)];
         }
 
@@ -180,7 +174,11 @@ export class Calculus {
 
             let m1 = (-B + Math.sqrt(discriminant)) / (2 * A);
             let m2 = (-B - Math.sqrt(discriminant)) / (2 * A);
-        
+                
+            if (![m1, m2].some(isFinite)) {
+                return undefined;
+            }
+    
             return [
                 thisClass.GetSlopePointFormLinearEquation(m1, point),
                 thisClass.GetSlopePointFormLinearEquation(m2, point)
@@ -203,7 +201,11 @@ export class Calculus {
 
     GetSlopePointFormLinearEquation(m, point){
 
-        let equationString = `${m}*(x - ${point.x}) + ${point.y}`;
+        let xTerm = point.x < 0 ? `(x + ${Math.abs(point.x)}` : `(x - ${point.x})`;
+        let yTerm = point.y < 0 ? ` - ${Math.abs(point.y)}` : ` + ${point.y};`
+        
+        let equationString = `${m} * ${xTerm}${yTerm}`;
+
         return new Equation(equationString, "Reals", "function", Equation.DefaultColor);
 
     }
@@ -211,8 +213,9 @@ export class Calculus {
     GetDerivativeOf(equation) {
 
         let parsedExpression = new Parser().Parse(equation.toString());
-        console.log(JSON.stringify(parsedExpression, null, 2));
         let derivative = this.SymbolicDifferentiation(parsedExpression);
+
+        if (!derivative) return undefined;
 
         return new Equation(Parser.ConvertTreeToString(derivative), "Reals", "function");
     }
@@ -329,7 +332,7 @@ export class Calculus {
                     }
                 }
 
-                // a^f(x) cases // f(x)^g(x)
+                // a^f(x) cases
                 if (base.type === "number") {
 
                     return {
@@ -354,6 +357,42 @@ export class Calculus {
                     }
                 }
 
+                // f(x)^g(x) cases;
+                if ((base.type === "operator" || base.type === "variable" || base.type === "function") &&
+                    (exponent.type === "operator" || exponent.type === "variable" || exponent.type === "function")) {
+
+                    return {
+                        type: "operator",
+                        value: "*", 
+                        left: node,
+                        right: {
+                            type: "operator",
+                            value: "+",
+                            left :{
+                                type: "operator",
+                                value: "/",
+                                left: {
+                                    type: "operator",
+                                    value: "*",
+                                    left: exponent,
+                                    right: this.SymbolicDifferentiation(base)
+                                },
+                                right: base
+                            },
+                            right: {
+                                type: "operator",
+                                value: "*",
+                                left: this.SymbolicDifferentiation(exponent),
+                                right: {
+                                    type: "function",
+                                    value: "ln",
+                                    argument: base
+                                }
+                            }
+                        }
+                    }
+
+                }
             }
         }
 

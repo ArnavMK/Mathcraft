@@ -3,3 +3,4 @@
 1. Do ellipse rendering
 2. give f(x) ^ g(x) and log10, sqrt in differentiation
 3. fix rendering bug in x^x
+4. Search bar

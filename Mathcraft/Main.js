@@ -23,7 +23,7 @@ document.getElementById("EquationDialog_save").addEventListener("click", SaveEqu
 document.getElementById("EquationDialog_cancel").addEventListener("click", () => equationModal.close())
 graph.OnEditEquationRequestReceived.addEventListener("edit", EditEquationSequence);
 
-let existingEquation;
+let existingEquation = undefined;
 
 
 function EditEquationSequence(event) {
@@ -39,6 +39,8 @@ function EditEquationSequence(event) {
 }
 
 function SaveEquationInformation() {
+
+    console.log("existing: ", existingEquation);
 
     let mode = graph.GetMode();
     if (existingEquation != undefined) {

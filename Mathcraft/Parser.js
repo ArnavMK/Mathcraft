@@ -13,7 +13,6 @@ export class Parser {
             tokens.push(match[0]);
         }
 
-        console.log(tokens)
         return tokens;
     }
 
@@ -50,23 +49,32 @@ export class Parser {
         }
 
         function ParseFactor() {
+
+            let sign = 1;
+            while (index < tokens.length && (tokens[index] === "+" || tokens[index] === "-")) {
+                if (tokens[index] === "-") {
+                    sign *= -1;
+                }
+                index++;
+            }
+
             if (tokens[index] == "(") {
                 index++;
                 let node = ParseExpression();
                 index++;
-                return node;
+                return sign === 1 ? node : { type: "operator", value: "*", left: { type: "number", value: -1 }, right: node };
             }
     
             if (tokens[index] == "x") {
                 let node = { type: "variable", value: "x" };
                 index++;
-                return node;
+                return sign === 1 ? node : { type: "operator", value: "*", left: { type: "number", value: -1 }, right: node };
             }
 
             if (tokens[index] == "E") {
                 let node = {type: "number", value: Math.E};
                 index++;
-                return node;
+                return sign === 1 ? node : { type: "operator", value: "*", left: { type: "number", value: -1 }, right: node };
             }
     
             if (['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "ln", "E", "atan", "acos", "asin"].includes(tokens[index])) {
@@ -76,11 +84,11 @@ export class Parser {
                     value: tokens[oldIndex],
                     argument: ParseFactor()
                 };
-                return node;
+                return sign === 1 ? node : { type: "operator", value: "*", left: { type: "number", value: -1 }, right: node };
             }
     
             if (!isNaN(parseFloat(tokens[index]))) {
-                let node = { type: "number", value: parseFloat(tokens[index]) };
+                let node = { type: "number", value: sign * parseFloat(tokens[index]) };
                 index++;
                 return node;
             }
@@ -90,8 +98,6 @@ export class Parser {
     }
 
     static ConvertTreeToString(node) {
-
-        console.log(node)
 
         if (node.type === "number") {
 

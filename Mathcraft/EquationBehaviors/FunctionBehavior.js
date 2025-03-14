@@ -27,8 +27,15 @@ export class FunctionBehavior {
         this.isValid = this.#ValidateFunctionExpression(expression);
         if (!this.isValid) return;
 
-        this.isValid = true;
-        return new Function("x", `return ${expression}`);
+        try {
+            this.isValid = true;
+            return new Function("x", `return ${expression}`)
+        }
+        catch (error) {
+            this.isValid = false
+            window.errorLogger.ShowNewError(error.message);
+            return undefined;
+        }
     }
 
     #ValidateFunctionExpression(expression) {
@@ -80,7 +87,7 @@ export class FunctionBehavior {
     }
 
     IsPointOnCurve(point) {
-    
+        
         if (!this.IsPointInDomain(point)) return false;
 
         let distanceToCurve = Math.abs(this.#function(point.x) - point.y);
@@ -88,6 +95,10 @@ export class FunctionBehavior {
     }
 
     IsPointInDomain(point) {
+        
+
+        if (this.#domain === "Reals") return true;
+
         return (point.x <= this.#domain.max) && (point.x >= this.#domain.min);
     }
 
