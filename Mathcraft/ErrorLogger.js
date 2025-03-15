@@ -12,6 +12,7 @@ export class ErrorLogger {
         
         for (let element of loggerElements) {
             element.style.opacity = "0";
+            element.style.display = "none";
         }
     }
 

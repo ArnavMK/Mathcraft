@@ -27,18 +27,21 @@ export class FunctionBehavior {
         this.isValid = this.#ValidateFunctionExpression(expression);
         if (!this.isValid) return;
 
-        this.isValid = true;
-        return new Function("x", `return ${expression}`);
+        try {
+            let func = new Function("x", `return ${expression}`);
+            this.isValid = true;
+            return func;
+        }
+        catch (error) {
+            this.isValid = false;
+            window.errorLogger.ShowNewError(error.message);
+            return undefined;
+        }
     }
 
     #ValidateFunctionExpression(expression) {
         if (expression.indexOf(",") >= 0) {
             window.errorLogger.ShowNewError("Cant have punctuation in expression")
-            return false;
-        }
-
-        if (expression.indexOf("log10") >= 0) {
-            window.errorLogger.ShowNewError("log10 is undefined");
             return false;
         }
 
@@ -80,7 +83,7 @@ export class FunctionBehavior {
     }
 
     IsPointOnCurve(point) {
-    
+        
         if (!this.IsPointInDomain(point)) return false;
 
         let distanceToCurve = Math.abs(this.#function(point.x) - point.y);
@@ -88,6 +91,10 @@ export class FunctionBehavior {
     }
 
     IsPointInDomain(point) {
+        
+
+        if (this.#domain === "Reals") return true;
+
         return (point.x <= this.#domain.max) && (point.x >= this.#domain.min);
     }
 

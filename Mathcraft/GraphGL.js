@@ -187,17 +187,20 @@ export class GraphGL {
     DeselectEntities() {
 
         let equationCounter = 0; let pointCounter = 0;
+
+        // sets the original color showing the entity (point or equation) is deselected
         this.#selectedEntities.forEach((entity) => {
             entity.SetColor(entity.GetOriginalColor());
-
             if (entity instanceof Point) pointCounter ++;
             else equationCounter ++;
         });
 
+        // clean up
         this.#selectedPoints.clear();
         this.#selectedEquations.clear();
         this.#selectedEntities.clear();
 
+        // refreshes the layers without changing others
         if (pointCounter > 0) this.#RefreshPointLayerOfGraph();
         if (equationCounter > 0) this.#RefreshEquationLayerOfGraph();
     }
@@ -419,21 +422,17 @@ export class GraphGL {
 
         this.#DrawCircleWithCentreAndRadius_Misc(mouseDownMathPoint, currentRadius);
 
-        return new Equation(`(${mouseDownMathPoint.x}, ${mouseDownMathPoint.y})`, currentRadius.toString(), "Circle")
+        return new Equation(`(${mouseDownMathPoint.x}, ${mouseDownMathPoint.y})`, currentRadius.toString(), "Circle");
     }
 
     DynamicEllipseRendering(ellipseCentreCanvasPoint, event) {
-
-        this.#RefreshMiscLayerOfGraph();
-
         
-        this.miscC.strokeStyle = this.#theme.selectionColor;
-        this.miscC.lineWidth = 1;
-        this.miscC.setLineDash([5, 8]); 
+        this.#DrawSelectionRectVisual(ellipseCentreCanvasPoint, new Point(event.offsetX, event.offsetY));
 
-        this.miscC.beginPath();
-
-        this.miscC.stroke();
+        let mouseDownMathPoint = Point.GetMathPoint(ellipseCentreCanvasPoint, this.miscCanvas, this.scale);
+        let currentMouseMathPoint = Point.GetMathPoint(new Point(event.offsetX, event.offsetY), this.miscCanvas, this.scale)
+     
+        return this.#DrawEllipseWithCentreAndLengths_Misc(mouseDownMathPoint, currentMouseMathPoint);
     }
 
     #DrawNumberAt(canvasPosPoint, canvasNegPoint, numberToBeDrawn, isXAxis) {
@@ -479,7 +478,7 @@ export class GraphGL {
         DrawCalls[equation.GetType()]();
     }
 
-    #DrawFunction(/** @type {Equation}*/equation, curveFactor = 0.02) {
+    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.02) {
         
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.GetGridLinesNumbers();
@@ -497,25 +496,35 @@ export class GraphGL {
             this.equationC.strokeStyle = equation.color;
             this.equationC.lineWidth = 2;
 
-            for (let x = domain.min; x < domain.max; x += curveFactor) {
-
-                // TODO: refactor the drawing code to include the direction of slope and fix the log(x) error
+            for (let x = domain.min; x < domain.max;) {
 
                 let currentPoint = new Point(x, equation.GetValue(x));
-                let nextPoint = new Point(x + curveFactor, equation.GetValue(x + curveFactor));
+                let nextX = x + baseCurveFactor
+                let nextPoint = new Point(nextX, equation.GetValue(nextX));
+
+                if ([nextPoint.y, currentPoint.y].some(isNaN)) {
+                    x = nextX;
+                    continue;
+                }    
 
                 let currentCanvasPoint = Point.GetCanvasPoint(currentPoint, this.equationCanvas, this.scale);
                 let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
 
-                let dy = Math.abs(currentPoint.y - nextPoint.y);
+                let dy = currentPoint.y - nextPoint.y;
+                let absDy = Math.abs(dy);
 
-                if (dy > 2 * screenCapacityPoint.y) {
+                if (absDy > 2 * screenCapacityPoint.y) {
+                    x = nextX;
                     continue;
                 }
 
                 this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
                 this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
-                
+
+                let derivative = Math.abs(equation.GetValue(x + baseCurveFactor) - currentPoint.y);
+                let newCureFactor = Math.min(baseCurveFactor/(1+derivative), baseCurveFactor); // always under the base curve factor
+
+                x += newCureFactor;
             }
             
         this.equationC.stroke();
@@ -537,7 +546,7 @@ export class GraphGL {
         this.equationC.stroke();
     }
 
-    #DrawEllipse(ellipse) {
+    #DrawEllipse(ellipse, context = this.equationC) {
         
         if (ellipse.GetType() != "Ellipse") {
             return new Error("TypeError: cannot draw an ellipse with an equation of type " + ellipse.GetType());
@@ -546,11 +555,31 @@ export class GraphGL {
         let ellipseCentreCanvasPoint = Point.GetCanvasPoint(ellipse.GetCentre(), this.equationCanvas, this.scale);
         let majorMinorAxisPoint = ellipse.GetMajorMinorAxisPoint();
 
-        // draw the ellipse on the graph
-        this.equationC.beginPath();
-        this.equationC.strokeStyle = ellipse.color;
-        this.equationC.ellipse(ellipseCentreCanvasPoint.x, ellipseCentreCanvasPoint.y, majorMinorAxisPoint.x*this.scale, majorMinorAxisPoint.y*this.scale, 0, 0, Math.PI * 2);
-        this.equationC.stroke();
+        context.beginPath();
+        context.strokeStyle = ellipse.color;
+        context.ellipse(ellipseCentreCanvasPoint.x, ellipseCentreCanvasPoint.y, majorMinorAxisPoint.x*this.scale, majorMinorAxisPoint.y*this.scale, 0, 0, Math.PI * 2);
+        context.stroke();
+    }
+
+    #DrawEllipseWithCentreAndLengths_Misc(initialMouseMAthPoint, currentMouseMathPoint) {
+
+        let centreX = (currentMouseMathPoint.x + initialMouseMAthPoint.x)/2;
+        let centreY = (currentMouseMathPoint.y + initialMouseMAthPoint.y)/2;
+        let axes = new Point(
+            Math.abs((currentMouseMathPoint.x - initialMouseMAthPoint.x)/2),
+            Math.abs((currentMouseMathPoint.y - initialMouseMAthPoint.y)/2)
+        )
+
+        let centre = new Point(centreX, centreY);
+        let ellipse = new Equation(
+            `${axes.x}, ${axes.y}`,
+            `${centre.x}, ${centre.y}`,
+            "Ellipse"
+        );
+
+        this.#DrawEllipse(ellipse, this.miscC);
+
+        return ellipse;
     }
 
     #DrawCircleWithCentreAndRadius_Misc(centre, radius) {

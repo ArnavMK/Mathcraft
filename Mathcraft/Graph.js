@@ -1,5 +1,6 @@
 
 import { CommandSelector } from "./Commands/CommandSelector.js";
+import { CommandSearch } from "./CommandSearch.js";
 import { CustomMenu } from "./CustomMenu.js";
 import { Equation } from "./Equation.js";
 import { GraphGL, SelectionRect } from "./GraphGL.js";
@@ -36,6 +37,8 @@ export class Graph {
         this.renderer = renderer;
         this.#currentGraphMode = mode;
         this.customMenu = new CustomMenu(["Add Point", "Differentiate", "Line Segment"]);
+        this.searchBar = new CommandSearch();
+        window.commandSearch = this.searchBar;
 
         for(let point of startUpPoints) this.TryAddPoint(point);   
 
@@ -54,13 +57,14 @@ export class Graph {
         // setting up on mouse move event, treated like the update method in unity.
         document.addEventListener("mousemove", this.#OnMouseMove.bind(this));
 
-        // to either add or remove points (based on the graph state), when user clicked the screen
-        // this.renderer.GetClickableCanvas().addEventListener("click", this.HandlePointEntryExitSelection_OnClick.bind(this));
-
         // when the user clicks the command
         this.customMenu.OnAnyCommandClicked.addEventListener("click", (e) => {
             this.OnAnyCommandClicked(e)
         });
+
+        this.searchBar.EventSystem.addEventListener("commandEntered", (e) => {
+            this.OnAnyCommandClicked(e);
+        })
 
         this.#whenSignificantChangesHappen.addEventListener("changes", this.#OnSignificantChangesHappen.bind(this));
 
@@ -176,7 +180,6 @@ export class Graph {
 
         if (this.#currentGraphMode == "Ellipse" && this.isLeftMouseDown) {
             this.dynamicEllipseEquationByDrag = this.renderer.DynamicEllipseRendering(this.initialMousePositionWhenLeftClicked, event);
-            this.dynamicCircleEquationByUserDrag.isDynamic = true;
         }
     }
     
@@ -194,11 +197,12 @@ export class Graph {
         this.renderer.DisablePointDisplayRendering();
         this.isLeftMouseDown = false;
         this.TryAddEquation(this.dynamicCircleEquationByUserDrag);
+        this.TryAddEquation(this.dynamicEllipseEquationByDrag)
     }
     
     #OnLeftMouseButtonDown(event) {
         this.isLeftMouseDown = true;
-        this.HandlePointEntryExitSelection_OnClick(event); 
+        this.HandleEntitySelectionOnClick(event); 
         this.initialMousePositionWhenLeftClicked = new Point(event.offsetX, event.offsetY);
         this.renderer.EnablePointDisplayRendering(event);
     }
@@ -262,14 +266,12 @@ export class Graph {
     
     SelectEquation(selectedEntity) {
 
-        console.log(this.dynamicCircleEquationByUserDrag)
         if (this.selectedEquations.has(selectedEntity.toString())) {
             this.selectedEquations.delete(selectedEntity.toString());
             this.renderer.DeselectEquation(selectedEntity);
             return;
         }
 
-        console.log(this.selectedCoordinates)
 
         this.selectedEquations.set(selectedEntity.toString(), selectedEntity);
         this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
@@ -320,12 +322,15 @@ export class Graph {
         if (equation.GetType() === "Circle" && equation != undefined) {
             this.dynamicCircleEquationByUserDrag = undefined;
         }
+        else if (equation.GetType() === "Ellipse" && equation != undefined) {
+            this.dynamicEllipseEquationByDrag = undefined;
+        }
 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
         return true;
     }
 
-    HandlePointEntryExitSelection_OnClick(event) {
+    HandleEntitySelectionOnClick(event) {
 
         let mousePoint = new Point(event.offsetX, event.offsetY);
         let mouseMathPoint = Point.GetMathPoint(mousePoint, this.renderer.GetClickableCanvas(), this.renderer.GetScale());
@@ -337,7 +342,6 @@ export class Graph {
         this.DeselectSelectedEntities();
 
         this.TryAddPoint(mouseMathPoint);
-        console.log(this.coordinates)
     }
 
 

@@ -9,14 +9,12 @@ export class EllipseBehavior {
 
     constructor(majorMinorAxisString, centreString) {
 
-        console.log("In the ellipse constructor");
 
         this.#centre = this.#ParseCentre(centreString);
         this.#majorMinorAxisPoint = this.#ParseMajorMinorAxis(majorMinorAxisString);
         this.centreString = centreString;
         this.majorMinorAxisString = majorMinorAxisString;
-        console.log(this.#majorMinorAxisPoint);
-        console.log(this.#centre);
+
     }
 
     #ParseCentre(centreString) {
@@ -34,7 +32,6 @@ export class EllipseBehavior {
             window.errorLogger.ShowNewError("Invalid centre: x, y have to be constant numbers");
             this.isValid = false; return;
         }
-        console.log()
         this.isValid = true;
         return new Point(centre[0], centre[1]);
     }
@@ -42,12 +39,10 @@ export class EllipseBehavior {
     #ParseMajorMinorAxis(majorMinorAxisString) {
 
         if(!this.isValid) return;
-        console.log("PArsing the axes")
 
         let axes = majorMinorAxisString.replace(/[()]/g, "").split(",").map(Number);
         
-
-        if (axes.length !== 2 || axes.some(isNaN) || axes.some(val => val <= 0)) {
+        if (axes.length !== 2 || axes.some(isNaN) || axes.some(val => val < 0)) {
             window.errorLogger.ShowNewError("Invalid inputs, try again");
             this.isValid = false;
             return;
@@ -65,10 +60,8 @@ export class EllipseBehavior {
 
     GetValue(x) {
 
-
         let k = this.#centre.y; let h = this.#centre.x; let b = this.#majorMinorAxisPoint.y; let a = this.#majorMinorAxisPoint.x;
 
-        console.log(h,k,a,b)
 
         let y1 = k + Math.sqrt( (b**2/a**2) * (a**2 - (x - h)**2));
         let y2 = k - Math.sqrt( (b**2/a**2) * (a**2 - (x - h)**2));

@@ -163,9 +163,19 @@ body.light-theme .SquareButtons_Remove {
     width: 120px;
     height: auto;
 }
-#EquationContainer {
+#EquationContainer{
+    position: relative;
+    top: 15px;
+    left: 0;
+    width: 186px;
+    max-height: 500px;
+    margin-top: 37px;
+    overflow-y: scroll;
+}
+#NewEquation {
     position: absolute;
     top: 15px;
+    margin-top: 8px;
     left: 0;
     width: 186px;
     height: auto;
@@ -183,6 +193,7 @@ body.light-theme .SquareButtons_Remove {
 }
 #ModeSelector {
     left: 210px;
+    font-family: monospace;
 }
 #PlottingModeSelector {
     left: 310px;
@@ -369,4 +380,87 @@ a {
     margin-left: 10px;
     font-weight: bolder;
     font-size: medium;
+}
+
+
+.searchBox {
+    position: absolute;
+    top: 13px; right: 10px;
+    z-index: 100;
+    height: fit-content;
+    padding: 0px 0px;
+    align-content: center;
+    background: transparent;
+    border: 1px; border-width: thin; border-style: solid;
+    border-color: rgb(143, 143, 143);
+    border-radius: 5px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    padding: 3px 5px;
+}
+
+.row input{
+    flex: 1;
+    background: transparent;
+}
+
+.row button {
+    background-image: url("./images/commandDark.png");
+    border: none;
+    width: 28px;
+    height: 27px;
+    margin-right: 5px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 28px 27px;
+    cursor: pointer;
+}
+
+body.light-theme .row button {
+    background-image: url("./images/commandLight.png");
+}
+
+.resultBox ul{
+    border-top: 1px solid white;
+    padding: 15px 10px;
+    margin: 0px 0px;
+    color: white;
+}
+
+body.light-theme .resultBox ul {
+    color:  black;
+    border-top-color: rgb(114, 114, 114);
+}
+
+.resultBox ul li {
+    list-style: none;
+    border-radius: 3px;
+    padding: 7px;
+    cursor: pointer;
+    background: inherit;
+}
+
+.resultBox ul li :hover {
+    background: rgb(182, 166, 166);
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background: none;
+    border-radius: 4px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 4px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the thumb on hover */
 }
