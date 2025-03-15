@@ -187,17 +187,20 @@ export class GraphGL {
     DeselectEntities() {
 
         let equationCounter = 0; let pointCounter = 0;
+
+        // sets the original color showing the entity (point or equation) is deselected
         this.#selectedEntities.forEach((entity) => {
             entity.SetColor(entity.GetOriginalColor());
-
             if (entity instanceof Point) pointCounter ++;
             else equationCounter ++;
         });
 
+        // clean up
         this.#selectedPoints.clear();
         this.#selectedEquations.clear();
         this.#selectedEntities.clear();
 
+        // refreshes the layers without changing others
         if (pointCounter > 0) this.#RefreshPointLayerOfGraph();
         if (equationCounter > 0) this.#RefreshEquationLayerOfGraph();
     }

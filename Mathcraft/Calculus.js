@@ -215,6 +215,7 @@ export class Calculus {
     GetDerivativeOf(equation) {
 
         let parsedExpression = new Parser().Parse(equation.toString());
+        console.log(JSON.stringify(parsedExpression, null, 2));
         let derivative = this.SymbolicDifferentiation(parsedExpression);
 
         if (!derivative) return undefined;

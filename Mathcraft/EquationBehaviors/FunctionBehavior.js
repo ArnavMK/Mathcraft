@@ -28,7 +28,7 @@ export class FunctionBehavior {
         if (!this.isValid) return;
 
         try {
-            let func = new Function("x", `return ${expression}`)
+            let func = new Function("x", `return ${expression}`);
             this.isValid = true;
             return func;
         }
