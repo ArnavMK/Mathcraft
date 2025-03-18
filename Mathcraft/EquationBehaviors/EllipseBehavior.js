@@ -9,6 +9,7 @@ export class EllipseBehavior {
 
     constructor(majorMinorAxisString, centreString) {
 
+        console.log(majorMinorAxisString, centreString);
 
         this.#centre = this.#ParseCentre(centreString);
         this.#majorMinorAxisPoint = this.#ParseMajorMinorAxis(majorMinorAxisString);
@@ -72,12 +73,14 @@ export class EllipseBehavior {
     }
 
     toString() {
-        return this.centreString;
+        return this.majorMinorAxisString;
     }
 
     GetCentre() {
         return this.#centre;
     }
+
+    
 
     GetMajorMinorAxisPoint() {
         return this.#majorMinorAxisPoint;

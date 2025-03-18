@@ -30,7 +30,7 @@ function EditEquationSequence(event) {
 
     existingEquation = event.detail.equation;
     graph.RefreshInformationModalWithGivenMode(existingEquation.GetType());
-
+    
     equationText.value = existingEquation.toString();
     domainText.value =  existingEquation.GetAccompaniedInfo();
     colorPicker.value = existingEquation.GetOriginalColor();
@@ -52,7 +52,15 @@ function SaveEquationInformation() {
 
     let equation = new Equation(equationText.value, domainText.value, mode, colorPicker.value);
 
-    if (!graph.TryAddEquation(equation)) return;
+    let valid = !graph.TryAddEquation(equation);
+    console.log(valid)
+    
+    if (valid) {
+        console.log("something")
+        return;
+    }
+
+    console.log("outside something")
     equationModal.close();
 
 }
