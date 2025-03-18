@@ -16,14 +16,17 @@ let equationModal = document.getElementById("EquationDialog");
 let equationText = document.getElementById("EquationDialog_equation");
 let domainText = document.getElementById("EquationDialog_domain");
 let colorPicker = document.getElementById("EquationDialog_colorPicker");
+let existingEquation = undefined;
 
 // event subscriptions
 document.getElementById("NewEquation").addEventListener('click', NewEquationCommand);
 document.getElementById("EquationDialog_save").addEventListener("click", SaveEquationInformation);
-document.getElementById("EquationDialog_cancel").addEventListener("click", () => equationModal.close())
+document.getElementById("EquationDialog_cancel").addEventListener("click", () => {
+   existingEquation = undefined
+   equationModal.close()  
+})
 graph.OnEditEquationRequestReceived.addEventListener("edit", EditEquationSequence);
 
-let existingEquation = undefined;
 
 
 function EditEquationSequence(event) {
@@ -41,27 +44,24 @@ function EditEquationSequence(event) {
 function SaveEquationInformation() {
 
     console.log("existing: ", existingEquation);
-
+        
     let mode = graph.GetMode();
     if (existingEquation != undefined) {
-        graph.RemoveEquation(existingEquation);
-        mode = existingEquation.GetType()
-        existingEquation = undefined;
-        equationModal.close();
+        mode = existingEquation.GetType();
     }
 
     let equation = new Equation(equationText.value, domainText.value, mode, colorPicker.value);
-
-    let valid = !graph.TryAddEquation(equation);
-    console.log(valid)
     
-    if (valid) {
-        console.log("something")
-        return;
-    }
+    if (Equation.IsValidEquation(equation)) {
+        
+        if (existingEquation != undefined) {
+            graph.RemoveEquation(existingEquation);
+            existingEquation = undefined;
+        }
 
-    console.log("outside something")
-    equationModal.close();
+        graph.TryAddEquation(equation);
+        equationModal.close();
+    }
 
 }
 

@@ -31,7 +31,6 @@ export class Equation extends Entity {
         }
 
         let valid = equation.IsValid()
-        console.log(valid)
         // run type specific checks;
         return valid;
     }

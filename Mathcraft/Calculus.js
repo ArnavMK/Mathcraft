@@ -492,8 +492,26 @@ export class Calculus {
                 }
             }
 
-            // sqrt
+            if (node.value === "sqrt") {
+
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: this.SymbolicDifferentiation(node.argument),
+                    right: {
+                        type: "operator",
+                        value: "*",
+                        left: {
+                            type: "number",
+                            value: 2
+                        },
+                        right: node
+                    }
+                }
+
+            }
         }
+        
         return undefined;
     }
 

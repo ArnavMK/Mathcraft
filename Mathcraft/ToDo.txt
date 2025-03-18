@@ -1,1 +1,8 @@
-2. give f(x) ^ g(x) and log10, sqrt in differentiation
+1. fix context menu point allocation
+2. Make equation for front page
+3. Tooltip for graph controllers
+4. user manual and help button at bottom
+5. video
+6. look over add point error checking
+7. Home page for the website
+8. Personal portfolio website

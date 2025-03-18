@@ -522,7 +522,7 @@ export class GraphGL {
                 this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
 
                 let derivative = Math.abs(equation.GetValue(x + baseCurveFactor) - currentPoint.y);
-                let newCureFactor = Math.min(baseCurveFactor/(1+derivative), baseCurveFactor); // always under the base curve factor
+                let newCureFactor = Math.min(baseCurveFactor/(1+(derivative/3)), baseCurveFactor); // always under the base curve factor
 
                 x += newCureFactor;
             }

@@ -15,6 +15,7 @@ export class Differentiate extends Command {
 
         if (!derivative) {
             window.errorLogger.ShowNewError("Cannot find the derivative in this situation");
+            this.OnComplete();
             return;
         }
 

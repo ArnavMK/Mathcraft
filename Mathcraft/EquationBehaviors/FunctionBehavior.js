@@ -10,9 +10,15 @@ export class FunctionBehavior {
         this.expressionString = expression;
         this.domainString = domain;
     }
+    
+    // this methods gets called thousands of times to render this equation
+    GetValue(x) {
+        return this.#function(x);
+    }
 
     #ParseFunction(expression) {
 
+        // replace the log -> log10 and ln -> log according to Math class in JS
         expression = expression.replace(/\blog\b/g, "log10");
         expression = expression.replace(/\bln\b/g, "log");
 
@@ -24,16 +30,18 @@ export class FunctionBehavior {
 
         expression = expression.replace(/\^/g, "**"); // replaces ^ with **
 
+        // runs project specific error checks
         this.isValid = this.#ValidateFunctionExpression(expression);
         if (!this.isValid) return;
 
+        // makes the function
         try {
             let func = new Function("x", `return ${expression}`);
-            this.isValid = true;
-            return func;
+            this.isValid = true; return func;
         }
         catch (error) {
             this.isValid = false;
+            // displays any errors that may appear in making a new function (l:34)
             window.errorLogger.ShowNewError(error.message);
             return undefined;
         }
@@ -77,10 +85,6 @@ export class FunctionBehavior {
         
     }
 
-    // this will be called to draw the function
-    GetValue(x) {
-        return this.#function(x);
-    }
 
     IsPointOnCurve(point) {
         

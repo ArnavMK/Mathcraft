@@ -28,10 +28,6 @@ export class CommandSearch {
             }
         }
 
-        this.inputBox.onblur = () => {
-            this.ClearResultBox()
-        }
-
         document.onkeyup = (event) => {
             
             if (event.key == "s") {
@@ -104,7 +100,7 @@ export class CommandSearch {
 
     SelectInput(list) {
         this.inputBox.value = list.innerHTML;
-        this.ClearResultBox();
+        console.log(this.inputBox.value)
         this.inputBox.focus();
     }
 
