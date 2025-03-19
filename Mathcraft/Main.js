@@ -22,9 +22,9 @@ let existingEquation = undefined;
 document.getElementById("NewEquation").addEventListener('click', NewEquationCommand);
 document.getElementById("EquationDialog_save").addEventListener("click", SaveEquationInformation);
 document.getElementById("EquationDialog_cancel").addEventListener("click", () => {
-   existingEquation = undefined
-   equationModal.close()  
-})
+   existingEquation = undefined;
+   equationModal.close();
+});
 graph.OnEditEquationRequestReceived.addEventListener("edit", EditEquationSequence);
 
 

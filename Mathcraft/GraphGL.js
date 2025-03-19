@@ -698,7 +698,7 @@ export class GraphGL {
     }
 
     #OnScrollWheelActive(event) {
-        let scaleDelta = 10;
+        let scaleDelta = 7;
 
         if (event.deltaY < 0) this.IncreaseScale(scaleDelta);
         else this.DecreaseScale(scaleDelta);

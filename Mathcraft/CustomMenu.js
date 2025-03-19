@@ -30,7 +30,7 @@ export class CustomMenu {
                 this.SetActive(false);
             }
         })
-        document.addEventListener("mousedown", this.OnClick_AnyWhere.bind(this));
+        document.addEventListener("click", this.OnClick_AnyWhere.bind(this));
     }
 
     OnClick_AnyWhere(event) {
