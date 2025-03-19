@@ -214,8 +214,12 @@ export class Calculus {
 
     GetDerivativeOf(equation) {
 
+        if (equation.GetType() != "function") {
+            window.errorLogger.ShowNewError("Cannot get the derivative of equation of type: " + equation.GetType())
+            return;
+        }
+
         let parsedExpression = new Parser().Parse(equation.toString());
-        console.log(JSON.stringify(parsedExpression, null, 2));
         let derivative = this.SymbolicDifferentiation(parsedExpression);
 
         if (!derivative) return undefined;
@@ -311,6 +315,21 @@ export class Calculus {
 
                 let base = node.left; let exponent = node.right;
 
+                if (base.type === "number" && base.value === Math.E) {
+
+                    if (exponent.type === "variable") {
+                        return node;
+                    }
+
+                    return {
+                        type: "operator",
+                        value: "*",
+                        left: node,
+                        right: this.SymbolicDifferentiation(exponent)
+                    }
+
+                }
+
                 // x^f(x) cases
                 if (exponent.type === "number") {
 
@@ -334,6 +353,9 @@ export class Calculus {
                         right: this.SymbolicDifferentiation(base)
                     }
                 }
+
+
+
 
                 // a^f(x) cases
                 if (base.type === "number") {

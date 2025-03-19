@@ -1,5 +1,4 @@
 2. Make equation for front page
-3. Tooltip for graph controllers
 4. user manual and help button at bottom
 5. video
 6. look over add point error checking
