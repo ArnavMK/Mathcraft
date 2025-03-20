@@ -542,7 +542,7 @@ export class GraphGL {
     
             // Adjust step size based on the derivative
             let derivative = Math.abs(equation.GetValue(x + baseCurveFactor) - currentPoint.y);
-            let newCurveFactor = Math.min(baseCurveFactor / (1 + (derivative / 3)), baseCurveFactor);
+            let newCurveFactor = Math.min(baseCurveFactor / (1 + (derivative)), baseCurveFactor);
             newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01); // Ensure step size doesn't become too small
             x += newCurveFactor;
         }
