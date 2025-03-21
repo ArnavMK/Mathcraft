@@ -685,7 +685,74 @@ export class Calculus {
                 }
             }
 
-            
+            if (node.value === "asin") {
+
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: {type: "number", value: 1},
+                    right: {
+                        type: "function",
+                        value: "sqrt",
+                        argument: {
+                            type: "operator",
+                            value: "-",
+                            left: {type: "number", value: 1},
+                            right: {
+                                type:"operator",
+                                value: "^",
+                                left: {type: "variable", value: "x"},
+                                right: {type: "number", value: 2}
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            if (node.value === "acos") {
+
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: {type: "number", value: -1},
+                    right: {
+                        type: "function",
+                        value: "sqrt",
+                        argument: {
+                            type: "operator",
+                            value: "-",
+                            left: {type: "number", value: 1},
+                            right: {
+                                type:"operator",
+                                value: "^",
+                                left: {type: "variable", value: "x"},
+                                right: {type: "number", value: 2}
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (node.value === "atan") {
+
+                return {
+                    type: "operator",
+                    value: "/",
+                    left: {type: "number", value: 1},
+                    right: {
+                        type: "operator",
+                        value: "+",
+                        left: {type: "number", value: 1},
+                        right: {
+                            type:"operator",
+                            value: "^",
+                            left: {type: "variable", value: "x"},
+                            right: {type: "number", value: 2}
+                        }
+                    }
+                }
+            }
         }
         
         return undefined;

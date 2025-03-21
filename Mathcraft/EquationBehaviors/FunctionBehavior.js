@@ -23,7 +23,7 @@ export class FunctionBehavior {
         expression = expression.replace(/\bln\b/g, "log");
 
         // append Math. before functions
-        let symbols = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "log10", "E", "atan", "acos", "asin"];
+        let symbols = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', "log10", "E", "atan", "acos", "asin"];
         for (let symbol of symbols) {
             expression = expression.replace(new RegExp(`\\b${symbol}\\b`, 'g'), `Math.${symbol}`);
         }
