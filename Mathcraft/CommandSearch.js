@@ -11,7 +11,8 @@ export class CommandSearch {
             "Best Fit", "Remove All",
             "Get Tangents", "Roots",
             "Open", "Add Point", 
-            "Differentiate", "Line Segment"
+            "Differentiate", "Line Segment",
+            "Embed Triangle", "Extremum"
         ]
 
         this.resultBox = document.querySelector(".resultBox");

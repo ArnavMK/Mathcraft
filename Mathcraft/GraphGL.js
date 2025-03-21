@@ -478,80 +478,58 @@ export class GraphGL {
         DrawCalls[equation.GetType()]();
     }
 
-    #DrawFunction(/** @type {Equation}*/ equation, baseCurveFactor = 0.01) {
+    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.01) {
+        
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.GetGridLinesNumbers();
-    
+
         if (domain === "Reals") {
+
             domain = {
                 min: -screenCapacityPoint.x - 1,
                 max: screenCapacityPoint.x + 1
-            };
+            }
         }
-    
+
         this.equationC.beginPath();
-        this.equationC.strokeStyle = equation.color;
-        this.equationC.lineWidth = 2;
-    
-        let isDrawing = false; // Track whether we are currently drawing a segment
-        let previousSlope = null; // Track the slope direction of the previous segment
-    
-        for (let x = domain.min; x < domain.max;) {
-            let currentPoint = new Point(x, equation.GetValue(x));
-            let nextX = x + baseCurveFactor;
-            let nextPoint = new Point(nextX, equation.GetValue(nextX));
-    
-            // Skip if the current or next point is undefined (NaN)
-            if ([nextPoint.y, currentPoint.y].some(isNaN)) {
-                x = nextX;
-                isDrawing = false; // Stop drawing if we encounter NaN
-                continue;
-            }
-    
-            // Calculate the slope (derivative) of the current segment
-            let currentSlope = nextPoint.y - currentPoint.y;
-    
-            // Check if the slope direction has changed significantly
-            if (previousSlope !== null && Math.sign(currentSlope) !== Math.sign(previousSlope)) {
-                // Slope direction has changed, likely indicating an asymptote
-                if (isDrawing) {
-                    this.equationC.stroke(); // End the current path
-                    this.equationC.beginPath(); // Start a new path
-                    isDrawing = false;
+
+            this.equationC.strokeStyle = equation.color;
+            this.equationC.lineWidth = 2;
+
+            for (let x = domain.min; x < domain.max;) {
+
+                let currentPoint = new Point(x, equation.GetValue(x));
+                let nextX = x + baseCurveFactor
+                let nextPoint = new Point(nextX, equation.GetValue(nextX));
+
+                if ([nextPoint.y, currentPoint.y].some(isNaN)) {
+                    x = nextX;
+                    continue;
+                }    
+
+                let currentCanvasPoint = Point.GetCanvasPoint(currentPoint, this.equationCanvas, this.scale);
+                let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
+
+                let dy = nextPoint.y - currentPoint.y;
+                let absDy = Math.abs(dy);
+
+                if (absDy > 2 * screenCapacityPoint.y) {
+                    x = nextX;
+                    continue;
                 }
-                x = nextX;
-                previousSlope = null; // Reset slope tracking
-                continue;
-            }
-    
-            // Update the previous slope
-            previousSlope = currentSlope;
-    
-            // Convert points to canvas coordinates
-            let currentCanvasPoint = Point.GetCanvasPoint(currentPoint, this.equationCanvas, this.scale);
-            let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
-    
-            if (!isDrawing) {
-                // Start a new path if we weren't drawing
+
                 this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
-                isDrawing = true;
+                this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
+
+                let derivative = Math.abs(equation.GetValue(x + baseCurveFactor) - currentPoint.y);
+                let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative)), baseCurveFactor); // always under the base curve factor
+                newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
+                x += newCurveFactor;
             }
-    
-            // Draw the line segment
-            this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
-    
-            // Adjust step size based on the derivative
-            let derivative = Math.abs(equation.GetValue(x + baseCurveFactor) - currentPoint.y);
-            let newCurveFactor = Math.min(baseCurveFactor / (1 + (derivative)), baseCurveFactor);
-            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01); // Ensure step size doesn't become too small
-            x += newCurveFactor;
-        }
-    
-        // Finalize the drawing
-        if (isDrawing) {
-            this.equationC.stroke();
-        }
+            
+        this.equationC.stroke();
     }
+
     #DrawCircle(/** @type {Equation}*/circle) {
 
         if (circle.GetType() != "Circle") {
@@ -791,6 +769,10 @@ export class GraphGL {
         equationUIdiv.appendChild(equationName);
 
         return equationUIdiv;
+    }
+
+    static GetRandomColor() {
+        return "#" + Math.floor(Math.random()*16777215).toString(16);
     }
 }
 

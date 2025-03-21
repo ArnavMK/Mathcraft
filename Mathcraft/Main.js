@@ -10,7 +10,7 @@ let graph = new Graph(new GraphGL(document.getElementById("canvas")));
 // properties global to the entire codebase
 window.errorLogger = new ErrorLogger(Array.from(document.querySelectorAll(".ErrorLogger")));
 window.calculus = new Calculus(graph);
-window.allSymbols = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "log10", "E", "atan", "acos", "asin"];
+
 
 let equationModal = document.getElementById("EquationDialog");
 let equationText = document.getElementById("EquationDialog_equation");

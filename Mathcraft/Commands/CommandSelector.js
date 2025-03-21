@@ -6,6 +6,8 @@ import { Tangents } from "./Tangents.js";
 import { AddPoint } from "./AddPoint.js";
 import { Differentiate } from "./Differentiate.js";
 import { LineSegment } from "./LineSegment.js";
+import { EmbedTriangle } from "./EmbedTriangle.js";
+import { Extremum } from "./Extremum.js";
 
 export class CommandSelector {
 
@@ -49,6 +51,14 @@ export class CommandSelector {
 
             "Line Segment": () => {
                 return new LineSegment(this.graph);
+            },
+
+            "Embed Triangle": () => {
+                return  new EmbedTriangle(this.graph);
+            },
+
+            "Extremum": () => {
+                return new Extremum(this.graph);
             }
         }
 

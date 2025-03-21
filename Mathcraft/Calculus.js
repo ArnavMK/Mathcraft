@@ -2,6 +2,7 @@ import { Equation } from "./Equation.js";
 import { Graph } from "./Graph.js";
 import { Point } from "./Point.js";
 import {Parser} from "./Parser.js";
+import { GraphGL } from "./GraphGL.js";
 
 export class Calculus {
 
@@ -88,8 +89,16 @@ export class Calculus {
         return [new Point(x1, 0), new Point(x2, 0)];
     }
 
-    NumericalDifferentiation(equation, point, h = 0.00000000001) {
+    NumericalDifferentiation(equation, point, h = 1e-7) {
         return (equation.GetValue(point.x + h) - equation.GetValue(point.x))/h
+    }
+
+    SecondNumericalDifferentiation(equation, point, h = 1e-7) {
+        return (
+            ((this.NumericalDifferentiation(equation, new Point(point.x+h, 0))) -
+            (this.NumericalDifferentiation(equation, new Point(point.x, 0))))/
+            h
+        );
     }
 
     GetTangentAtPoint(equation, point) {
@@ -126,6 +135,157 @@ export class Calculus {
         }
 
         return lookupObject[equation.GetType()](this);
+    }
+    GetRootsOfEquation(equation, graph) {
+        let domain = equation.GetDomain();
+        let screenCapacityPoint = graph.renderer.GetGridLinesNumbers();
+    
+        if (domain === "Reals") {
+            domain = {
+                min: -screenCapacityPoint.x - 1,
+                max: screenCapacityPoint.x + 1
+            };
+        }
+        
+        let roots = [];
+        let sampleRate = 0.01;
+        let rootContainingDomains = [];
+        let x = domain.min;
+        let signChanges = 0;
+        const maxSignChanges = 2000;
+    
+        while (x <= domain.max) {
+            let currentPoint = { x: x, y: equation.GetValue(x) };
+            let nextPoint = { x: x + sampleRate, y: equation.GetValue(x + sampleRate) };
+    
+            if (Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
+                x += sampleRate;
+                continue;
+            }
+    
+            // if the current y values are already close to zero
+            if (Math.abs(currentPoint.y) < 1e-7) {
+
+                let derivative = this.NumericalDifferentiation(equation, currentPoint);
+                let secondDerivative = this.SecondNumericalDifferentiation(equation, currentPoint);
+
+                // detects touching roots
+                if (Math.abs(derivative) < 1e-7 && Math.abs(secondDerivative) >= 0.01) {
+                    let d = { min: x - sampleRate, max: x + sampleRate };
+                    rootContainingDomains.push(d);
+                    signChanges++;
+                }
+                // cutting roots
+                else if (Math.abs(derivative) > 1e-7)
+                {
+                    let prevPoint = { x: x - sampleRate, y: equation.GetValue(x - sampleRate) };
+                    let nextNextPoint = { x: x + 2 * sampleRate, y: equation.GetValue(x + 2 * sampleRate) };
+    
+                    if (prevPoint.y * nextNextPoint.y < 0) {
+                        let d = { min: x - sampleRate, max: x + sampleRate };
+                        rootContainingDomains.push(d);
+                        signChanges++;
+                    }
+                }
+                x += sampleRate;
+                continue;
+            }
+    
+            // Check for sign change (function crosses the x-axis)
+            if (currentPoint.y * nextPoint.y < 0) {
+                let d = { min: x, max: x + sampleRate };
+                rootContainingDomains.push(d);
+                signChanges++;
+            }
+    
+            x += sampleRate;
+    
+            if (signChanges > maxSignChanges) {
+                window.errorLogger.ShowNewError("This function has too many roots to compute. Please reduce the domain.");
+                return;
+            }
+        }
+    
+        
+        rootContainingDomains.forEach((domain) => {
+            roots.push(this.BisectionMethod(domain, equation));
+        });
+    
+        return roots;
+    }
+    
+    BisectionMethod(initialDomain, equation) {
+        const tolerance = 1e-7;
+        const maxIterations = 100;
+        let a = initialDomain.min;
+        let b = initialDomain.max;
+        let iteration = 0;
+    
+        while (iteration < maxIterations) {
+            let c = (a + b) / 2;
+            let fc = equation.GetValue(c);
+    
+            if (Math.abs(fc) < tolerance) {
+                return c;
+            }
+    
+            if (equation.GetValue(a) * fc < 0) {
+                b = c;
+            } else {
+                a = c;
+            }
+    
+            iteration++;
+        }
+    
+        let c = (a + b) / 2;
+        return c;
+    }
+    GetRandomPointOnClosedCurve(equation, howManyPoints) {
+
+        let centreX = equation.GetCentre().x;
+        let xRange = equation.GetType() === "Circle" ? equation.GetRadius() : equation.GetMajorMinorAxisPoint().x / 2;
+
+        let domain = {min: centreX - xRange, max: centreX + xRange};
+        let randomXs = this.GetRandomNumbersWithMinDistance(domain.min, domain.max, xRange/1.4, howManyPoints);
+
+        let randomPoints = randomXs.map(x => new Point(x, equation.GetValue(x)[this.GetRandomInteger(0, 1)]));
+
+        return randomPoints;
+    }
+
+    GetRandomNumbersWithMinDistance(min, max, minDistance, numberOfPoints) {
+
+        let range = max - min;
+        let gridSize = Math.ceil(range / minDistance);
+    
+        // Check if the grid can accommodate the required number of points
+        if (gridSize < numberOfPoints) {
+            console.error("Not enough space to fit all points with the required minimum distance.");
+            return [];
+        }
+    
+        let pointsFound = [];
+        for (let i = 0; i < numberOfPoints; i++) {
+            // Calculate the cell's starting position
+            let cellStart = min + (i % gridSize) * minDistance;
+            let cellEnd = cellStart + minDistance;
+    
+            // Generate a random point within the cell
+            let point = this.GetRandomNumber(cellStart, cellEnd);
+            pointsFound.push(point);
+        }
+    
+        return pointsFound;
+
+    }
+
+    GetRandomInteger(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    GetRandomNumber(min, max) {
+        return Math.random() * (max - min) + min;
     }
 
     GetTangentFromPoint(equation, point) {
@@ -224,7 +384,7 @@ export class Calculus {
 
         if (!derivative) return undefined;
 
-        return new Equation(Parser.ConvertTreeToString(derivative), "Reals", "function");
+        return new Equation(Parser.ConvertTreeToString(derivative), "Reals", "function", GraphGL.GetRandomColor());
     }
 
     SymbolicDifferentiation(node) {
@@ -495,7 +655,7 @@ export class Calculus {
 
             }
 
-            // log to the base 10
+            // log to the base 10: log(f(x)) cases
             if (node.value === "log") {
 
                 return {
@@ -508,7 +668,7 @@ export class Calculus {
                         left: node.argument,
                         right: {
                             type: "number",
-                            value: Math.LOG10E
+                            value: Math.log(10)
                         }
                     }
                 }
@@ -530,8 +690,9 @@ export class Calculus {
                         right: node
                     }
                 }
-
             }
+
+            
         }
         
         return undefined;
