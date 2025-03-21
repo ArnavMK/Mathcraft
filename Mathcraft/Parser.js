@@ -91,7 +91,7 @@ export class Parser {
             }
     
             // handles functions
-            if (['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp', "ln", "E", "atan", "acos", "asin"].includes(tokens[index])) {
+            if (['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', "ln", "E", "atan", "acos", "asin"].includes(tokens[index])) {
                 let oldIndex = index; index++;
                 let node = {
                     type: "function",

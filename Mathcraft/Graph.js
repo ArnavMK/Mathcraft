@@ -193,16 +193,16 @@ export class Graph {
         this.SelectPointsUnderRect(selectionRect);
     }
     
-    #OnLeftMouseButtonUp() {
+    #OnLeftMouseButtonUp(event) {
         this.renderer.DisablePointDisplayRendering();
         this.isLeftMouseDown = false;
+        this.HandleEntitySelectionOnClick(event); 
         this.TryAddEquation(this.dynamicCircleEquationByUserDrag);
         this.TryAddEquation(this.dynamicEllipseEquationByDrag)
     }
     
     #OnLeftMouseButtonDown(event) {
         this.isLeftMouseDown = true;
-        this.HandleEntitySelectionOnClick(event); 
         this.initialMousePositionWhenLeftClicked = new Point(event.offsetX, event.offsetY);
         this.renderer.EnablePointDisplayRendering(event);
     }
@@ -289,6 +289,10 @@ export class Graph {
             return false;
         }
 
+        if (this.dynamicCircleEquationByUserDrag != undefined || this.dynamicEllipseEquationByDrag != undefined) {
+            return false;
+        }
+
         this.coordinates.set(mathPoint.toString(), mathPoint);
         this.entities.set(mathPoint.toString(), mathPoint);
         this.renderer.RenderPoint(mathPoint, color);
@@ -297,13 +301,8 @@ export class Graph {
     }
 
     TryAddEquation(equation) {
-    
-        if (!Equation.IsValidEquation(equation)) {
-            return false;
-        }
-
-        if (this.equations.has(equation.toString())) {
-            window.errorLogger.ShowNewError(`${equation.toString()}. This equation already exists`);
+        
+        if (!this.CanAddEquation(equation)) {
             return false;
         }
 
@@ -327,6 +326,20 @@ export class Graph {
         }
 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
+        return true;
+    }
+
+    CanAddEquation(equation) {
+
+        if (equation == undefined) {
+            return false;
+        }
+
+        if (this.equations.has(equation.toString())) {
+            window.errorLogger.ShowNewError(`${equation.toString()}. This equation already exists`);
+            return false;
+        }
+
         return true;
     }
 
@@ -369,6 +382,10 @@ export class Graph {
         if (!this.equations.has(sender.id)) return;
 
         this.RemoveEquation(this.equations.get(sender.id));
+    }
+
+    IsEquationInGraph(equation) {
+        return this.equations.has(equation.toString());
     }
 
     OnAnySelectButtonClicked(event) {

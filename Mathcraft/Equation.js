@@ -30,8 +30,9 @@ export class Equation extends Entity {
             return false;
         }
 
+        let valid = equation.IsValid()
         // run type specific checks;
-        return equation.IsValid();
+        return valid;
     }
 
     #CreateBehavior(type, firstInfo, accompaniedInfo) {

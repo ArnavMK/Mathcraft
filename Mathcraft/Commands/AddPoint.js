@@ -70,8 +70,6 @@ export class AddPoint extends Command {
         let y = this.selectedEquation.GetValue(x);
         let color = this.informationModalStats["color"].value;
     
-        console.log(y)
-
         if (y instanceof Array) { // if there are more than one values (circle);
 
             if (y.some(isNaN)) {window.errorLogger.ShowNewError(`There are no values for x = ${x} on this curve`); return;}

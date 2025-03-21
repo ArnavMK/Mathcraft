@@ -478,7 +478,7 @@ export class GraphGL {
         DrawCalls[equation.GetType()]();
     }
 
-    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.02) {
+    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.01) {
         
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.GetGridLinesNumbers();
@@ -510,7 +510,7 @@ export class GraphGL {
                 let currentCanvasPoint = Point.GetCanvasPoint(currentPoint, this.equationCanvas, this.scale);
                 let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
 
-                let dy = currentPoint.y - nextPoint.y;
+                let dy = nextPoint.y - currentPoint.y;
                 let absDy = Math.abs(dy);
 
                 if (absDy > 2 * screenCapacityPoint.y) {
@@ -521,10 +521,10 @@ export class GraphGL {
                 this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
                 this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
 
-                let derivative = Math.abs(equation.GetValue(x + baseCurveFactor) - currentPoint.y);
-                let newCureFactor = Math.min(baseCurveFactor/(1+derivative), baseCurveFactor); // always under the base curve factor
-
-                x += newCureFactor;
+                let derivative = window.calculus.NumericalDifferentiation(equation, currentPoint);
+                let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative)), baseCurveFactor);
+                newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
+                x += newCurveFactor;
             }
             
         this.equationC.stroke();
@@ -769,6 +769,10 @@ export class GraphGL {
         equationUIdiv.appendChild(equationName);
 
         return equationUIdiv;
+    }
+
+    static GetRandomColor() {
+        return "#" + Math.floor(Math.random()*16777215).toString(16);
     }
 }
 

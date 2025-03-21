@@ -11,7 +11,9 @@ export class CommandSearch {
             "Best Fit", "Remove All",
             "Get Tangents", "Roots",
             "Open", "Add Point", 
-            "Differentiate", "Line Segment"
+            "Differentiate", "Line Segment",
+            "Embed Triangle", "Extremum",
+            "Mirror Along X", "Mirror Along Y"
         ]
 
         this.resultBox = document.querySelector(".resultBox");
@@ -26,10 +28,6 @@ export class CommandSearch {
             else {
                 this.HandleCommandDispatching();
             }
-        }
-
-        this.inputBox.onblur = () => {
-            this.ClearResultBox()
         }
 
         document.onkeyup = (event) => {
@@ -104,7 +102,7 @@ export class CommandSearch {
 
     SelectInput(list) {
         this.inputBox.value = list.innerHTML;
-        this.ClearResultBox();
+        console.log(this.inputBox.value)
         this.inputBox.focus();
     }
 

@@ -448,7 +448,7 @@ body.light-theme .resultBox ul {
 }
 
 ::-webkit-scrollbar {
-    width: 3px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -457,10 +457,10 @@ body.light-theme .resultBox ul {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #555; /* Color of the thumb on hover */
     border-radius: 4px; 
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Color of the thumb on hover */
+    background: #888; 
 }

@@ -14,7 +14,6 @@ export class Command {
     }
 
     OnComplete() {
-        console.log("A command has been finished");
         this.graph.DeselectSelectedEntities();
     }
 }
