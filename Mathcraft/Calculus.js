@@ -89,11 +89,11 @@ export class Calculus {
         return [new Point(x1, 0), new Point(x2, 0)];
     }
 
-    NumericalDifferentiation(equation, point, h = 1e-7) {
+    NumericalDifferentiation(equation, point, h = 1e-20) {
         return (equation.GetValue(point.x + h) - equation.GetValue(point.x))/h
     }
 
-    SecondNumericalDifferentiation(equation, point, h = 1e-7) {
+    SecondNumericalDifferentiation(equation, point, h = 1e-20) {
         return (
             ((this.NumericalDifferentiation(equation, new Point(point.x+h, 0))) -
             (this.NumericalDifferentiation(equation, new Point(point.x, 0))))/
@@ -146,11 +146,11 @@ export class Calculus {
                 max: screenCapacityPoint.x + 1
             };
         }
-        
-        let roots = [];
-        let sampleRate = 0.01;
+    
+        let sampleRate = 0.02;
         let rootContainingDomains = [];
         let x = domain.min;
+        let roots = [];
         let signChanges = 0;
         const maxSignChanges = 2000;
     
@@ -158,35 +158,27 @@ export class Calculus {
             let currentPoint = { x: x, y: equation.GetValue(x) };
             let nextPoint = { x: x + sampleRate, y: equation.GetValue(x + sampleRate) };
     
+            // Skip points where the function value is too large (asymptotic behavior)
             if (Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
                 x += sampleRate;
                 continue;
             }
     
-            // if the current y values are already close to zero
+            // Check for root in the current interval
             if (Math.abs(currentPoint.y) < 1e-7) {
 
-                let derivative = this.NumericalDifferentiation(equation, currentPoint);
-                let secondDerivative = this.SecondNumericalDifferentiation(equation, currentPoint);
-
-                // detects touching roots
-                if (Math.abs(derivative) < 1e-7 && Math.abs(secondDerivative) >= 0.01) {
-                    let d = { min: x - sampleRate, max: x + sampleRate };
-                    rootContainingDomains.push(d);
-                    signChanges++;
-                }
-                // cutting roots
-                else if (Math.abs(derivative) > 1e-7)
-                {
-                    let prevPoint = { x: x - sampleRate, y: equation.GetValue(x - sampleRate) };
-                    let nextNextPoint = { x: x + 2 * sampleRate, y: equation.GetValue(x + 2 * sampleRate) };
+                // Check if the function touches the x-axis (derivative is zero)
+                let derivativeAtX = this.NumericalDifferentiation(equation, currentPoint);
+                let secondDerivativeAtX = this.SecondNumericalDifferentiation(equation, currentPoint);
     
-                    if (prevPoint.y * nextNextPoint.y < 0) {
-                        let d = { min: x - sampleRate, max: x + sampleRate };
-                        rootContainingDomains.push(d);
-                        signChanges++;
-                    }
+                
+                if (Math.abs(derivativeAtX) < 1e-7 && Math.abs(secondDerivativeAtX) > 1e-7) {
+                    roots.push(currentPoint.x);
+
+                } else if (Math.abs(derivativeAtX) > 1e-7) {
+                    roots.push(currentPoint.x);
                 }
+
                 x += sampleRate;
                 continue;
             }
@@ -206,7 +198,6 @@ export class Calculus {
             }
         }
     
-        
         rootContainingDomains.forEach((domain) => {
             roots.push(this.BisectionMethod(domain, equation));
         });
@@ -215,6 +206,7 @@ export class Calculus {
     }
     
     BisectionMethod(initialDomain, equation) {
+
         const tolerance = 1e-7;
         const maxIterations = 100;
         let a = initialDomain.min;
@@ -241,6 +233,7 @@ export class Calculus {
         let c = (a + b) / 2;
         return c;
     }
+
     GetRandomPointOnClosedCurve(equation, howManyPoints) {
 
         let centreX = equation.GetCentre().x;
