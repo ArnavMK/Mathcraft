@@ -12,7 +12,8 @@ export class CommandSearch {
             "Get Tangents", "Roots",
             "Open", "Add Point", 
             "Differentiate", "Line Segment",
-            "Embed Triangle", "Extremum"
+            "Embed Triangle", "Extremum",
+            "Mirror Along X", "Mirror Along Y"
         ]
 
         this.resultBox = document.querySelector(".resultBox");

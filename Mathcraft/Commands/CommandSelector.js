@@ -8,6 +8,8 @@ import { Differentiate } from "./Differentiate.js";
 import { LineSegment } from "./LineSegment.js";
 import { EmbedTriangle } from "./EmbedTriangle.js";
 import { Extremum } from "./Extremum.js";
+import { MirrorX } from "./MirrorX.js";
+import { MirrorY } from "./MirrorY.js";
 
 export class CommandSelector {
 
@@ -59,6 +61,14 @@ export class CommandSelector {
 
             "Extremum": () => {
                 return new Extremum(this.graph);
+            },
+
+            "Mirror Along X": () => {
+                return new MirrorX(this.graph);
+            },
+
+            "Mirror Along Y": () => {
+                return new MirrorY(this.graph);
             }
         }
 

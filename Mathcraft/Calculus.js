@@ -711,7 +711,7 @@ export class Calculus {
             }
 
             if (node.value === "acos") {
-
+ 
                 return {
                     type: "operator",
                     value: "/",
@@ -734,7 +734,7 @@ export class Calculus {
                 }
             }
 
-            if (node.value === "atan") {
+            if (node.value === "atan") { 
 
                 return {
                     type: "operator",
