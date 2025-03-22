@@ -492,40 +492,43 @@ export class GraphGL {
         }
 
         this.equationC.beginPath();
+        
+        this.equationC.strokeStyle = equation.color;
+        this.equationC.lineWidth = 2;
 
-            this.equationC.strokeStyle = equation.color;
-            this.equationC.lineWidth = 2;
-
-            for (let x = domain.min; x < domain.max;) {
-
-                let currentPoint = new Point(x, equation.GetValue(x));
-                let nextX = x + baseCurveFactor
-                let nextPoint = new Point(nextX, equation.GetValue(nextX));
-
-                if ([nextPoint.y, currentPoint.y].some(isNaN)) {
-                    x = nextX;
-                    continue;
-                }    
-
-                let currentCanvasPoint = Point.GetCanvasPoint(currentPoint, this.equationCanvas, this.scale);
-                let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
-
-                let dy = nextPoint.y - currentPoint.y;
-                let absDy = Math.abs(dy);
-
-                if (absDy > 2 * screenCapacityPoint.y) {
-                    x = nextX;
-                    continue;
-                }
-
-                this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
-                this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
-
-                let derivative = Math.abs(currentPoint.y - nextPoint.y);
-                let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative)), baseCurveFactor);
-                newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
-                x += newCurveFactor;
+        
+        for (let x = domain.min; x < domain.max;) {
+        
+            let currentPoint = new Point(x, equation.GetValue(x));
+            let nextX = x + baseCurveFactor
+            let nextPoint = new Point(nextX, equation.GetValue(nextX));
+            
+            
+            let derivative = Math.abs(currentPoint.y - nextPoint.y);
+            let DyDx = Math.abs(currentPoint.y - nextPoint.y)/1e-7;
+            
+            if ([nextPoint.y, currentPoint.y].some(isNaN)) {
+                x = nextX;
+                continue;
+            }    
+            
+            let currentCanvasPoint = Point.GetCanvasPoint(currentPoint, this.equationCanvas, this.scale);
+            let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
+            
+            let dy = nextPoint.y - currentPoint.y;
+            let absDy = Math.abs(dy);
+            
+            if (absDy > 10 * screenCapacityPoint.y) {
+                x = nextX;
+                continue;
             }
+            
+            this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
+            this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
+            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative)), baseCurveFactor);
+            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
+            x += newCurveFactor;
+        }
             
         this.equationC.stroke();
     }

@@ -392,6 +392,7 @@ export class Calculus {
         }   
 
         let parsedExpression = new Parser().Parse(equation.toString());
+
         let derivative = this.SymbolicDifferentiation(parsedExpression);
 
         if (!derivative) return undefined;
