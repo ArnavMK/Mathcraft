@@ -4,7 +4,7 @@ export class Parser {
 
     TokenizeExpression(expression) {
         let tokens = [];
-        let regex = /(\d+\.?\d*|\+|\-|\*|\/|\^|\(|\)|x|abs|ln|sin|cos|tan|sqrt|exp|log|E|acos|atan|asin)/g;
+        let regex = /(\d+\.?\d*|\+|\-|\*|\/|\^|\(|\)|x|abs|ln|sin|cos|tan|sqrt|log|E|acos|atan|asin)/g;
         let match;
 
         while ((match = regex.exec(expression)) !== null) {

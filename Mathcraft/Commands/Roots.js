@@ -33,7 +33,7 @@ export class Roots extends Command {
         }
 
         for (let x of xValueRoots) {
-            this.graph.TryAddPoint(new Point(x, equation.GetValue(x)));
+            this.graph.AddPoint(new Point(x, equation.GetValue(x)));
         }
 
     }
@@ -47,7 +47,7 @@ export class Roots extends Command {
             return;
         }
 
-        roots.forEach((root) => { this.graph.TryAddPoint(root); });
+        roots.forEach((root) => { this.graph.AddPoint(root); });
     }
 
     EllipseRootFinder(equation) {
@@ -58,7 +58,7 @@ export class Roots extends Command {
             return; 
         }
 
-        roots.forEach((root) => {this.graph.TryAddPoint(root)});
+        roots.forEach((root) => {this.graph.AddPoint(root)});
     }
 
 }

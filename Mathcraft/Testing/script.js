@@ -1,35 +1,53 @@
+// Add this to your script.js
+const particleCanvas = document.createElement('canvas');
+document.body.appendChild(particleCanvas);
+const particleCtx = particleCanvas.getContext('2d');
+particleCanvas.width = window.innerWidth;
+particleCanvas.height = window.innerHeight;
+particleCanvas.style.position = 'absolute';
+particleCanvas.style.top = '0';
+particleCanvas.style.left = '0';
+particleCanvas.style.zIndex = '-1'; // Behind the graph canvas
 
-function createMathFunction(expr) {
-    try {
-       
-        let jsCode = expr;
-        const mathFunctions = ['sin', 'cos', 'tan', 'log', 'sqrt', 'abs', 'exp'];
-        mathFunctions.forEach(func => {
-            jsCode = jsCode.replace(new RegExp(`\\b${func}\\b`, 'g'), `Math.${func}`);
-        });
+const particles = [];
+const numParticles = 100;
 
-        console.log(jsCode)
+class Particle {
+  constructor() {
+    this.x = Math.random() * particleCanvas.width;
+    this.y = Math.random() * particleCanvas.height;
+    this.size = Math.random() * 3 + 1;
+    this.speedX = Math.random() * 2 - 1;
+    this.speedY = Math.random() * 2 - 1;
+  }
 
-        jsCode = jsCode.replace(/(\S+)\s*\^\s*(\S+)/g, "($1 ** $2)");
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
 
-        console.log(jsCode)
-        const jsFunction = new Function('Math', 'x', `return ${jsCode};`);
+    if (this.x > particleCanvas.width || this.x < 0) this.speedX *= -1;
+    if (this.y > particleCanvas.height || this.y < 0) this.speedY *= -1;
+  }
 
-        return (x) => jsFunction(Math, x);
-    } catch (error) {
-        console.error('Invalid expression:', error.message);
-        return null; // Return null if the expression is invalid
-    }
+  draw() {
+    particleCtx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    particleCtx.beginPath();
+    particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    particleCtx.fill();
+  }
 }
 
-
-const expression = '(x)^(x)';
-const mathFunction = createMathFunction(expression);
-
-if (mathFunction) {
-    console.log('Expression is valid. Evaluating...');
-    const result = mathFunction(5); 
-    console.log('Result:', result); 
-} else {
-    console.log('Expression is invalid.');
+for (let i = 0; i < numParticles; i++) {
+  particles.push(new Particle());
 }
+
+function animateParticles() {
+  particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+  particles.forEach(particle => {
+    particle.update();
+    particle.draw();
+  });
+  requestAnimationFrame(animateParticles);
+}
+
+animateParticles();

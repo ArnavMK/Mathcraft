@@ -7,15 +7,6 @@ export class CommandSearch {
 
         this.EventSystem = new EventTarget();
 
-        this.allCommands = [
-            "Best Fit", "Remove All",
-            "Get Tangents", "Roots",
-            "Open", "Add Point", 
-            "Differentiate", "Line Segment",
-            "Embed Triangle", "Extremum",
-            "Mirror Along X", "Mirror Along Y"
-        ]
-
         this.resultBox = document.querySelector(".resultBox");
         this.ClearResultBox();
         this.inputBox = document.getElementById("inputBox");
@@ -51,7 +42,7 @@ export class CommandSearch {
         let input = this.inputBox.value;
 
         let counter = 0;
-        for (let command of this.allCommands) {
+        for (let command of window.allCommands) {
 
             if (input.toLowerCase() === command.toLowerCase()) {
                 counter++;
@@ -80,7 +71,7 @@ export class CommandSearch {
         let input = this.inputBox.value;
 
         if (input.length) {
-            result = this.allCommands.filter((keyword) => {
+            result = window.allCommands.filter((keyword) => {
                 return keyword.toLowerCase().includes(input.toLowerCase());
             });
         }

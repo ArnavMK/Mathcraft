@@ -21,7 +21,7 @@ export class Extremum extends Command {
         }
 
         for (let x of xValueRoots) {
-            this.graph.TryAddPoint(new Point(x, equation.GetValue(x)));
+            this.graph.AddPoint(new Point(x, equation.GetValue(x)));
         }
 
     }

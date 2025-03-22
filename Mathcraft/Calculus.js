@@ -136,6 +136,7 @@ export class Calculus {
 
         return lookupObject[equation.GetType()](this);
     }
+
     GetRootsOfEquation(equation, graph) {
         let domain = equation.GetDomain();
         let screenCapacityPoint = graph.renderer.GetGridLinesNumbers();
@@ -147,10 +148,10 @@ export class Calculus {
             };
         }
     
-        let sampleRate = 0.02;
+        let sampleRate = 0.01;
+        let roots = [];
         let rootContainingDomains = [];
         let x = domain.min;
-        let roots = [];
         let signChanges = 0;
         const maxSignChanges = 2000;
     
@@ -158,32 +159,39 @@ export class Calculus {
             let currentPoint = { x: x, y: equation.GetValue(x) };
             let nextPoint = { x: x + sampleRate, y: equation.GetValue(x + sampleRate) };
     
-            // Skip points where the function value is too large (asymptotic behavior)
+            // skipping asymptotes
             if (Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
                 x += sampleRate;
                 continue;
             }
     
-            // Check for root in the current interval
+            // if the current y value is already close to zero
             if (Math.abs(currentPoint.y) < 1e-7) {
-
-                // Check if the function touches the x-axis (derivative is zero)
                 let derivativeAtX = this.NumericalDifferentiation(equation, currentPoint);
                 let secondDerivativeAtX = this.SecondNumericalDifferentiation(equation, currentPoint);
     
-                
                 if (Math.abs(derivativeAtX) < 1e-7 && Math.abs(secondDerivativeAtX) > 1e-7) {
+
+                    signChanges++;
                     roots.push(currentPoint.x);
 
-                } else if (Math.abs(derivativeAtX) > 1e-7) {
-                    roots.push(currentPoint.x);
+                } 
+                else if (Math.abs(derivativeAtX) > 1e-7) {
+
+                    let prevPoint = { x: x - sampleRate, y: equation.GetValue(x - sampleRate) };
+                    let nextNextPoint = { x: x + 2 * sampleRate, y: equation.GetValue(x + 2 * sampleRate) };
+    
+                    if (prevPoint.y * nextNextPoint.y < 0) {
+                        signChanges++;
+                        roots.push(currentPoint.x);
+                    }
                 }
 
                 x += sampleRate;
                 continue;
             }
     
-            // Check for sign change (function crosses the x-axis)
+
             if (currentPoint.y * nextPoint.y < 0) {
                 let d = { min: x, max: x + sampleRate };
                 rootContainingDomains.push(d);
@@ -307,19 +315,17 @@ export class Calculus {
         }
 
         function EllipseType(thisClass) {
+
             let axes = equation.GetMajorMinorAxisPoint();
             let a = axes.x; 
             let b = axes.y; 
             let center = equation.GetCentre();
             let h = center.x; 
             let k = center.y; 
-        
-            let X0 = point.x - h;
-            let Y0 = point.y - k;
-        
-            let A = a**2 - X0**2;
-            let B = 2 * X0 * Y0;
-            let C = b**2 - Y0**2;
+                
+            let A = a**2 - (point.x - h)**2;
+            let B = 2 * (point.x - h) * (point.y - k);
+            let C = b**2 - (point.y - k)**2;
         
             let discriminant = B**2 - 4 * A * C;
         
@@ -370,7 +376,7 @@ export class Calculus {
         if (equation.GetType() != "function") {
             window.errorLogger.ShowNewError("Cannot get the derivative of equation of type: " + equation.GetType())
             return;
-        }
+        }   
 
         let parsedExpression = new Parser().Parse(equation.toString());
         let derivative = this.SymbolicDifferentiation(parsedExpression);

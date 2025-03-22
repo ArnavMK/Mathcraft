@@ -293,11 +293,15 @@ export class Graph {
             return false;
         }
 
+        this.AddPoint(mathPoint, color);
+        return true;
+    }
+
+    AddPoint(mathPoint, color = mathPoint.GetColor()) {
         this.coordinates.set(mathPoint.toString(), mathPoint);
         this.entities.set(mathPoint.toString(), mathPoint);
         this.renderer.RenderPoint(mathPoint, color);
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
-        return true;
     }
 
     TryAddEquation(equation) {
