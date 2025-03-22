@@ -5,7 +5,7 @@ export class LineSegment extends Command {
     Run() {
 
         if (this.graph.selectedCoordinates.size != 2) {
-            window.errorLogger.ShowNewError("Cant have more than two points selected for this command");
+            window.errorLogger.ShowNewError("Only two selected points expected for this command");
             return;
         }
 

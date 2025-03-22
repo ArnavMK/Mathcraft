@@ -6,10 +6,10 @@ import { Tangents } from "./Tangents.js";
 import { AddPoint } from "./AddPoint.js";
 import { Differentiate } from "./Differentiate.js";
 import { LineSegment } from "./LineSegment.js";
-import { EmbedTriangle } from "./EmbedTriangle.js";
 import { Extremum } from "./Extremum.js";
 import { MirrorX } from "./MirrorX.js";
 import { MirrorY } from "./MirrorY.js";
+import { Intersection } from "./Intersection.js";
 
 export class CommandSelector {
 
@@ -55,10 +55,6 @@ export class CommandSelector {
                 return new LineSegment(this.graph);
             },
 
-            "Embed Triangle": () => {
-                return  new EmbedTriangle(this.graph);
-            },
-
             "Extremum": () => {
                 return new Extremum(this.graph);
             },
@@ -69,6 +65,10 @@ export class CommandSelector {
 
             "Mirror Along Y": () => {
                 return new MirrorY(this.graph);
+            },
+
+            "Intersection" : () => {
+                return new Intersection(this.graph);
             }
         }
 

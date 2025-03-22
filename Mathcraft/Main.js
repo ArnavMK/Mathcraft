@@ -10,7 +10,14 @@ let graph = new Graph(new GraphGL(document.getElementById("canvas")));
 // properties global to the entire codebase
 window.errorLogger = new ErrorLogger(Array.from(document.querySelectorAll(".ErrorLogger")));
 window.calculus = new Calculus(graph);
-
+window.allCommands = [
+    "Best Fit", "Remove All",
+    "Get Tangents", "Roots",
+    "Open", "Add Point", 
+    "Differentiate", "Line Segment",
+    "Extremum", "Intersection",
+    "Mirror Along X", "Mirror Along Y"
+];
 
 let equationModal = document.getElementById("EquationDialog");
 let equationText = document.getElementById("EquationDialog_equation");
@@ -25,6 +32,11 @@ document.getElementById("EquationDialog_cancel").addEventListener("click", () =>
    existingEquation = undefined;
    equationModal.close();
 });
+equationModal.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    existingEquation = undefined;
+    equationModal.close();
+})
 graph.OnEditEquationRequestReceived.addEventListener("edit", EditEquationSequence);
 
 

@@ -53,6 +53,11 @@ export class FunctionBehavior {
             return false;
         }
 
+        if (expression.indexOf("NaN") >= 0) {
+            window.errorLogger.ShowNewError("Cannot have NaN as a number")
+            return false;
+        }
+
         return true;
     }
 

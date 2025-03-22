@@ -171,6 +171,20 @@ export class Graph {
 
         if (this.selectedCoordinates.size == 1)
             this.customMenu.AddCommand("Open"); else this.customMenu.RemoveCommand("Open");
+
+        this.equations.size > 0 ?
+            this.customMenu.AddCommand("Intersection") : this.customMenu.RemoveCommand("Intersection")
+
+        if (this.selectedEquations.size > 0) {
+            this.customMenu.AddCommand("Extremum");
+            this.customMenu.AddCommand("Mirror Along X");
+            this.customMenu.AddCommand("Mirror Along Y");
+        }
+        else {
+            this.customMenu.RemoveCommand("Extremum");
+            this.customMenu.RemoveCommand("Mirror Along X");
+            this.customMenu.RemoveCommand("Mirror Along Y");
+        }
     }
 
     #OnMouseMove(event) {
@@ -293,11 +307,15 @@ export class Graph {
             return false;
         }
 
+        this.AddPoint(mathPoint, color);
+        return true;
+    }
+
+    AddPoint(mathPoint, color = mathPoint.GetColor()) {
         this.coordinates.set(mathPoint.toString(), mathPoint);
         this.entities.set(mathPoint.toString(), mathPoint);
         this.renderer.RenderPoint(mathPoint, color);
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
-        return true;
     }
 
     TryAddEquation(equation) {

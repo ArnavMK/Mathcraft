@@ -521,7 +521,7 @@ export class GraphGL {
                 this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
                 this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
 
-                let derivative = window.calculus.NumericalDifferentiation(equation, currentPoint);
+                let derivative = Math.abs(currentPoint.y - nextPoint.y);
                 let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative)), baseCurveFactor);
                 newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
                 x += newCurveFactor;

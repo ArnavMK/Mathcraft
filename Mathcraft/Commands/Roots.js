@@ -27,13 +27,18 @@ export class Roots extends Command {
 
         let xValueRoots = window.calculus.GetRootsOfEquation(equation, this.graph);
 
+        if (xValueRoots == undefined) {
+            window.errorLogger.ShowNewError("This equation has too many roots to compute in the current domain");
+            return;
+        }
+
         if (xValueRoots.length == 0) {
             window.errorLogger.ShowNewError("Could not find any roots for this equation.");
             return;
         }
 
         for (let x of xValueRoots) {
-            this.graph.TryAddPoint(new Point(x, equation.GetValue(x)));
+            this.graph.AddPoint(new Point(x, equation.GetValue(x)));
         }
 
     }
@@ -47,7 +52,7 @@ export class Roots extends Command {
             return;
         }
 
-        roots.forEach((root) => { this.graph.TryAddPoint(root); });
+        roots.forEach((root) => { this.graph.AddPoint(root); });
     }
 
     EllipseRootFinder(equation) {
@@ -58,7 +63,7 @@ export class Roots extends Command {
             return; 
         }
 
-        roots.forEach((root) => {this.graph.TryAddPoint(root)});
+        roots.forEach((root) => {this.graph.AddPoint(root)});
     }
 
 }

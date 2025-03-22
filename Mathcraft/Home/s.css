@@ -1,0 +1,112 @@
+/* styles.css */
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background: radial-gradient(circle at center, #141414, #000); /* Dark gray to black radial gradient */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.background-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 50px;
+    width: 600px;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font stack */
+    font-size: 1rem; /* Slightly larger font size for better readability */
+    font-weight: 300; /* Normal weight for a clean look */
+    line-height: 1.6; /* Improved line spacing for readability */
+    letter-spacing: 0.5px; /* Slight letter spacing for a more polished look */
+    color: #ffffff; /* Ensure text is white */
+}
+
+.content {
+    background: linear-gradient(138deg, rgba(182, 182, 182, 0.1), rgba(255,255,255,0));
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 20px;
+}
+ 
+.content .flex {
+    display: grid;
+    width: fit-content;
+    grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    margin-left: 10px;
+}
+
+.content .flex :nth-child(1) {
+    text-align: left;
+    width: fit-content;
+}
+
+.content .flex :nth-child(2) {
+    text-align: center;
+    position: relative;
+    margin-top: 5vh;
+    margin-left: 100px;
+    width: fit-content;
+}
+
+/* Base button styling */
+.content button {
+    background-color: #22aaaa; /* Green background */
+    border: none; /* Remove borders */
+    color: rgb(206, 206, 206); /* White text */
+    padding: 15px 32px; /* Padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Make it inline */
+    font-size: 16px; /* Font size */
+    font: inherit;
+    font-weight: bold;
+    border-radius: 12px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Hover effect */
+.content button:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Larger shadow */
+    transform: translateY(-2px); /* Slight lift */
+}
+
+/* Active effect (when clicked) */
+.content button:active {
+    background-color: #1c898d; 
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Smaller shadow */
+    transform: translateY(0); /* Reset lift */
+}
+
+/* Disabled state */
+.mathcraft-button:disabled {
+    background-color: #cccccc; /* Gray background */
+    color: #666666; /* Dark gray text */
+    cursor: not-allowed; /* Disabled cursor */
+    box-shadow: none; /* No shadow */
+    transform: none; /* No lift */
+}
+
+
+.credits {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}

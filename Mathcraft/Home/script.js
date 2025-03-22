@@ -1,7 +1,7 @@
 // Add this to your script.js
-const particleCanvas = document.createElement('canvas');
+let particleCanvas = document.createElement('canvas');
 document.body.appendChild(particleCanvas);
-const particleCtx = particleCanvas.getContext('2d');
+let particleCtx = particleCanvas.getContext('2d');
 particleCanvas.width = window.innerWidth;
 particleCanvas.height = window.innerHeight;
 particleCanvas.style.position = 'absolute';
@@ -9,8 +9,8 @@ particleCanvas.style.top = '0';
 particleCanvas.style.left = '0';
 particleCanvas.style.zIndex = '-1'; // Behind the graph canvas
 
-const particles = [];
-const numParticles = 100;
+let particles = [];
+let numParticles = 150;
 
 class Particle {
   constructor() {
