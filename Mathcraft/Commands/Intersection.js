@@ -7,7 +7,7 @@ export class Intersection extends Command {
     Run() {
 
         if (this.graph.selectedEquations.size != 2) {
-            window.errorLogger.ShowNewError("You have to select two equations of same type");
+            window.errorLogger.ShowNewError("You have to select two equations for this command");
             return;
         }
 
