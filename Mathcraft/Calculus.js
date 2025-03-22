@@ -89,16 +89,51 @@ export class Calculus {
         return [new Point(x1, 0), new Point(x2, 0)];
     }
 
-    NumericalDifferentiation(equation, point, h = 1e-20) {
+    NumericalDifferentiation(equation, point, h = 1e-16) {
         return (equation.GetValue(point.x + h) - equation.GetValue(point.x))/h
     }
 
-    SecondNumericalDifferentiation(equation, point, h = 1e-20) {
+    SecondNumericalDifferentiation(equation, point, h = 1e-16) {
         return (
             ((this.NumericalDifferentiation(equation, new Point(point.x+h, 0))) -
             (this.NumericalDifferentiation(equation, new Point(point.x, 0))))/
             h
         );
+    }
+
+    GetIntersectionOfCircles(c1, c2) {
+        let c1Centre = c1.GetCentre();
+        let c2Centre = c2.GetCentre();
+    
+        let r1 = c1.GetRadius();
+        let r2 = c2.GetRadius();
+    
+        // Calculate the distance between centers
+        let distanceX = c2Centre.x - c1Centre.x;
+        let distanceY = c2Centre.y - c1Centre.y;
+        let distance = Math.sqrt(distanceX ** 2 + distanceY ** 2);
+    
+        // Check for no intersection or infinite intersections
+        if (distance > r1 + r2 || distance < Math.abs(r1 - r2)) {
+            return [];
+        }
+    
+        // Calculate intersection points
+        let a = (r1 ** 2 - r2 ** 2 + distance ** 2) / (2 * distance);
+        let h = Math.sqrt(r1 ** 2 - a ** 2);
+    
+        let px = c1Centre.x + (a * distanceX) / distance;
+        let py = c1Centre.y + (a * distanceY) / distance;
+    
+        let x1 = px + (h * distanceY) / distance;
+        let y1 = py - (h * distanceX) / distance;
+        let x2 = px - (h * distanceY) / distance;
+        let y2 = py + (h * distanceX) / distance;
+    
+        return [
+            new Point(x1, y1),
+            new Point(x2, y2)
+        ];
     }
 
     GetTangentAtPoint(equation, point) {
@@ -149,49 +184,59 @@ export class Calculus {
         }
     
         let sampleRate = 0.01;
-        let roots = [];
         let rootContainingDomains = [];
         let x = domain.min;
         let signChanges = 0;
-        const maxSignChanges = 2000;
-    
+        const maxSignChanges = 1000;
+        let roots = [];
+        
         while (x <= domain.max) {
             let currentPoint = { x: x, y: equation.GetValue(x) };
             let nextPoint = { x: x + sampleRate, y: equation.GetValue(x + sampleRate) };
     
-            // skipping asymptotes
+            // Skip points where the function value is too large (asymptotic behavior)
             if (Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
                 x += sampleRate;
                 continue;
             }
     
-            // if the current y value is already close to zero
+            // Check for root in the current interval
             if (Math.abs(currentPoint.y) < 1e-7) {
+
                 let derivativeAtX = this.NumericalDifferentiation(equation, currentPoint);
                 let secondDerivativeAtX = this.SecondNumericalDifferentiation(equation, currentPoint);
-    
+                
+                // touching roots 
                 if (Math.abs(derivativeAtX) < 1e-7 && Math.abs(secondDerivativeAtX) > 1e-7) {
 
+                    let d = { min: x - sampleRate, max: x + sampleRate };
+                    rootContainingDomains.push(d);
                     signChanges++;
-                    roots.push(currentPoint.x);
 
                 } 
+                // crossing roots
                 else if (Math.abs(derivativeAtX) > 1e-7) {
-
+                    
                     let prevPoint = { x: x - sampleRate, y: equation.GetValue(x - sampleRate) };
                     let nextNextPoint = { x: x + 2 * sampleRate, y: equation.GetValue(x + 2 * sampleRate) };
     
                     if (prevPoint.y * nextNextPoint.y < 0) {
+                        let d = { min: x - sampleRate, max: x + sampleRate };
+                        rootContainingDomains.push(d);
                         signChanges++;
-                        roots.push(currentPoint.x);
                     }
+
+                }
+
+                if (signChanges > maxSignChanges) {
+                    return undefined;
                 }
 
                 x += sampleRate;
                 continue;
             }
     
-
+            // Check for sign change (function crosses the x-axis)
             if (currentPoint.y * nextPoint.y < 0) {
                 let d = { min: x, max: x + sampleRate };
                 rootContainingDomains.push(d);
@@ -200,9 +245,9 @@ export class Calculus {
     
             x += sampleRate;
     
+
             if (signChanges > maxSignChanges) {
-                window.errorLogger.ShowNewError("This function has too many roots to compute. Please reduce the domain.");
-                return;
+                return undefined;
             }
         }
     
@@ -240,45 +285,6 @@ export class Calculus {
     
         let c = (a + b) / 2;
         return c;
-    }
-
-    GetRandomPointOnClosedCurve(equation, howManyPoints) {
-
-        let centreX = equation.GetCentre().x;
-        let xRange = equation.GetType() === "Circle" ? equation.GetRadius() : equation.GetMajorMinorAxisPoint().x / 2;
-
-        let domain = {min: centreX - xRange, max: centreX + xRange};
-        let randomXs = this.GetRandomNumbersWithMinDistance(domain.min, domain.max, xRange/1.4, howManyPoints);
-
-        let randomPoints = randomXs.map(x => new Point(x, equation.GetValue(x)[this.GetRandomInteger(0, 1)]));
-
-        return randomPoints;
-    }
-
-    GetRandomNumbersWithMinDistance(min, max, minDistance, numberOfPoints) {
-
-        let range = max - min;
-        let gridSize = Math.ceil(range / minDistance);
-    
-        // Check if the grid can accommodate the required number of points
-        if (gridSize < numberOfPoints) {
-            console.error("Not enough space to fit all points with the required minimum distance.");
-            return [];
-        }
-    
-        let pointsFound = [];
-        for (let i = 0; i < numberOfPoints; i++) {
-            // Calculate the cell's starting position
-            let cellStart = min + (i % gridSize) * minDistance;
-            let cellEnd = cellStart + minDistance;
-    
-            // Generate a random point within the cell
-            let point = this.GetRandomNumber(cellStart, cellEnd);
-            pointsFound.push(point);
-        }
-    
-        return pointsFound;
-
     }
 
     GetRandomInteger(min, max) {
@@ -369,6 +375,13 @@ export class Calculus {
 
         return new Equation(equationString, "Reals", "function", Equation.DefaultColor);
 
+    }
+
+    GetSlopeInterceptLinearEquation(slope, intercept) {
+
+        let interceptTerm = intercept < 0 ? `-${Math.abs(intercept)}` : `+${intercept}`;
+        
+        return new Equation(`${slope}*x${interceptTerm}`, "Reals", "function");
     }
 
     GetDerivativeOf(equation) {

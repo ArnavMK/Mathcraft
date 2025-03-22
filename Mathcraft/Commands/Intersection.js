@@ -28,6 +28,7 @@ export class Intersection extends Command {
         };
 
         rootFunctionCalls[equation1.GetType()](equation1, equation2);
+        this.OnComplete();
     }
 
     FunctionIntersection(equation1, equation2) {
@@ -39,6 +40,11 @@ export class Intersection extends Command {
         let hxEquation = new Equation(hx, "Reals", "function");
         let xRoots = window.calculus.GetRootsOfEquation(hxEquation, this.graph);
 
+        if (xRoots == undefined) {
+            window.errorLogger.ShowNewError("These two equations have too many intersections to compute");
+            return;
+        }
+
         if (xRoots.length === 0) {
             window.errorLogger.ShowNewError("These two equations do not intersect");
             return;
@@ -49,12 +55,25 @@ export class Intersection extends Command {
         }
     }
 
-    CircleIntersection() {
+    CircleIntersection(equation1, equation2) {
+
+        let intersections = window.calculus.GetIntersectionOfCircles(equation1, equation2);
+
+        if (intersections.length === 0) {
+            window.errorLogger.ShowNewError("These two circles do not intersect");
+            return;
+        }
+
+        for (let intersection of intersections) {
+            this.graph.AddPoint(intersection);
+        }
 
     }
 
     EllipseIntersection() {
 
+        window.errorLogger.ShowNewError("Cannot handle ellipse with ellipse intersection yet");
+        
     }
 }
 

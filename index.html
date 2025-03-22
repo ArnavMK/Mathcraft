@@ -1,83 +1,42 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-  <head>
-    <title>
-      Mathcraft
-    </title>
-    <meta charset="utf-8">
-    <link type="text/css" rel="stylesheet" href="./Mathcraft/Style.css">
-
-  </head>
-
-  <body>
-
-    <div class="searchBox">
-      <div class="row">
-        <input type="text" id="inputBox" placeholder="Search commands" autocomplete="off">
-        <button id="EnterCommandButton" title="Execute the entered command"></button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathcraft</title>
+  <link rel="stylesheet" href="./Mathcraft/Home/s.css">
+</head>
+<body>
+  <div class="background-elements">
+    <!-- Equations will be dynamically added here -->
+  </div>
+  <div class="content">
+    <img src="./Mathcraft/images/logoNobg_upscaled.png" alt="" width="600">
+    <h3>An immersive approach to visualizing the world of mathematics</h3>
+    <div class="flex">
+      <div>
+      Whether you're a student, teacher, or math enthusiast, MathCraft is your go-to tool for visualizing and understanding complex mathematical concepts.
       </div>
-      <div class="resultBox">
-      </div>
-    </div>
-
-    <div id="canvases">
-        <canvas id="canvas"></canvas>
-    </div>
-    
-    <select name="ModeSelectorSelect" id="ModeSelector" class="controls" title="Change this to draw more types of equations"> 
-      <option value="function" title="To graph equations which do not have two values of y for one value of x">Function</option>
-      <option value="Circle" title="To graph circles">Circle</option>
-      <option value="Ellipse" title="To graph ellipses">Ellipse</option>
-    </select>
-
-    <div id="GraphController" class="controls">
-      <button id="ToggleGridButton" class="SquareButtons" title="Enable or disable the grid">G</button>
-      <button id="ToggleTheme" class="SquareButtons" title="Change Click to change theme"></button>
-    </div>
-    
-    <button id="NewEquation" title="Gives an interface to create an equation based on the graph mode">Add New Equation</button>
-    <div id="EquationContainer", class="controls">
-    </div>
-    
-
-    <div class="ErrorLoggerContainer">
-      <div class="ErrorLogger">
-        <div class="exceptionalDivs">Some Text</div><a href="./Mathcraft/User manual/manual.pdf" target="_blank">Help</a>
+      <div>
+        <button id="button">Start Calculator</button>
       </div>
     </div>
+  </div>
 
-    <dialog class="modal" id="EquationDialog">
-      
-      <label for="EquationDialog_equation" id="Label1" title="Enter the expression you want to graph">Equation: </label>
-      <input id="EquationDialog_equation" placeholder="sin(x)" title="Enter the expression you want to graph"></input> <br>
-      
-      <button id="EquationDialog_cancel" class="SquareButtons" title="Close"></button>
+  <div class="credits">
+    By Arnav kothari.
+  </div>
 
-      <label for="EquationDialog_domain" id="Label2" title="Enter the domain you want to cover (entire x-axis by default)">Domain:</label>
-      <input id="EquationDialog_domain" placeholder="Reals" title="Enter the domain you want to cover (entire x-axis by default)"></input> <br>
+  <script src="./Mathcraft/Home/script.js"></script>
+  <script>
+    let button = document.getElementById("button")
 
-      <button id="EquationDialog_save" class="SquareButtons" title="Save the current information to see it on the graph">Save</button>
-      <label for="EquationDialog_colorPicker" title="Choose your color">Color</label>
-      <input type="color" id="EquationDialog_colorPicker" class="SquareButtons" value="#00FFFF" title="Choose your color">  
-
-      
-      <div class="modalInfo" id="EquationDialog_modalInfo">
-        Enter an expression and hit save
-      </div>
-
-      <div class="ErrorLoggerContainer">
-        <div class="ErrorLogger">
-          <div class="exceptionalDivs">Some Text</div><a href="./Mathcraft/User manual/manual.pdf" target="_blank">Help</a>
-        </div>
-      </div>
-    </dialog>
-    
-    <p id="debug" class="debug"></p>
-    
-    <p id="pointDisplay" class="controls"></p>
-
-    <script src="./Mathcraft/Main.js" type="module" defer></script>
-  </body>
-
+    button.onclick = (event) => {
+      let aTag = document.createElement("a");
+      aTag.href = "./Calculator.html";
+      aTag.target = "_blank"
+      aTag.click();
+    }
+  </script>
+</body>
 </html>
