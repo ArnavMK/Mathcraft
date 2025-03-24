@@ -1,17 +1,14 @@
 /* styles.css */
 body {
     margin: 0;
-    overflow-x: hidden;
+    overflow: hidden;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    background: radial-gradient(circle at center, #141414, #000);
+    background: radial-gradient(circle at center, #141414, #000); /* Dark gray to black radial gradient */
     color: white;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    box-sizing: border-box;
+    height: 100vh;
 }
 
 .background-elements {
@@ -24,164 +21,97 @@ body {
     z-index: -1;
 }
 
-.main-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 20px; /* Default gap for mobile/tablet */
-    width: 100%;
-    max-width: 1600px; /* Increased max-width for larger screens */
-    margin: 20px 0;
-}
-
 .content {
     position: relative;
     z-index: 1;
-    text-align: left;
-    padding: 30px;
-    width: 100%;
-    max-width: 600px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1rem;
-    font-weight: 300;
-    line-height: 1.6;
-    letter-spacing: 0.5px;
-    color: #ffffff;
+    text-align: center;
+    padding: 50px;
+    width: 600px;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font stack */
+    font-size: 1rem; /* Slightly larger font size for better readability */
+    font-weight: 300; /* Normal weight for a clean look */
+    line-height: 1.6; /* Improved line spacing for readability */
+    letter-spacing: 0.5px; /* Slight letter spacing for a more polished look */
+    color: #ffffff; /* Ensure text is white */
+}
+
+.content {
     background: linear-gradient(138deg, rgba(182, 182, 182, 0.1), rgba(255,255,255,0));
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border-radius: 20px;
-    box-sizing: border-box;
 }
-
-.content img {
-    width: 100%;
-    max-width: 600px;
-    height: auto;
-}
-
+ 
 .content .flex {
     display: grid;
-    width: 100%;
-    grid-template-columns: 2fr 1fr;
-    gap: 10px;
-    margin-top: 20px;
+    width: fit-content;
+    grid-template-columns: 2fr 1fr ;
+    gap: 5px;
+    margin-left: 10px;
 }
 
 .content .flex :nth-child(1) {
     text-align: left;
+    width: fit-content;
 }
 
 .content .flex :nth-child(2), .content .flex :nth-child(3) {
     text-align: left;
     position: relative;
-    font-size: small;
+    width: fit-content;
+    font-size:small;
+}
+
+/* Base button styling */
+.content button {
+    background-color: #27e2e2; /* Green background */
+    border: none; /* Remove borders */
+    color: rgb(238, 238, 238); /* White text */
+    padding: 15px 22px; /* Padding */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Make it inline */
+    font-size: 16px; /* Font size */
+    font: inherit;
+    margin-top:5px;
+    min-width: 200px;
+    font-weight: bold;
+    border-radius: 12px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 video {
-    width: 100%;
-    max-width: 700px; /* Slightly larger max-width for video */
-    height: auto;
+    margin-left: 10vw;
     border-radius: 10px;
 }
 
-/* Responsive adjustments */
-@media (min-width: 1200px) {
-    .main-container {
-        gap: 60px; /* Increased gap for large screens */
-    }
-    
-    .content {
-        max-width: 650px; /* Slightly larger content area */
-    }
-    
-    video {
-        max-width: 750px; /* Larger video on big screens */
-    }
-}
-
-@media (max-width: 1200px) {
-    .main-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 40px; /* Medium gap for tablet sizes */
-    }
-    
-    .content, video {
-        max-width: 90%;
-    }
-    
-    .content .flex {
-        grid-template-columns: 1fr;
-    }
-    
-    .content button {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    .main-container {
-        gap: 30px; /* Smaller gap for mobile */
-    }
-    
-    .content {
-        padding: 20px;
-    }
-    
-    h3 {
-        font-size: 1.1rem;
-    }
-    
-    .content .flex {
-        display: flex;
-        flex-direction: column;
-    }
-}
-
-/* Button styles remain the same */
-.content button {
-    background-color: #27e2e2;
-    border: none;
-    color: rgb(238, 238, 238);
-    padding: 12px 18px;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    font: inherit;
-    margin-top: 10px;
-    width: 100%;
-    max-width: 200px;
-    font-weight: bold;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
+/* Hover effect */
 .content button:hover {
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Larger shadow */
+    transform: translateY(-2px); /* Slight lift */
 }
 
+/* Active effect (when clicked) */
 .content button:active {
     background-color: #1c898d; 
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-    transform: translateY(0);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Smaller shadow */
+    transform: translateY(0); /* Reset lift */
 }
 
+/* Disabled state */
 .mathcraft-button:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
+    background-color: #cccccc; /* Gray background */
+    color: #666666; /* Dark gray text */
+    cursor: not-allowed; /* Disabled cursor */
+    box-shadow: none; /* No shadow */
+    transform: none; /* No lift */
 }
+
 
 .credits {
-    position: fixed;
+    position: absolute;
     bottom: 20px;
     right: 20px;
-    font-size: 0.9rem;
 }

@@ -35,7 +35,7 @@ export class MirrorY extends Command {
     ConicMirroring(equation) {
 
         let currentCentre = equation.GetCentre();
-        let newCentre = new Point(currentCentre.x, -currentCentre.y).toString();
+        let newCentre = new Point(-currentCentre.x, currentCentre.y).toString();
 
         let newConic = new Equation(newCentre, `${equation.GetRadius()}`, "Circle", equation.GetOriginalColor());
         this.graph.TryAddEquation(newConic);
@@ -43,7 +43,12 @@ export class MirrorY extends Command {
 
     
     EllipseMirroring(equation) {
-        window.errorLogger.ShowNewError("Cannot mirror ellipses just yet");
+
+        let currentCentre = equation.GetCentre();
+        let newCentre = new Point(-currentCentre.x, currentCentre.y).toString();
+
+        let newConic = new Equation(equation.toString(), newCentre, "Ellipse", equation.GetOriginalColor());
+        this.graph.TryAddEquation(newConic);
     }
 
 }

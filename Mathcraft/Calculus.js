@@ -395,6 +395,8 @@ export class Calculus {
 
         let derivative = this.SymbolicDifferentiation(parsedExpression);
 
+        console.log(Parser.ConvertTreeToString(Parser.SimplifyTree(derivative)));
+
         if (!derivative) return undefined;
 
         return new Equation(Parser.ConvertTreeToString(derivative), "Reals", "function", GraphGL.GetRandomColor());

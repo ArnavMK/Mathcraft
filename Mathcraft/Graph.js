@@ -280,14 +280,13 @@ export class Graph {
     
     SelectEquation(selectedEntity) {
 
-        if (this.selectedEquations.has(selectedEntity.toString())) {
-            this.selectedEquations.delete(selectedEntity.toString());
+        if (this.selectedEquations.has(selectedEntity.toIdentifierString())) {
+            this.selectedEquations.delete(selectedEntity.toIdentifierString());
             this.renderer.DeselectEquation(selectedEntity);
             return;
         }
 
-
-        this.selectedEquations.set(selectedEntity.toString(), selectedEntity);
+        this.selectedEquations.set(selectedEntity.toIdentifierString(), selectedEntity);
         this.renderer.SelectEquation(selectedEntity, GraphGL.defaultSelectedEntityColor);
     }
 
@@ -324,8 +323,8 @@ export class Graph {
             return false;
         }
 
-        this.equations.set(equation.toString(), equation);
-        this.entities.set(equation.toString(), equation);
+        this.equations.set(equation.toIdentifierString(), equation);
+        this.entities.set(equation.toIdentifierString(), equation);
 
         this.renderer.InstantiateEquationUIElement(
             equation, 
@@ -352,13 +351,11 @@ export class Graph {
         if (equation == undefined) {
             return false;
         }
-
         
-        if (this.equations.has(equation.toString())) {
-            window.errorLogger.ShowNewError(`${equation.toString()}. This equation already exists`);
+        if (this.equations.has(equation.toIdentifierString())) {
+            window.errorLogger.ShowNewError(`${equation.toIdentifierString()}. This equation already exists`);
             return false;
         }
-
         
         return true;
     }
@@ -388,12 +385,12 @@ export class Graph {
 
     RemoveEquation(equation) {
 
-        if (this.selectedEquations.has(equation.toString())) {
-            this.selectedEquations.delete(equation.toString());
+        if (this.selectedEquations.has(equation.toIdentifierString())) {
+            this.selectedEquations.delete(equation.toIdentifierString());
         }
 
-        this.equations.delete(equation.toString());
-        this.renderer.ClearEquation(equation.toString(), document.getElementById(equation.toString()));
+        this.equations.delete(equation.toIdentifierString());
+        this.renderer.ClearEquation(equation.toIdentifierString(), document.getElementById(equation.toIdentifierString()));
 
         this.#whenSignificantChangesHappen.dispatchEvent(this.#whenSignificantChangesHappen_Event);
     }
@@ -409,13 +406,15 @@ export class Graph {
     }
 
     IsEquationInGraph(equation) {
-        return this.equations.has(equation.toString());
+        return this.equations.has(equation.toIdentifierString());
     }
 
     OnAnySelectButtonClicked(event) {
+
         let sender = event.target.parentElement;
         if (!this.equations.has(sender.id)) return;
         this.SelectEquation(this.equations.get(sender.id));
+
     }
    
     OnAnyEditButtonClicked(event) {

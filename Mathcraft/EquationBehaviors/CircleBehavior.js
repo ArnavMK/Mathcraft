@@ -75,6 +75,10 @@ export class CircleBehavior {
         return this.centreString;
     }
 
+    toIdentifierString() {
+        return `${this.centreString} and ${this.radiusString}`;
+    }
+
     IsValid() {
         return this.isValid;
     }
