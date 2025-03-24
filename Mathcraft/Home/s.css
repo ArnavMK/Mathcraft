@@ -46,8 +46,8 @@ body {
 .content .flex {
     display: grid;
     width: fit-content;
-    grid-template-columns: 1fr 1fr;
-    gap: 0px;
+    grid-template-columns: 2fr 1fr ;
+    gap: 5px;
     margin-left: 10px;
 }
 
@@ -56,12 +56,11 @@ body {
     width: fit-content;
 }
 
-.content .flex :nth-child(2) {
-    text-align: center;
+.content .flex :nth-child(2), .content .flex :nth-child(3) {
+    text-align: left;
     position: relative;
-    margin-top: 5vh;
-    margin-left: 100px;
     width: fit-content;
+    font-size:small;
 }
 
 /* Base button styling */
@@ -69,12 +68,13 @@ body {
     background-color: #22aaaa; /* Green background */
     border: none; /* Remove borders */
     color: rgb(206, 206, 206); /* White text */
-    padding: 15px 32px; /* Padding */
-    text-align: center; /* Centered text */
+    padding: 15px 22px; /* Padding */
     text-decoration: none; /* Remove underline */
     display: inline-block; /* Make it inline */
     font-size: 16px; /* Font size */
     font: inherit;
+    margin-top:5px;
+    min-width: 200px;
     font-weight: bold;
     border-radius: 12px; /* Rounded corners */
     cursor: pointer; /* Pointer cursor on hover */

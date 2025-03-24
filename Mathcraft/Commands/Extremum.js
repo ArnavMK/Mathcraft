@@ -24,6 +24,7 @@ export class Extremum extends Command {
             this.graph.AddPoint(new Point(x, equation.GetValue(x)));
         }
 
+        this.OnComplete();
     }
 
 }

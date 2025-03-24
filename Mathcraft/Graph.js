@@ -353,11 +353,13 @@ export class Graph {
             return false;
         }
 
+        
         if (this.equations.has(equation.toString())) {
             window.errorLogger.ShowNewError(`${equation.toString()}. This equation already exists`);
             return false;
         }
 
+        
         return true;
     }
 
@@ -385,6 +387,10 @@ export class Graph {
     }
 
     RemoveEquation(equation) {
+
+        if (this.selectedEquations.has(equation.toString())) {
+            this.selectedEquations.delete(equation.toString());
+        }
 
         this.equations.delete(equation.toString());
         this.renderer.ClearEquation(equation.toString(), document.getElementById(equation.toString()));

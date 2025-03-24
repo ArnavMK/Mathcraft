@@ -478,7 +478,7 @@ export class GraphGL {
         DrawCalls[equation.GetType()]();
     }
 
-    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.01) {
+    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.005) {
         
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.GetGridLinesNumbers();
@@ -505,7 +505,6 @@ export class GraphGL {
             
             
             let derivative = Math.abs(currentPoint.y - nextPoint.y);
-            let DyDx = Math.abs(currentPoint.y - nextPoint.y)/1e-7;
             
             if ([nextPoint.y, currentPoint.y].some(isNaN)) {
                 x = nextX;
@@ -516,18 +515,17 @@ export class GraphGL {
             let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
             
             let dy = nextPoint.y - currentPoint.y;
-            let absDy = Math.abs(dy);
             
-            if (absDy > 10 * screenCapacityPoint.y) {
+            const discontinuityJumpThreshold = 200;
+            if (Math.abs(dy) > discontinuityJumpThreshold) {
                 x = nextX;
                 continue;
             }
             
             this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
             this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
-            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative)), baseCurveFactor);
-            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
-            x += newCurveFactor;
+
+            x += baseCurveFactor;
         }
             
         this.equationC.stroke();

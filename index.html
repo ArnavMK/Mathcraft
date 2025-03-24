@@ -15,10 +15,11 @@
     <h3>An immersive approach to visualizing the world of mathematics</h3>
     <div class="flex">
       <div>
-      Whether you're a student, teacher, or math enthusiast, MathCraft is your go-to tool for visualizing and understanding complex mathematical concepts.
+      Whether you're a student, teacher, or math enthusiast, MathCraft is your go-to tool for visualizing and understanding complex <br>mathematical concepts.
       </div>
       <div>
         <button id="button">Start Calculator</button>
+        <button id="manualButton">User Manual</button>  
       </div>
     </div>
   </div>
@@ -30,6 +31,7 @@
   <script src="./Mathcraft/Home/script.js"></script>
   <script>
     let button = document.getElementById("button")
+    let manualButton = document.getElementById("manualButton");
 
     button.onclick = (event) => {
       let aTag = document.createElement("a");
@@ -37,6 +39,14 @@
       aTag.target = "_blank"
       aTag.click();
     }
+
+    manualButton.onclick = (event) => {
+      let aTag = document.createElement("a");
+      aTag.href = "./Mathcraft/User manual/manual.pdf";
+      aTag.target = "_blank"
+      aTag.click();
+    }
+    
   </script>
 </body>
 </html>
