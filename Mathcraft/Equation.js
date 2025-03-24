@@ -104,7 +104,13 @@ export class Equation extends Entity {
         return this.#behavior.toString();
     }
 
+    toIdentifierString() {
+        return this.#behavior.toIdentifierString();
+    }
+
     CanSelect(mouseMathPoint) {
         return this.#behavior.IsPointOnCurve(mouseMathPoint);
     }
+
+
 }

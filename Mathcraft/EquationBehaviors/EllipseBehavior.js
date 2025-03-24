@@ -71,14 +71,16 @@ export class EllipseBehavior {
     }
 
     toString() {
-        return this.majorMinorAxisString;
+        return `${this.majorMinorAxisString}`;
     }
 
     GetCentre() {
         return this.#centre;
     }
 
-    
+    toIdentifierString() {
+        return `${this.#majorMinorAxisPoint.toString()} centre: ${this.#centre.toString()}`;
+    }    
 
     GetMajorMinorAxisPoint() {
         return this.#majorMinorAxisPoint;

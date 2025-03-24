@@ -115,6 +115,10 @@ export class FunctionBehavior {
         return this.expressionString;
     }
 
+    toIdentifierString() {
+        return `${this.expressionString} domain: ${this.#domain.toString()}`;
+    }
+
     IsValid() {
         try {
             if (this.#function == undefined) return false;

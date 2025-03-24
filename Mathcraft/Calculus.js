@@ -139,7 +139,7 @@ export class Calculus {
     GetTangentAtPoint(equation, point) {
 
         function FunctionType(thisClass) {
-            let m = thisClass.NumericalDifferentiation(equation, point);
+            let m = thisClass.NumericalDifferentiation(equation, point, 0.01);
             return thisClass.GetSlopePointFormLinearEquation(m, point);
         }
 
@@ -394,6 +394,8 @@ export class Calculus {
         let parsedExpression = new Parser().Parse(equation.toString());
 
         let derivative = this.SymbolicDifferentiation(parsedExpression);
+
+        console.log(Parser.ConvertTreeToString(Parser.SimplifyTree(derivative)));
 
         if (!derivative) return undefined;
 

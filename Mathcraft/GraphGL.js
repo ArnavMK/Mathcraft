@@ -168,8 +168,8 @@ export class GraphGL {
 
     DeselectEquation(equation) {
         equation.SetColor(equation.GetOriginalColor());
-        this.#selectedEquations.delete(equation.toString());
-        this.#selectedEntities.delete(equation.toString());
+        this.#selectedEquations.delete(equation);
+        this.#selectedEntities.delete(equation);
         this.#RefreshEquationLayerOfGraph();
     }
 
@@ -200,6 +200,7 @@ export class GraphGL {
         this.#selectedEquations.clear();
         this.#selectedEntities.clear();
 
+        
         // refreshes the layers without changing others
         if (pointCounter > 0) this.#RefreshPointLayerOfGraph();
         if (equationCounter > 0) this.#RefreshEquationLayerOfGraph();
@@ -215,8 +216,8 @@ export class GraphGL {
     }
 
     RenderEquation(equation) {
-        this.#equations.set(equation.toString(), equation);
-        this.#entities.set(equation.toString(), equation);
+        this.#equations.set(equation.toIdentifierString(), equation);
+        this.#entities.set(equation.toIdentifierString(), equation);
         this.#DrawCurve(equation);
     }
 
@@ -323,7 +324,7 @@ export class GraphGL {
         this.gridC.lineTo(this.gridCanvas.width, this.gridCanvas.height/2);
         this.gridC.stroke();
 
-        if (this.#isGridVisible) return; // ! this is repeated for the grid toggle function to work
+        if (this.#isGridVisible) return; 
 
         let start = new Point(0, 0);
         while (start.x <= gridLineNumbers.x) {
@@ -478,7 +479,7 @@ export class GraphGL {
         DrawCalls[equation.GetType()]();
     }
 
-    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.01) {
+    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.005) {
         
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.GetGridLinesNumbers();
@@ -505,7 +506,6 @@ export class GraphGL {
             
             
             let derivative = Math.abs(currentPoint.y - nextPoint.y);
-            let DyDx = Math.abs(currentPoint.y - nextPoint.y)/1e-7;
             
             if ([nextPoint.y, currentPoint.y].some(isNaN)) {
                 x = nextX;
@@ -516,18 +516,17 @@ export class GraphGL {
             let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
             
             let dy = nextPoint.y - currentPoint.y;
-            let absDy = Math.abs(dy);
             
-            if (absDy > 10 * screenCapacityPoint.y) {
+            const discontinuityJumpThreshold = 200;
+            if (Math.abs(dy) > discontinuityJumpThreshold) {
                 x = nextX;
                 continue;
             }
             
             this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
             this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
-            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative)), baseCurveFactor);
-            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
-            x += newCurveFactor;
+
+            x += baseCurveFactor;
         }
             
         this.equationC.stroke();
@@ -728,14 +727,14 @@ export class GraphGL {
         // create equation div
         let equationUIdiv = document.createElement("div");
         equationUIdiv.setAttribute("class", "EquationUI");
-        equationUIdiv.setAttribute("id", equation.toString());
+        equationUIdiv.setAttribute("id", equation.toIdentifierString());
         equationContainerDiv.appendChild(equationUIdiv);
 
         // create edit button
         let editButton = document.createElement("button");
 
             editButton.setAttribute("class", "SquareButtons_Image");
-            editButton.setAttribute("id", "Edit_" + equation.toString());
+            editButton.setAttribute("id", "Edit_" + equation.toIdentifierString());
             editButton.setAttribute("title", "Edit the equation");
             editButton.addEventListener("click", OnEditClickedCallBack);
             
@@ -745,7 +744,7 @@ export class GraphGL {
         let removeButton = document.createElement("button");
 
             removeButton.setAttribute("class", "SquareButtons_Remove");
-            removeButton.setAttribute("id", "Remove_" + equation.toString());
+            removeButton.setAttribute("id", "Remove_" + equation.toIdentifierString());
             removeButton.setAttribute("title", "Remove the equation");
             removeButton.addEventListener("click", OnRemoveClickedCallback);
 
@@ -755,9 +754,10 @@ export class GraphGL {
         let selectButton = document.createElement("button");
 
             selectButton.setAttribute("class", "SquareButtons_Select");
-            selectButton.setAttribute("id", "Select_" + equation.toString());
+            selectButton.setAttribute("id", "Select_" + equation.toIdentifierString());
             selectButton.setAttribute("title", "Select the equation");
             selectButton.addEventListener("click", OnSelectClickedCallBack);
+            
 
         equationUIdiv.appendChild(selectButton);
 
@@ -768,6 +768,7 @@ export class GraphGL {
             equationName.setAttribute("title", "Expression of the equation");
             equationName.innerHTML = equation.toString();
             equationName.style.color = equation.color;
+
             
         equationUIdiv.appendChild(equationName);
 

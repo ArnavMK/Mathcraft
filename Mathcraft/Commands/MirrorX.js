@@ -1,4 +1,5 @@
 import { Equation } from "../Equation.js";
+import { Point } from "../Point.js";
 import { Command } from "./Command.js";
 
 export class MirrorX extends Command {
@@ -12,16 +13,44 @@ export class MirrorX extends Command {
 
         let equation = this.graph.selectedEquations.values().next().value; 
 
-        if (equation.GetType() != "function") {
-            window.errorLogger.ShowNewError("Cannot mirror equation of type: " + equation.GetType());
-            return;
+        let lookUpObject = {
+            "function": this.FunctionMirroring.bind(this),
+            "Ellipse": this.EllipseMirroring.bind(this),
+            "Circle": this.ConicMirroring.bind(this)
         }
+
+        lookUpObject[equation.GetType()](equation);
+        this.OnComplete();
+    }
+
+    FunctionMirroring(equation) {
 
         let expression = `-(${equation.toString()})`;
         let newEquation = new Equation(expression, equation.GetAccompaniedInfo(), "function", equation.GetOriginalColor());
 
         this.graph.TryAddEquation(newEquation);
         this.OnComplete();
+
+    }
+
+    ConicMirroring(equation) {
+
+        let currentCentre = equation.GetCentre();
+        let newCentre = new Point(currentCentre.x, -currentCentre.y).toString();
+
+        let newConic = new Equation(newCentre, `${equation.GetRadius()}`, "Circle", equation.GetOriginalColor());
+        this.graph.TryAddEquation(newConic);
+    }
+
+    
+    EllipseMirroring(equation) {
+     
+        let currentCentre = equation.GetCentre();
+        let newCentre = new Point(currentCentre.x, -currentCentre.y).toString();
+
+        let newConic = new Equation(equation.toString(), newCentre, "Ellipse", equation.GetOriginalColor());
+        this.graph.TryAddEquation(newConic);
+        
     }
 
 }
