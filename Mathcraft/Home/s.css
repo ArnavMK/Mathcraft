@@ -65,9 +65,9 @@ body {
 
 /* Base button styling */
 .content button {
-    background-color: #22aaaa; /* Green background */
+    background-color: #27e2e2; /* Green background */
     border: none; /* Remove borders */
-    color: rgb(206, 206, 206); /* White text */
+    color: rgb(238, 238, 238); /* White text */
     padding: 15px 22px; /* Padding */
     text-decoration: none; /* Remove underline */
     display: inline-block; /* Make it inline */
@@ -80,6 +80,11 @@ body {
     cursor: pointer; /* Pointer cursor on hover */
     transition: all 0.3s ease; /* Smooth transition */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+video {
+    margin-left: 10vw;
+    border-radius: 10px;
 }
 
 /* Hover effect */

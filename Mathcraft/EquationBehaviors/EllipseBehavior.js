@@ -71,7 +71,7 @@ export class EllipseBehavior {
     }
 
     toString() {
-        return this.majorMinorAxisString;
+        return `${this.majorMinorAxisString} C: ${this.centreString}`;
     }
 
     GetCentre() {
