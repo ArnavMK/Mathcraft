@@ -29,9 +29,9 @@ export class GraphGL {
     #canPointDisplayAppear = false;
     #theme
     MAX_SCALE_VALUE = 320;
-    MIN_SCALE_VALUE = 35;
+    MIN_SCALE_VALUE = 48;
 
-    constructor (canvas, scale = 35,) {
+    constructor (canvas, scale = 70,) {
 
         this.#entities = new Map();
         this.#coordinates = new Map();
@@ -526,8 +526,8 @@ export class GraphGL {
             this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
 
             let derivative = Math.abs(currentPoint.y - nextPoint.y);
-            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative/3)), baseCurveFactor);
-            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.05);
+            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative/2)), baseCurveFactor);
+            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
 
             x += newCurveFactor;
         }
@@ -703,21 +703,27 @@ export class GraphGL {
     }
 
     #OnScrollWheelActive(event) {
-        let scaleDelta = 10;
-
-        if (event.deltaY < 0) this.IncreaseScale(scaleDelta);
-        else this.DecreaseScale(scaleDelta);
+        
+        let scaleDelta = this.scale * 0.09; // 10% of current scale
+        
+        if (event.deltaY < 0) {
+            this.IncreaseScale(scaleDelta);
+        } else {
+            this.DecreaseScale(scaleDelta);
+        }
     }
-
+    
     DecreaseScale(amount) {
-        this.scale = this.Clamp(this.scale - amount, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
+        let newScale = this.scale * (1 - amount/this.scale);
+        this.scale = this.Clamp(newScale, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
         this.#RefreshEntireGraph();
     }
-
+    
     IncreaseScale(amount) {
-        this.scale = this.Clamp(this.scale + amount, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
+        let newScale = this.scale * (1 + amount/this.scale);
+        this.scale = this.Clamp(newScale, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
         this.#RefreshEntireGraph();
-    }  
+    }
     
     GetClickableCanvas() {
         return this.pointCanvas;

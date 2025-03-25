@@ -250,6 +250,8 @@ export class Graph {
         return this.coordinates.has(point.toString());
     }
 
+    
+
     TrySelectEntityUnderMouse(mousePoint) {
 
         let mouseMathPoint = Point.GetMathPoint(mousePoint, this.renderer.GetClickableCanvas(), this.renderer.GetScale());
