@@ -25,7 +25,7 @@ export class Roots extends Command {
 
     FunctionRootPlotter(equation) {
 
-        let xValueRoots = window.calculus.GetRootsOfEquation(equation, this.graph);
+        let xValueRoots = window.calculus.GetRootsOfEquation(equation);
 
         if (xValueRoots == undefined) {
             window.errorLogger.ShowNewError("This equation has too many roots to compute in the current domain");

@@ -167,6 +167,7 @@ body.light-theme .SquareButtons_Remove {
     position: relative;
     top: 15px;
     left: 0;
+    background: transparent;
     width: 186px;
     max-height: 500px;
     margin-top: 37px;
@@ -202,6 +203,7 @@ body.light-theme .SquareButtons_Remove {
     position: absolute;
     bottom: 30px;
     left: 10px;
+    background: transparent;
     display: flex; 
     gap: 2px;
     width: auto;
@@ -325,6 +327,7 @@ body.light-theme #custom-menu div:hover {
 .EquationUI {
     display: flex;
     gap: 2px;
+    background: transparent;
 }
 .EquationName {
     width: 100px;

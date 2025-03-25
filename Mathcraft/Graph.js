@@ -210,7 +210,7 @@ export class Graph {
     #OnLeftMouseButtonUp(event) {
         this.renderer.DisablePointDisplayRendering();
         this.isLeftMouseDown = false;
-        this.HandleEntitySelectionOnClick(event); 
+        this.#HandleEntitySelectionOnClick(event); 
         this.TryAddEquation(this.dynamicCircleEquationByUserDrag);
         this.TryAddEquation(this.dynamicEllipseEquationByDrag)
     }
@@ -249,6 +249,8 @@ export class Graph {
     ContainsThisPoint(point) {
         return this.coordinates.has(point.toString());
     }
+
+    
 
     TrySelectEntityUnderMouse(mousePoint) {
 
@@ -328,9 +330,9 @@ export class Graph {
 
         this.renderer.InstantiateEquationUIElement(
             equation, 
-            this.OnAnyRemoveButtonClicked.bind(this), 
-            this.OnAnyEditButtonClicked.bind(this),
-            this.OnAnySelectButtonClicked.bind(this)
+            this.#OnAnyRemoveButtonClicked.bind(this), 
+            this.#OnAnyEditButtonClicked.bind(this),
+            this.#OnAnySelectButtonClicked.bind(this)
         );
 
         this.renderer.RenderEquation(equation);
@@ -360,7 +362,7 @@ export class Graph {
         return true;
     }
 
-    HandleEntitySelectionOnClick(event) {
+    #HandleEntitySelectionOnClick(event) {
 
         let mousePoint = new Point(event.offsetX, event.offsetY);
         let mouseMathPoint = Point.GetMathPoint(mousePoint, this.renderer.GetClickableCanvas(), this.renderer.GetScale());
@@ -396,7 +398,7 @@ export class Graph {
     }
 
    
-    OnAnyRemoveButtonClicked(event) {
+    #OnAnyRemoveButtonClicked(event) {
         
         let sender = event.target.parentElement
 
@@ -409,7 +411,7 @@ export class Graph {
         return this.equations.has(equation.toIdentifierString());
     }
 
-    OnAnySelectButtonClicked(event) {
+    #OnAnySelectButtonClicked(event) {
 
         let sender = event.target.parentElement;
         if (!this.equations.has(sender.id)) return;
@@ -417,7 +419,7 @@ export class Graph {
 
     }
    
-    OnAnyEditButtonClicked(event) {
+    #OnAnyEditButtonClicked(event) {
 
         let equation = this.equations.get(event.target.parentElement.id);
 

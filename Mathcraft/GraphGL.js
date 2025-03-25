@@ -29,9 +29,9 @@ export class GraphGL {
     #canPointDisplayAppear = false;
     #theme
     MAX_SCALE_VALUE = 320;
-    MIN_SCALE_VALUE = 35;
+    MIN_SCALE_VALUE = 45;
 
-    constructor (canvas, scale = 35,) {
+    constructor (canvas, scale = 70) {
 
         this.#entities = new Map();
         this.#coordinates = new Map();
@@ -479,7 +479,7 @@ export class GraphGL {
         DrawCalls[equation.GetType()]();
     }
 
-    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.005) {
+    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.01) {
         
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.GetGridLinesNumbers();
@@ -505,7 +505,6 @@ export class GraphGL {
             let nextPoint = new Point(nextX, equation.GetValue(nextX));
             
             
-            let derivative = Math.abs(currentPoint.y - nextPoint.y);
             
             if ([nextPoint.y, currentPoint.y].some(isNaN)) {
                 x = nextX;
@@ -517,7 +516,7 @@ export class GraphGL {
             
             let dy = nextPoint.y - currentPoint.y;
             
-            const discontinuityJumpThreshold = 200;
+            const discontinuityJumpThreshold = 150;
             if (Math.abs(dy) > discontinuityJumpThreshold) {
                 x = nextX;
                 continue;
@@ -526,7 +525,11 @@ export class GraphGL {
             this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
             this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
 
-            x += baseCurveFactor;
+            let derivative = Math.abs(currentPoint.y - nextPoint.y);
+            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative/2)), baseCurveFactor);
+            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
+
+            x += newCurveFactor;
         }
             
         this.equationC.stroke();
@@ -700,21 +703,27 @@ export class GraphGL {
     }
 
     #OnScrollWheelActive(event) {
-        let scaleDelta = 10;
-
-        if (event.deltaY < 0) this.IncreaseScale(scaleDelta);
-        else this.DecreaseScale(scaleDelta);
+        
+        let scaleDelta = this.scale * 0.09; // 10% of current scale
+        
+        if (event.deltaY < 0) {
+            this.IncreaseScale(scaleDelta);
+        } else {
+            this.DecreaseScale(scaleDelta);
+        }
     }
-
+    
     DecreaseScale(amount) {
-        this.scale = this.Clamp(this.scale - amount, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
+        let newScale = this.scale * (1 - amount/this.scale);
+        this.scale = this.Clamp(newScale, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
         this.#RefreshEntireGraph();
     }
-
+    
     IncreaseScale(amount) {
-        this.scale = this.Clamp(this.scale + amount, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
+        let newScale = this.scale * (1 + amount/this.scale);
+        this.scale = this.Clamp(newScale, this.MIN_SCALE_VALUE, this.MAX_SCALE_VALUE);
         this.#RefreshEntireGraph();
-    }  
+    }
     
     GetClickableCanvas() {
         return this.pointCanvas;

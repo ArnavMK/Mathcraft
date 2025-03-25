@@ -172,9 +172,9 @@ export class Calculus {
         return lookupObject[equation.GetType()](this);
     }
 
-    GetRootsOfEquation(equation, graph) {
+    GetRootsOfEquation(equation) {
         let domain = equation.GetDomain();
-        let screenCapacityPoint = graph.renderer.GetGridLinesNumbers();
+        let screenCapacityPoint = this.graph.renderer.GetGridLinesNumbers();
     
         if (domain === "Reals") {
             domain = {
@@ -367,11 +367,9 @@ export class Calculus {
     GetSlopePointFormLinearEquation(m, point){
 
         let xTerm = point.x < 0 ? `(x + ${Math.abs(point.x)})` : `(x - ${point.x})`;
-        let yTerm = point.y < 0 ? ` - ${Math.abs(point.y)}` : ` + ${point.y};`
+        let yTerm = point.y < 0 ? ` - ${Math.abs(point.y)}` : ` + ${point.y}`;
         
         let equationString = `${m} * ${xTerm}${yTerm}`;
-
-        console.log(equationString)
 
         return new Equation(equationString, "Reals", "function", Equation.DefaultColor);
 
