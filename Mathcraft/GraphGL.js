@@ -479,7 +479,7 @@ export class GraphGL {
         DrawCalls[equation.GetType()]();
     }
 
-    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.005) {
+    #DrawFunction(/** @type {Equation}*/equation, baseCurveFactor = 0.01) {
         
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.GetGridLinesNumbers();
@@ -505,7 +505,6 @@ export class GraphGL {
             let nextPoint = new Point(nextX, equation.GetValue(nextX));
             
             
-            let derivative = Math.abs(currentPoint.y - nextPoint.y);
             
             if ([nextPoint.y, currentPoint.y].some(isNaN)) {
                 x = nextX;
@@ -526,7 +525,11 @@ export class GraphGL {
             this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
             this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
 
-            x += baseCurveFactor;
+            let derivative = Math.abs(currentPoint.y - nextPoint.y);
+            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative/3)), baseCurveFactor);
+            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.05);
+
+            x += newCurveFactor;
         }
             
         this.equationC.stroke();
