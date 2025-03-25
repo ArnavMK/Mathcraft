@@ -172,9 +172,9 @@ export class Calculus {
         return lookupObject[equation.GetType()](this);
     }
 
-    GetRootsOfEquation(equation, graph) {
+    GetRootsOfEquation(equation) {
         let domain = equation.GetDomain();
-        let screenCapacityPoint = graph.renderer.GetGridLinesNumbers();
+        let screenCapacityPoint = this.graph.renderer.GetGridLinesNumbers();
     
         if (domain === "Reals") {
             domain = {

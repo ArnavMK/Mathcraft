@@ -25,7 +25,7 @@ export class Extremum extends Command {
 
     FunctionType(equation) {
         let derivative = window.calculus.GetDerivativeOf(equation);
-        let xValueRoots = window.calculus.GetRootsOfEquation(derivative, this.graph);
+        let xValueRoots = window.calculus.GetRootsOfEquation(derivative);
 
         if (xValueRoots.length === 0) {
             window.errorLogger.ShowNewError("Could not find any turning points for this equation");

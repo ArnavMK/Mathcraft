@@ -38,7 +38,7 @@ export class Intersection extends Command {
         let hx = `(${fx}) - (${gx})`;
 
         let hxEquation = new Equation(hx, "Reals", "function");
-        let xRoots = window.calculus.GetRootsOfEquation(hxEquation, this.graph);
+        let xRoots = window.calculus.GetRootsOfEquation(hxEquation);
 
         if (xRoots == undefined) {
             window.errorLogger.ShowNewError("These two equations have too many intersections to compute");
