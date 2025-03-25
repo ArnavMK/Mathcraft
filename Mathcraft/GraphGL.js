@@ -29,9 +29,9 @@ export class GraphGL {
     #canPointDisplayAppear = false;
     #theme
     MAX_SCALE_VALUE = 320;
-    MIN_SCALE_VALUE = 48;
+    MIN_SCALE_VALUE = 45;
 
-    constructor (canvas, scale = 70,) {
+    constructor (canvas, scale = 70) {
 
         this.#entities = new Map();
         this.#coordinates = new Map();
@@ -516,7 +516,7 @@ export class GraphGL {
             
             let dy = nextPoint.y - currentPoint.y;
             
-            const discontinuityJumpThreshold = 200;
+            const discontinuityJumpThreshold = 150;
             if (Math.abs(dy) > discontinuityJumpThreshold) {
                 x = nextX;
                 continue;
