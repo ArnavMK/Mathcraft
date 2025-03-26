@@ -117,7 +117,7 @@ button {
     background-size: 28px 27px;
 }
 .SquareButtons_Image {
-    background-image: url("/Mathcraft/images/edit.png");
+    background-image: url("images/edit.png");
 }
 
 .SquareButtons_Select {
@@ -125,17 +125,17 @@ button {
 }
 
 body.light-theme .SquareButtons_Select {
-    background-image: url("/Mathcraft/images/SelectButtonLight.png");
+    background-image: url("./images/SelectButtonLight.png");
 }
 
 body.light-theme .SquareButtons_Image {
-    background-image: url("/Mathcraft/images/lightedit.png");
+    background-image: url("./images/edit.png");
 }
 body.light-theme .SquareButtons_Remove {
-    background-image: url("/Mathcraft/images/lightremove.png");
+    background-image: url("./images/lightremove.png");
 }
 .SquareButtons_Remove {
-    background-image: url("/Mathcraft/images/removeNOBorder.png");
+    background-image: url("./images/removeNOBorder.png");
 }
 
 /* Canvas Layers */
