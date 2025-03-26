@@ -352,7 +352,8 @@ export class Calculus {
 
         // TODO: implement this after differentiation
         function FunctionType(thisClass) {
-            return undefined;
+            window.errorLogger.ShowNewError("Cannot find tangents for functions from points yet.")
+            return false;
         }
 
         let lookupObject = {
