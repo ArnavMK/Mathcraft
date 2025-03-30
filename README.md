@@ -4,7 +4,7 @@ Hello! and welcome to Mathcraft. An immersive aproach to visualizing the world o
 
 This is a graphing calulator inspired by tools like desmos geogebra and solidworks.
 
-You can find the live website ![here](https://arnavmk.github.io/Mathcraft/)
+You can find the live website [here]([url](https://arnavmk.github.io/Mathcraft/))
 
 There is an introductory video and a user manual in the main page (link above). or you could go ---> Mathcraft/Video/Video.mp4 and Mathcraft/User Manual/manual.pdf
 
