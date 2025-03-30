@@ -29,7 +29,7 @@ export class GraphGL {
     #canPointDisplayAppear = false;
     #theme
     MAX_SCALE_VALUE = 320;
-    MIN_SCALE_VALUE = 39;
+    MIN_SCALE_VALUE = 40;
 
     constructor (canvas, scale = 100) {
 
