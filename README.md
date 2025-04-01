@@ -14,7 +14,7 @@ Main branch: This is the production branch which is used by the live website. Th
 
 Dev branch: This is where I make and test new fetures before merging to main, if you still wish to look at the latest version clone this branch.
 
-To run this project via the source code. Use the live server extension either in vscode or the npm package. (npm install live-server). But if you can always visit the live website [here](https://arnavmk.github.io/Mathcraft/)
+To run this project via the source code. Use the live server extension either in vscode or the npm package. (npm install live-server). But you can always visit the live website [here](https://arnavmk.github.io/Mathcraft/)
 
 Here are some cool graphs you can plot in mathcraft.
 
