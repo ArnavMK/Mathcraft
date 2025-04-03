@@ -13,6 +13,8 @@ export class BestFit extends Command    {
         
         let line = window.calculus.GetLineOfBestFit(2);
         this.graph.TryAddEquation(line);
+
+        this.OnComplete();
     }
 
 

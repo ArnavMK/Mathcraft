@@ -29,9 +29,9 @@ export class GraphGL {
     #canPointDisplayAppear = false;
     #theme
     MAX_SCALE_VALUE = 320;
-    MIN_SCALE_VALUE = 45;
+    MIN_SCALE_VALUE = 40;
 
-    constructor (canvas, scale = 70) {
+    constructor (canvas, scale = 100) {
 
         this.#entities = new Map();
         this.#coordinates = new Map();
@@ -308,6 +308,7 @@ export class GraphGL {
     }
 
     #DrawPoint(mathPoint, pointRadius = Point.Radius, color = mathPoint.GetColor()) {
+
         let canvasPoint = Point.GetCanvasPoint(mathPoint, this.pointCanvas, this.GetScale());
         this.pointC.beginPath();
         this.pointC.arc(canvasPoint.x, canvasPoint.y, pointRadius, 0, Math.PI * 2, false);

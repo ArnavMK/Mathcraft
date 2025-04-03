@@ -89,11 +89,11 @@ export class Calculus {
         return [new Point(x1, 0), new Point(x2, 0)];
     }
 
-    NumericalDifferentiation(equation, point, h = 1e-16) {
+    NumericalDifferentiation(equation, point, h = 1e-7) {
         return (equation.GetValue(point.x + h) - equation.GetValue(point.x))/h
     }
 
-    SecondNumericalDifferentiation(equation, point, h = 1e-16) {
+    SecondNumericalDifferentiation(equation, point, h = 1e-7) {
         return (
             ((this.NumericalDifferentiation(equation, new Point(point.x+h, 0))) -
             (this.NumericalDifferentiation(equation, new Point(point.x, 0))))/
@@ -175,57 +175,53 @@ export class Calculus {
     GetRootsOfEquation(equation) {
         let domain = equation.GetDomain();
         let screenCapacityPoint = this.graph.renderer.GetGridLinesNumbers();
-    
+
         if (domain === "Reals") {
             domain = {
                 min: -screenCapacityPoint.x - 1,
                 max: screenCapacityPoint.x + 1
             };
         }
-    
+
         let sampleRate = 0.01;
         let rootContainingDomains = [];
         let x = domain.min;
         let signChanges = 0;
         const maxSignChanges = 1000;
         let roots = [];
-        
+
         while (x <= domain.max) {
             let currentPoint = { x: x, y: equation.GetValue(x) };
             let nextPoint = { x: x + sampleRate, y: equation.GetValue(x + sampleRate) };
-    
-            // Skip points where the function value is too large (asymptotic behavior)
-            if (Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
+
+            // Skip points where the function is undefined or too large (asymptotic)
+            if (!isFinite(currentPoint.y) || Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
                 x += sampleRate;
                 continue;
             }
-    
-            // Check for root in the current interval
-            if (Math.abs(currentPoint.y) < 1e-7) {
+
+            // if the current point is already around zero
+            if (Math.abs(currentPoint.y) < 1e-5) {
 
                 let derivativeAtX = this.NumericalDifferentiation(equation, currentPoint);
                 let secondDerivativeAtX = this.SecondNumericalDifferentiation(equation, currentPoint);
-                
-                // touching roots 
-                if (Math.abs(derivativeAtX) < 1e-7 && Math.abs(secondDerivativeAtX) > 1e-7) {
 
+                // touching roots
+                if (Math.abs(derivativeAtX) < 1e-4 && Math.abs(secondDerivativeAtX) > 1e-4) {
                     let d = { min: x - sampleRate, max: x + sampleRate };
                     rootContainingDomains.push(d);
                     signChanges++;
-
-                } 
+                }
                 // crossing roots
-                else if (Math.abs(derivativeAtX) > 1e-7) {
-                    
-                    let prevPoint = { x: x - sampleRate, y: equation.GetValue(x - sampleRate) };
-                    let nextNextPoint = { x: x + 2 * sampleRate, y: equation.GetValue(x + 2 * sampleRate) };
-    
-                    if (prevPoint.y * nextNextPoint.y < 0) {
-                        let d = { min: x - sampleRate, max: x + sampleRate };
-                        rootContainingDomains.push(d);
-                        signChanges++;
-                    }
-
+                else if (Math.abs(derivativeAtX) > 1e-4) {
+                    let d = { min: x - sampleRate, max: x + sampleRate };
+                    rootContainingDomains.push(d);
+                    signChanges++;
+                }
+                // asymptote
+                else {
+                    x += sampleRate;
+                    continue;
                 }
 
                 if (signChanges > maxSignChanges) {
@@ -235,56 +231,54 @@ export class Calculus {
                 x += sampleRate;
                 continue;
             }
-    
-            // Check for sign change (function crosses the x-axis)
+
             if (currentPoint.y * nextPoint.y < 0) {
                 let d = { min: x, max: x + sampleRate };
                 rootContainingDomains.push(d);
                 signChanges++;
             }
-    
+
             x += sampleRate;
-    
 
             if (signChanges > maxSignChanges) {
                 return undefined;
             }
         }
-    
+
         rootContainingDomains.forEach((domain) => {
             roots.push(this.BisectionMethod(domain, equation));
         });
-    
+
         return roots;
-    }
-    
+    }  
+
     BisectionMethod(initialDomain, equation) {
 
         const tolerance = 1e-7;
         const maxIterations = 100;
-        let a = initialDomain.min;
-        let b = initialDomain.max;
+        let end1 = initialDomain.min;
+        let end2 = initialDomain.max;
         let iteration = 0;
     
         while (iteration < maxIterations) {
-            let c = (a + b) / 2;
-            let fc = equation.GetValue(c);
+            let mid = (end1 + end2) / 2;
+            let fc = equation.GetValue(mid);
     
             if (Math.abs(fc) < tolerance) {
-                return c;
+                return mid;
             }
     
-            if (equation.GetValue(a) * fc < 0) {
-                b = c;
+            if (equation.GetValue(end1) * fc < 0) {
+                end2 = mid;
             } else {
-                a = c;
+                end1 = mid;
             }
     
             iteration++;
         }
     
-        let c = (a + b) / 2;
-        return c;
+        let mid = (end1 + end2) / 2;
+        return mid;
     }
 
     GetRandomInteger(min, max) {
@@ -352,7 +346,8 @@ export class Calculus {
 
         // TODO: implement this after differentiation
         function FunctionType(thisClass) {
-            return undefined;
+            window.errorLogger.ShowNewError("Cannot find tangents for functions from points yet.")
+            return false;
         }
 
         let lookupObject = {
@@ -392,7 +387,6 @@ export class Calculus {
         let parsedExpression = new Parser().Parse(equation.toString());
 
         let derivative = this.SymbolicDifferentiation(parsedExpression);
-
 
         if (!derivative) return undefined;
 

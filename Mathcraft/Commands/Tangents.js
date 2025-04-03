@@ -27,7 +27,7 @@ export class Tangents extends Command {
 
         let tangent = window.calculus.GetTangentFromPoint(equation, point);
         
-        if (!tangent) {
+        if (tangent == undefined) {
             window.errorLogger.ShowNewError("Cant find tangents for this situation.");
             return;
         }
