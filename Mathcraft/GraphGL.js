@@ -308,6 +308,7 @@ export class GraphGL {
     }
 
     #DrawPoint(mathPoint, pointRadius = Point.Radius, color = mathPoint.GetColor()) {
+
         let canvasPoint = Point.GetCanvasPoint(mathPoint, this.pointCanvas, this.GetScale());
         this.pointC.beginPath();
         this.pointC.arc(canvasPoint.x, canvasPoint.y, pointRadius, 0, Math.PI * 2, false);

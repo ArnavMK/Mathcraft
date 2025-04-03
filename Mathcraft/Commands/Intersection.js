@@ -13,6 +13,7 @@ export class Intersection extends Command {
 
         let equation1 = this.graph.selectedEquations.values().next().value;
         let equation2;
+
         for (let equation of this.graph.selectedEquations.values()) {
             equation2 = equation; // last value
         }
@@ -40,13 +41,15 @@ export class Intersection extends Command {
         let hxEquation = new Equation(hx, "Reals", "function");
         let xRoots = window.calculus.GetRootsOfEquation(hxEquation);
 
+        console.log(xRoots)
+
         if (xRoots == undefined) {
-            window.errorLogger.ShowNewError("These two equations have too many intersections to compute");
+            window.errorLogger.ShowNewError("There are either too many intersections or no intersections for these equations");
             return;
         }
 
         if (xRoots.length === 0) {
-            window.errorLogger.ShowNewError("These two equations do not intersect");
+            window.errorLogger.ShowNewError("There are either too many intersections or no intersections for these equations");
             return;
         }
 

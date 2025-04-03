@@ -9,7 +9,8 @@ export class Roots extends Command {
             window.errorLogger.ShowNewError("You have to select at least one equation");
             return;
         }
-
+        
+        // finds the roots of all selected equations.
         for (let equation of this.graph.selectedEquations.values()) {
             let rootFunctionCalls = {
                 "function": this.FunctionRootPlotter.bind(this),
@@ -28,12 +29,12 @@ export class Roots extends Command {
         let xValueRoots = window.calculus.GetRootsOfEquation(equation);
 
         if (xValueRoots == undefined) {
-            window.errorLogger.ShowNewError("This equation has too many roots to compute in the current domain");
+            window.errorLogger.ShowNewError(`${equation.toString()} either has too many or no roots`);
             return;
         }
 
         if (xValueRoots.length == 0) {
-            window.errorLogger.ShowNewError("Could not find any roots for this equation.");
+            window.errorLogger.ShowNewError(`${equation.toString()} either has too many or no roots`);
             return;
         }
 
@@ -48,7 +49,7 @@ export class Roots extends Command {
         let roots = window.calculus.GetRootsOfCircle(equation);
 
         if (!roots) {
-            window.errorLogger.ShowNewError("Could not find any roots for this circle");
+            window.errorLogger.ShowNewError(`Could not find any roots for ${equation.toIdentifierString()}`);
             return;
         }
 
@@ -59,7 +60,7 @@ export class Roots extends Command {
         let roots = window.calculus.GetRootsOfEllipse(equation);
 
         if (!roots) {
-            window.errorLogger.ShowNewError("Could not find any roots for this ellipse");
+            window.errorLogger.ShowNewError(`Could not find any roots for ${equation.toIdentifierString()}`);
             return; 
         }
 
