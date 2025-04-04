@@ -27,6 +27,6 @@ sin(x^2) + tan(x) ---> differentiate ---> edit derivative ---> whole divide by 8
 Meet bob
 ![image](https://github.com/user-attachments/assets/d21e986f-10a1-4050-998e-f86305378175)
 
+> ℹ️ **Note**: The `/images` folder hosts temporary assets for an *unrelated* third-party project.  
+> These files are not part of MathCraft’s codebase or functionality.  
 Thank you.
-
-I use neovim btw
