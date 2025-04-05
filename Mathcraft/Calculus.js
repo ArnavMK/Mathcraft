@@ -187,7 +187,7 @@ export class Calculus {
         let rootContainingDomains = [];
         let x = domain.min;
         let signChanges = 0;
-        const maxSignChanges = 1000;
+        let maxSignChanges = 1000;
         let roots = [];
 
         while (x <= domain.max) {
@@ -195,7 +195,7 @@ export class Calculus {
             let nextPoint = { x: x + sampleRate, y: equation.GetValue(x + sampleRate) };
 
             // Skip points where the function is undefined or too large (asymptotic)
-            if (!isFinite(currentPoint.y) || Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
+            if (Math.abs(currentPoint.y) > 2 * screenCapacityPoint.y) {
                 x += sampleRate;
                 continue;
             }
@@ -208,15 +208,25 @@ export class Calculus {
 
                 // touching roots
                 if (Math.abs(derivativeAtX) < 1e-4 && Math.abs(secondDerivativeAtX) > 1e-4) {
-                    let d = { min: x - sampleRate, max: x + sampleRate };
+
+                    let d = { 
+                        min: x - sampleRate, 
+                        max: x + sampleRate 
+                    };
                     rootContainingDomains.push(d);
                     signChanges++;
+
                 }
                 // crossing roots
                 else if (Math.abs(derivativeAtX) > 1e-4) {
-                    let d = { min: x - sampleRate, max: x + sampleRate };
+
+                    let d = { 
+                        min: x - sampleRate, 
+                        max: x + sampleRate 
+                    };
                     rootContainingDomains.push(d);
                     signChanges++;
+
                 }
                 // asymptote
                 else {
@@ -254,23 +264,24 @@ export class Calculus {
 
     BisectionMethod(initialDomain, equation) {
 
-        const tolerance = 1e-7;
-        const maxIterations = 100;
+        let threshold = 1e-7;
+        let maxLoops = 100;
         let end1 = initialDomain.min;
         let end2 = initialDomain.max;
         let iteration = 0;
     
-        while (iteration < maxIterations) {
+        while (iteration < maxLoops) {
             let mid = (end1 + end2) / 2;
             let fc = equation.GetValue(mid);
     
-            if (Math.abs(fc) < tolerance) {
+            if (Math.abs(fc) < threshold) {
                 return mid;
             }
     
             if (equation.GetValue(end1) * fc < 0) {
                 end2 = mid;
-            } else {
+            } 
+            else {
                 end1 = mid;
             }
     
@@ -317,30 +328,26 @@ export class Calculus {
         function EllipseType(thisClass) {
 
             let axes = equation.GetMajorMinorAxisPoint();
-            let a = axes.x; 
-            let b = axes.y; 
             let center = equation.GetCentre();
-            let h = center.x; 
-            let k = center.y; 
                 
-            let A = a**2 - (point.x - h)**2;
-            let B = 2 * (point.x - h) * (point.y - k);
-            let C = b**2 - (point.y - k)**2;
+            let A = axes.x**2 - (point.x - center.x)**2;
+            let B = 2 * (point.x - center.x) * (point.y - center.y);
+            let C = axes.y**2 - (point.y - center.y)**2;
         
-            let discriminant = B**2 - 4 * A * C;
+            let delta = B**2 - 4 * A * C;
         
-            if (discriminant <= 0) return undefined;            
+            if (delta <= 0) return undefined;            
 
-            let m1 = (-B + Math.sqrt(discriminant)) / (2 * A);
-            let m2 = (-B - Math.sqrt(discriminant)) / (2 * A);
+            let slope1 = (-B + Math.sqrt(delta)) / (2 * A);
+            let slope2 = (-B - Math.sqrt(delta)) / (2 * A);
                 
-            if (![m1, m2].some(isFinite)) {
+            if (![slope1, slope2].some(isFinite)) {
                 return undefined;
             }
     
             return [
-                thisClass.GetSlopePointFormLinearEquation(m1, point),
-                thisClass.GetSlopePointFormLinearEquation(m2, point)
+                thisClass.GetSlopePointFormLinearEquation(slope1, point),
+                thisClass.GetSlopePointFormLinearEquation(slope2, point)
             ];
         }
 

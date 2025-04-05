@@ -505,8 +505,6 @@ export class GraphGL {
             let nextX = x + baseCurveFactor
             let nextPoint = new Point(nextX, equation.GetValue(nextX));
             
-            
-            
             if ([nextPoint.y, currentPoint.y].some(isNaN)) {
                 x = nextX;
                 continue;
@@ -515,10 +513,10 @@ export class GraphGL {
             let currentCanvasPoint = Point.GetCanvasPoint(currentPoint, this.equationCanvas, this.scale);
             let nextCanvasPoint = Point.GetCanvasPoint(nextPoint, this.equationCanvas, this.scale);
             
-            let dy = nextPoint.y - currentPoint.y;
+            let dy = Math.abs(nextPoint.y - currentPoint.y);
             
-            const discontinuityJumpThreshold = 150;
-            if (Math.abs(dy) > discontinuityJumpThreshold) {
+            let discontinuityJumpThreshold = 150;
+            if (dy > discontinuityJumpThreshold) {
                 x = nextX;
                 continue;
             }
@@ -526,11 +524,11 @@ export class GraphGL {
             this.equationC.moveTo(currentCanvasPoint.x, currentCanvasPoint.y);
             this.equationC.lineTo(nextCanvasPoint.x, nextCanvasPoint.y);
 
-            let derivative = Math.abs(currentPoint.y - nextPoint.y);
-            let newCurveFactor = Math.min(baseCurveFactor/(1+(derivative/2)), baseCurveFactor);
-            newCurveFactor = Math.max(newCurveFactor, baseCurveFactor * 0.01);
+            // the new factor is calculated relative to the rate of change of f(x)
+            let newFactor = Math.min(baseCurveFactor/(1+(dy/2)), baseCurveFactor);
+            newFactor = Math.max(newFactor, baseCurveFactor * 0.01);
 
-            x += newCurveFactor;
+            x += newFactor;
         }
             
         this.equationC.stroke();
